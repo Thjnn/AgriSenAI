@@ -1,58 +1,43 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Thuyết Minh Dự Án: Nền Tảng Số Hóa Nông Sản Đồng Tháp
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 1. Tổng quan dự án
 
-## About Laravel
+- [cite_start]**Tên dự án:** Nền tảng số hóa nông sản Đồng Tháp[cite: 5].
+- [cite_start]**Mô tả:** Sàn thương mại điện tử kết nối trực tiếp nông dân, hộ OCOP với người mua, tích hợp AI đánh giá chất lượng và khuyến nghị thời điểm bán[cite: 8].
+- **Vấn đề giải quyết:**
+    - [cite_start]Phụ thuộc thương lái, bị ép giá[cite: 9].
+    - [cite_start]Thiếu công cụ đánh giá chất lượng khách quan[cite: 10].
+    - [cite_start]Thiếu thông tin thị trường/thời tiết để tối ưu thời điểm bán[cite: 11].
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 2. Tính đổi mới sáng tạo
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- [cite_start]**Công nghệ:** Sử dụng Computer Vision và Gemini AI để tự động đánh giá chất lượng qua hình ảnh (độ chín, hư hỏng, chấm điểm)[cite: 14].
+- [cite_start]**Trải nghiệm:** Tích hợp trực tiếp kết quả AI vào luồng đăng bán và khuyến nghị thời điểm bán bằng ngôn ngữ tự nhiên[cite: 15, 16].
+- [cite_start]**Nền tảng:** Ứng dụng web tiến bộ (PWA), không cần cài đặt qua store, tích hợp QR truy xuất nguồn gốc[cite: 17].
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 3. Mô hình kinh doanh (Rút gọn)
 
-## Learning Laravel
+| Đối tác chính                  | Hoạt động chính                            | Giá trị mang lại                                                                 |
+| :----------------------------- | :----------------------------------------- | :------------------------------------------------------------------------------- |
+| HTX, hộ OCOP, API Thời tiết/AI | Vận hành sàn, đánh giá AI, hỗ trợ đăng bán | [cite_start]Bán trực tiếp, minh bạch chất lượng, tối ưu thời điểm bán [cite: 43] |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+| Dòng doanh thu                                                                      | Cơ cấu chi phí                                                                |
+| :---------------------------------------------------------------------------------- | :---------------------------------------------------------------------------- |
+| [cite_start]Phí giao dịch (3–5%), gói AI trả phí, gói dữ liệu thị trường [cite: 44] | [cite_start]Hạ tầng server, phí API, vận hành & bảo trì, marketing [cite: 44] |
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 4. Kỹ thuật & Phát triển
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- [cite_start]**Tech Stack:** Laravel, MySQL, Gemini Vision API, API dữ liệu thời tiết, PWA[cite: 34].
+- [cite_start]**Hiện trạng:** Đã có thuyết minh, thiết kế CSDL (15 bảng/5 nhóm), giao diện demo (Marketplace, AI module, QR)[cite: 46].
+- **Lộ trình:**
+    - [cite_start]6 tháng: Hoàn thiện MVP, thí điểm 10-20 hộ[cite: 47].
+    - [cite_start]1 năm: Nhân rộng toàn tỉnh, bắt đầu thu phí[cite: 47].
+    - [cite_start]3 năm: Mở rộng ra ĐBSCL, phát triển gói dữ liệu chuyên sâu[cite: 47].
 
-## Agentic Development
+## 5. Tác động xã hội (SDGs)
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
-```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- [cite_start]**SDG 1:** Xóa nghèo (tăng thu nhập trực tiếp)[cite: 50].
+- [cite_start]**SDG 8:** Việc làm bền vững và tăng trưởng kinh tế[cite: 51].
+- [cite_start]**SDG 9:** Đổi mới sáng tạo trong nông nghiệp[cite: 52].
+- [cite_start]**SDG 12:** Tiêu dùng và sản xuất có trách nhiệm (truy xuất nguồn gốc)[cite: 53].
+- [cite_start]**SDG 17:** Quan hệ đối tác phát triển[cite: 54].
