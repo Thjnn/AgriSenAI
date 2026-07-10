@@ -2,7 +2,7 @@
 
 ## 1. Tổng quan dự án
 
-- [cite_start]**Tên dự án:** Nền tảng số hóa nông sản Đồng Tháp[cite: 5].
+- [cite_start]**Tên dự án:** AgriSenAI[cite: 5].
 - [cite_start]**Mô tả:** Sàn thương mại điện tử kết nối trực tiếp nông dân, hộ OCOP với người mua, tích hợp AI đánh giá chất lượng và khuyến nghị thời điểm bán[cite: 8].
 - **Vấn đề giải quyết:**
     - [cite_start]Phụ thuộc thương lái, bị ép giá[cite: 9].
