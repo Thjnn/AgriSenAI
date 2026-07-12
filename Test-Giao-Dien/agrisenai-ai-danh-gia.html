@@ -1,0 +1,2591 @@
+<!doctype html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+        />
+        <meta name="theme-color" content="#FFFFFF" />
+        <title>AI đánh giá chất lượng nông sản — AgriSenAi</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            :root {
+                --green: #2e7d32;
+                --green-medium: #43a047;
+                --green-light: #e8f5e9;
+                --green-bg: #eff8f0;
+                --white: #fff;
+                --bg: #fafafa;
+                --gray-50: #f5f5f5;
+                --gray-100: #eee;
+                --gray-200: #e0e0e0;
+                --gray-300: #bdbdbd;
+                --gray-400: #9e9e9e;
+                --text: #212121;
+                --text-sec: #757575;
+                --text-light: #9e9e9e;
+                --amber: #f9a825;
+                --amber-bg: #fff8e1;
+                --danger: #d32f2f;
+                --danger-bg: #ffebee;
+                --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06),
+                    0 1px 2px rgba(0, 0, 0, 0.04);
+                --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.07);
+                --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+                --r: 14px;
+                --r-sm: 10px;
+                --r-lg: 18px;
+                --nav-h: 64px;
+                --safe-b: env(safe-area-inset-bottom, 0px);
+            }
+            html {
+                -webkit-text-size-adjust: 100%;
+                scroll-behavior: smooth;
+            }
+            body {
+                font-family: "Nunito", -apple-system, system-ui, sans-serif;
+                color: var(--text);
+                background: var(--bg);
+                -webkit-font-smoothing: antialiased;
+                overflow-x: hidden;
+                padding-bottom: calc(var(--nav-h) + var(--safe-b) + 8px);
+            }
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
+            button,
+            input,
+            select {
+                font-family: inherit;
+            }
+
+            /* ===== TOP NAV (desktop) ===== */
+            .top-nav {
+                display: none;
+                background: var(--white);
+                border-bottom: 1px solid var(--gray-100);
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+            .top-nav-inner {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 32px;
+                height: 64px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .top-nav-logo {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 20px;
+                font-weight: 800;
+                color: var(--text);
+            }
+            .top-nav-logo-icon {
+                width: 36px;
+                height: 36px;
+                background: var(--green);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+            }
+            .top-nav-logo span {
+                color: var(--green);
+            }
+            .top-nav-links {
+                display: flex;
+                align-items: center;
+                gap: 32px;
+                list-style: none;
+            }
+            .top-nav-links a {
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--text-sec);
+                transition: color 0.15s;
+            }
+            .top-nav-links a:hover,
+            .top-nav-links a.active {
+                color: var(--green);
+            }
+            .top-nav-right {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .top-nav-search {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: var(--gray-50);
+                border: 1.5px solid var(--gray-100);
+                border-radius: var(--r);
+                padding: 9px 16px;
+                width: 260px;
+                transition: border-color 0.2s;
+            }
+            .top-nav-search:focus-within {
+                border-color: var(--green);
+            }
+            .top-nav-search svg {
+                width: 16px;
+                height: 16px;
+                color: var(--gray-400);
+                flex-shrink: 0;
+            }
+            .top-nav-search input {
+                border: none;
+                background: transparent;
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--text);
+                outline: none;
+                width: 100%;
+            }
+            .top-nav-search input::placeholder {
+                color: var(--gray-300);
+            }
+            .top-nav-icon {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                background: var(--gray-50);
+                border: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                position: relative;
+                transition: background 0.15s;
+            }
+            .top-nav-icon:hover {
+                background: var(--gray-100);
+            }
+            .top-nav-icon svg {
+                width: 18px;
+                height: 18px;
+                color: var(--text);
+            }
+            .top-nav-icon .dot {
+                position: absolute;
+                top: 7px;
+                right: 7px;
+                width: 8px;
+                height: 8px;
+                background: #ef5350;
+                border-radius: 50%;
+                border: 2px solid var(--white);
+            }
+            .top-nav-avatar {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background: var(--green-light);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                cursor: pointer;
+            }
+            .top-nav-avatar svg {
+                width: 20px;
+                height: 20px;
+                color: var(--green);
+            }
+
+            /* ===== MOBILE HEADER ===== */
+            .mob-header {
+                background: var(--white);
+                padding: 14px 20px;
+                position: sticky;
+                top: 0;
+                z-index: 50;
+            }
+            .mob-header-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 14px;
+            }
+            .mob-header-left {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .mob-menu-btn {
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+                border: none;
+                background: transparent;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                cursor: pointer;
+                flex-shrink: 0;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .mob-menu-btn:active {
+                background: var(--gray-50);
+            }
+            .mob-menu-btn span {
+                display: block;
+                width: 20px;
+                height: 2px;
+                background: var(--text);
+                border-radius: 2px;
+            }
+            .mob-logo {
+                width: 40px;
+                height: 40px;
+                border-radius: 11px;
+                background: var(--green);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+                flex-shrink: 0;
+            }
+            .mob-brand {
+                font-size: 18px;
+                font-weight: 800;
+                line-height: 1.15;
+            }
+            .mob-brand span {
+                color: var(--green);
+            }
+            .mob-sub {
+                font-size: 12px;
+                color: var(--text-sec);
+                font-weight: 500;
+            }
+            .mob-icons {
+                display: flex;
+                gap: 6px;
+            }
+            .mob-icon-btn {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                border: none;
+                background: var(--gray-50);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                position: relative;
+            }
+            .mob-icon-btn:active {
+                background: var(--gray-100);
+            }
+            .mob-icon-btn svg {
+                width: 20px;
+                height: 20px;
+                color: var(--text);
+            }
+            .mob-icon-btn .dot {
+                position: absolute;
+                top: 6px;
+                right: 6px;
+                width: 8px;
+                height: 8px;
+                background: #ef5350;
+                border-radius: 50%;
+                border: 2px solid var(--white);
+            }
+            .mob-search {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                background: var(--gray-50);
+                border: 1.5px solid var(--gray-100);
+                border-radius: var(--r);
+                padding: 11px 16px;
+            }
+            .mob-search svg {
+                width: 18px;
+                height: 18px;
+                color: var(--gray-400);
+                flex-shrink: 0;
+            }
+            .mob-search input {
+                border: none;
+                background: transparent;
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--text);
+                outline: none;
+                width: 100%;
+            }
+            .mob-search input::placeholder {
+                color: var(--gray-300);
+            }
+
+            /* ===== DRAWER ===== */
+            .drawer-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 998;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.25s, visibility 0.25s;
+            }
+            .drawer-overlay.open {
+                opacity: 1;
+                visibility: visible;
+            }
+            .drawer {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 78%;
+                max-width: 300px;
+                background: var(--white);
+                z-index: 999;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                display: flex;
+                flex-direction: column;
+                box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
+            }
+            .drawer.open {
+                transform: translateX(0);
+            }
+            .drawer-head {
+                padding: 24px 20px 20px;
+                border-bottom: 1px solid var(--gray-100);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .drawer-logo {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+                background: var(--green);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 22px;
+            }
+            .drawer-brand {
+                font-size: 19px;
+                font-weight: 800;
+            }
+            .drawer-brand span {
+                color: var(--green);
+            }
+            .drawer-tag {
+                font-size: 11px;
+                color: var(--text-sec);
+                font-weight: 600;
+            }
+            .drawer-nav {
+                flex: 1;
+                padding: 12px 0;
+                overflow-y: auto;
+            }
+            .drawer-link {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                padding: 13px 20px;
+                font-size: 15px;
+                font-weight: 700;
+                color: var(--text);
+                cursor: pointer;
+                transition: background 0.15s;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .drawer-link:active {
+                background: var(--gray-50);
+            }
+            .drawer-link.active {
+                color: var(--green);
+                background: var(--green-light);
+            }
+            .drawer-link svg {
+                width: 21px;
+                height: 21px;
+                flex-shrink: 0;
+            }
+            .drawer-divider {
+                height: 1px;
+                background: var(--gray-100);
+                margin: 10px 20px;
+            }
+            .drawer-foot {
+                padding: 16px 20px 22px;
+                border-top: 1px solid var(--gray-100);
+            }
+            .drawer-user {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 10px;
+                border-radius: var(--r);
+                background: var(--gray-50);
+                cursor: pointer;
+            }
+            .drawer-user-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: var(--green-light);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+                flex-shrink: 0;
+            }
+            .drawer-user-name {
+                font-size: 14px;
+                font-weight: 700;
+            }
+            .drawer-user-role {
+                font-size: 11px;
+                color: var(--text-sec);
+                font-weight: 600;
+            }
+
+            /* ===== MAIN ===== */
+            .main {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 18px 20px;
+            }
+            .page-head {
+                margin-bottom: 8px;
+            }
+            .page-title {
+                font-size: 22px;
+                font-weight: 800;
+                margin-bottom: 4px;
+            }
+            .page-desc {
+                font-size: 13px;
+                color: var(--text-sec);
+                font-weight: 500;
+                line-height: 1.5;
+            }
+
+            /* Info banner (nguyên tắc TCVN + trung thực AI) */
+            .info-banner {
+                display: flex;
+                gap: 11px;
+                background: var(--green-light);
+                border: 1px solid #cfe8d2;
+                border-radius: var(--r);
+                padding: 13px 15px;
+                margin: 16px 0 22px;
+            }
+            .info-banner .ib-icon {
+                font-size: 20px;
+                line-height: 1.2;
+                flex-shrink: 0;
+            }
+            .info-banner p {
+                font-size: 12.5px;
+                font-weight: 600;
+                color: #2e5730;
+                line-height: 1.5;
+            }
+            .info-banner b {
+                font-weight: 800;
+            }
+
+            /* Cards / steps */
+            .card {
+                background: var(--white);
+                border: 1px solid var(--gray-100);
+                border-radius: var(--r-lg);
+                box-shadow: var(--shadow-sm);
+                padding: 18px 18px 20px;
+                margin-bottom: 18px;
+            }
+            .step-head {
+                display: flex;
+                align-items: center;
+                gap: 11px;
+                margin-bottom: 15px;
+            }
+            .step-num {
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: var(--green);
+                color: #fff;
+                font-size: 14px;
+                font-weight: 800;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+            .step-title {
+                font-size: 16px;
+                font-weight: 800;
+            }
+            .step-hint {
+                font-size: 12px;
+                font-weight: 500;
+                color: var(--text-sec);
+                margin-top: 1px;
+            }
+
+            /* Product chips */
+            .product-row {
+                display: flex;
+                gap: 10px;
+                overflow-x: auto;
+                scrollbar-width: none;
+                padding-bottom: 2px;
+            }
+            .product-row::-webkit-scrollbar {
+                display: none;
+            }
+            .product-chip {
+                flex-shrink: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
+                width: 82px;
+                padding: 12px 6px;
+                border: 1.5px solid var(--gray-200);
+                border-radius: var(--r);
+                background: var(--white);
+                cursor: pointer;
+                transition: all 0.15s;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .product-chip:hover {
+                border-color: var(--green-medium);
+            }
+            .product-chip.active {
+                border-color: var(--green);
+                background: var(--green-light);
+            }
+            .product-chip .pc-emoji {
+                font-size: 30px;
+                line-height: 1;
+            }
+            .product-chip .pc-name {
+                font-size: 11.5px;
+                font-weight: 700;
+                color: var(--text-sec);
+                text-align: center;
+                line-height: 1.2;
+            }
+            .product-chip.active .pc-name {
+                color: var(--green);
+            }
+
+            /* Upload slots */
+            .upload-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+            .upload-slot {
+                position: relative;
+                aspect-ratio: 1 / 1;
+                border: 1.5px dashed var(--gray-300);
+                border-radius: var(--r);
+                background: var(--gray-50);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                cursor: pointer;
+                overflow: hidden;
+                transition: border-color 0.15s, background 0.15s;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .upload-slot:hover {
+                border-color: var(--green-medium);
+            }
+            .upload-slot.filled {
+                border-style: solid;
+                border-color: var(--green);
+            }
+            .upload-slot input {
+                display: none;
+            }
+            .upload-slot svg {
+                width: 24px;
+                height: 24px;
+                color: var(--gray-400);
+            }
+            .upload-slot .us-label {
+                font-size: 11px;
+                font-weight: 700;
+                color: var(--text-sec);
+                text-align: center;
+                padding: 0 4px;
+                line-height: 1.25;
+            }
+            .upload-slot .us-tag {
+                position: absolute;
+                bottom: 6px;
+                left: 6px;
+                background: rgba(0, 0, 0, 0.6);
+                color: #fff;
+                font-size: 9.5px;
+                font-weight: 700;
+                padding: 2px 7px;
+                border-radius: 20px;
+                backdrop-filter: blur(2px);
+            }
+            .upload-slot img {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .upload-slot .us-remove {
+                position: absolute;
+                top: 6px;
+                right: 6px;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                border: none;
+                background: rgba(0, 0, 0, 0.55);
+                color: #fff;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 2;
+            }
+            .upload-slot.filled .us-remove {
+                display: flex;
+            }
+            .upload-slot .us-remove svg {
+                width: 13px;
+                height: 13px;
+                color: #fff;
+            }
+            .upload-note {
+                font-size: 11.5px;
+                color: var(--text-light);
+                font-weight: 500;
+                margin-top: 10px;
+                line-height: 1.45;
+            }
+
+            /* Form fields */
+            .measure-note {
+                display: flex;
+                gap: 8px;
+                background: var(--amber-bg);
+                border-radius: var(--r-sm);
+                padding: 10px 12px;
+                margin-bottom: 15px;
+                font-size: 12px;
+                font-weight: 600;
+                color: #7a5b00;
+                line-height: 1.45;
+            }
+            .field-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .field {
+                display: flex;
+                flex-direction: column;
+            }
+            .field.full {
+                grid-column: 1 / -1;
+            }
+            .field label {
+                font-size: 12.5px;
+                font-weight: 700;
+                color: var(--text-sec);
+                margin-bottom: 6px;
+            }
+            .field label .opt {
+                font-weight: 600;
+                color: var(--text-light);
+            }
+            .field input,
+            .field select {
+                border: 1.5px solid var(--gray-200);
+                border-radius: var(--r-sm);
+                padding: 12px 14px;
+                font-size: 14.5px;
+                font-weight: 600;
+                color: var(--text);
+                background: var(--white);
+                outline: none;
+                transition: border-color 0.15s;
+            }
+            .field input:focus,
+            .field select:focus {
+                border-color: var(--green);
+            }
+            .field input::placeholder {
+                color: var(--gray-300);
+                font-weight: 500;
+            }
+
+            /* Assess button */
+            .btn-assess {
+                width: 100%;
+                border: none;
+                background: var(--green);
+                color: #fff;
+                font-size: 16px;
+                font-weight: 800;
+                padding: 16px;
+                border-radius: var(--r);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 9px;
+                box-shadow: 0 6px 18px rgba(46, 125, 50, 0.3);
+                transition: background 0.15s, transform 0.1s;
+                margin-bottom: 22px;
+            }
+            .btn-assess:hover {
+                background: #256427;
+            }
+            .btn-assess:active {
+                transform: scale(0.99);
+            }
+            .btn-assess:disabled {
+                opacity: 0.55;
+                cursor: not-allowed;
+                box-shadow: none;
+            }
+            .btn-assess svg {
+                width: 21px;
+                height: 21px;
+            }
+            .btn-assess .spinner {
+                width: 20px;
+                height: 20px;
+                border: 2.5px solid rgba(255, 255, 255, 0.4);
+                border-top-color: #fff;
+                border-radius: 50%;
+                animation: spin 0.7s linear infinite;
+            }
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            /* ===== RESULT ===== */
+            .result {
+                display: none;
+            }
+            .result.show {
+                display: block;
+                animation: fadeUp 0.4s ease;
+            }
+            @keyframes fadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(12px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .result-top {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+            .grade-ring {
+                width: 92px;
+                height: 92px;
+                border-radius: 50%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                color: #fff;
+                box-shadow: var(--shadow-md);
+            }
+            .grade-ring .gr-score {
+                font-size: 28px;
+                font-weight: 800;
+                line-height: 1;
+            }
+            .grade-ring .gr-max {
+                font-size: 12px;
+                font-weight: 700;
+                opacity: 0.85;
+            }
+            .result-meta {
+                flex: 1;
+                min-width: 180px;
+            }
+            .grade-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 14px;
+                font-weight: 800;
+                padding: 5px 12px;
+                border-radius: 20px;
+                margin-bottom: 7px;
+            }
+            .result-product {
+                font-size: 15px;
+                font-weight: 800;
+            }
+            .result-confidence {
+                font-size: 12.5px;
+                font-weight: 600;
+                color: var(--text-sec);
+                margin-top: 3px;
+            }
+            /* grade colors */
+            .g-dac_biet {
+                background: linear-gradient(135deg, #2e7d32, #43a047);
+            }
+            .g-hang_1 {
+                background: linear-gradient(135deg, #43a047, #66bb6a);
+            }
+            .g-hang_2 {
+                background: linear-gradient(135deg, #f9a825, #ffb74d);
+            }
+            .g-khong_dat {
+                background: linear-gradient(135deg, #d32f2f, #ef5350);
+            }
+            .badge-dac_biet,
+            .badge-hang_1 {
+                background: var(--green-light);
+                color: var(--green);
+            }
+            .badge-hang_2 {
+                background: var(--amber-bg);
+                color: #b37700;
+            }
+            .badge-khong_dat {
+                background: var(--danger-bg);
+                color: var(--danger);
+            }
+
+            .result-block {
+                margin-top: 20px;
+            }
+            .rb-title {
+                font-size: 13px;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                color: var(--text-sec);
+                margin-bottom: 12px;
+            }
+            /* score bars */
+            .score-item {
+                margin-bottom: 12px;
+            }
+            .score-item:last-child {
+                margin-bottom: 0;
+            }
+            .score-row {
+                display: flex;
+                justify-content: space-between;
+                font-size: 13px;
+                font-weight: 700;
+                margin-bottom: 5px;
+            }
+            .score-row span:last-child {
+                color: var(--green);
+            }
+            .score-track {
+                height: 8px;
+                background: var(--gray-100);
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            .score-fill {
+                height: 100%;
+                border-radius: 8px;
+                background: linear-gradient(90deg, var(--green-medium), var(--green));
+                width: 0;
+                transition: width 0.8s cubic-bezier(0.34, 1.2, 0.64, 1);
+            }
+
+            /* defects */
+            .defect {
+                display: flex;
+                gap: 11px;
+                padding: 12px;
+                border: 1px solid var(--gray-100);
+                border-radius: var(--r);
+                margin-bottom: 10px;
+            }
+            .defect:last-child {
+                margin-bottom: 0;
+            }
+            .defect-icon {
+                width: 34px;
+                height: 34px;
+                border-radius: 9px;
+                background: var(--amber-bg);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 17px;
+                flex-shrink: 0;
+            }
+            .defect-body {
+                flex: 1;
+                min-width: 0;
+            }
+            .defect-top {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 3px;
+                flex-wrap: wrap;
+            }
+            .defect-name {
+                font-size: 13.5px;
+                font-weight: 800;
+            }
+            .sev {
+                font-size: 10.5px;
+                font-weight: 800;
+                padding: 2px 8px;
+                border-radius: 20px;
+            }
+            .sev-nhe {
+                background: var(--green-light);
+                color: var(--green);
+            }
+            .sev-trung_binh {
+                background: var(--amber-bg);
+                color: #b37700;
+            }
+            .sev-nang {
+                background: var(--danger-bg);
+                color: var(--danger);
+            }
+            .defect-area {
+                font-size: 11.5px;
+                font-weight: 700;
+                color: var(--text-sec);
+            }
+            .defect-note {
+                font-size: 12.5px;
+                font-weight: 500;
+                color: var(--text-sec);
+                line-height: 1.45;
+            }
+            .no-defect {
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                font-size: 13.5px;
+                font-weight: 700;
+                color: var(--green);
+                background: var(--green-light);
+                border-radius: var(--r);
+                padding: 12px 14px;
+            }
+
+            /* reasoning / advice / farmer input */
+            .rb-text {
+                font-size: 13.5px;
+                font-weight: 500;
+                color: var(--text);
+                line-height: 1.6;
+            }
+            .advice-box {
+                display: flex;
+                gap: 11px;
+                background: var(--green-bg);
+                border: 1px solid #cfe8d2;
+                border-radius: var(--r);
+                padding: 14px;
+            }
+            .advice-box .ab-icon {
+                font-size: 20px;
+                flex-shrink: 0;
+            }
+            .advice-box p {
+                font-size: 13.5px;
+                font-weight: 600;
+                color: #2e5730;
+                line-height: 1.55;
+            }
+            .farmer-input {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+            .fi-item {
+                background: var(--gray-50);
+                border-radius: var(--r-sm);
+                padding: 12px 10px;
+                text-align: center;
+            }
+            .fi-val {
+                font-size: 17px;
+                font-weight: 800;
+            }
+            .fi-lbl {
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--text-sec);
+                margin-top: 2px;
+            }
+            .fi-item .fi-src {
+                display: inline-block;
+                font-size: 9px;
+                font-weight: 800;
+                color: var(--green);
+                background: var(--green-light);
+                border-radius: 5px;
+                padding: 1px 5px;
+                margin-top: 5px;
+            }
+
+            /* override / warning notes */
+            .note-flag {
+                display: flex;
+                gap: 9px;
+                border-radius: var(--r);
+                padding: 12px 14px;
+                font-size: 12.5px;
+                font-weight: 600;
+                line-height: 1.5;
+                margin-top: 14px;
+            }
+            .note-override {
+                background: var(--amber-bg);
+                color: #7a5b00;
+            }
+            .note-warning {
+                background: var(--danger-bg);
+                color: #8a1f1f;
+            }
+            .note-flag svg {
+                width: 18px;
+                height: 18px;
+                flex-shrink: 0;
+                margin-top: 1px;
+            }
+
+            .tcvn-ref {
+                display: flex;
+                gap: 9px;
+                align-items: flex-start;
+                font-size: 11.5px;
+                font-weight: 600;
+                color: var(--text-light);
+                line-height: 1.5;
+                margin-top: 16px;
+                padding-top: 14px;
+                border-top: 1px dashed var(--gray-200);
+            }
+            .tcvn-ref svg {
+                width: 15px;
+                height: 15px;
+                flex-shrink: 0;
+                margin-top: 1px;
+            }
+
+            .result-actions {
+                display: flex;
+                gap: 10px;
+                margin-top: 18px;
+            }
+            .btn-ghost {
+                flex: 1;
+                border: 1.5px solid var(--gray-200);
+                background: var(--white);
+                color: var(--text);
+                font-size: 14px;
+                font-weight: 800;
+                padding: 13px;
+                border-radius: var(--r);
+                cursor: pointer;
+                transition: background 0.15s;
+            }
+            .btn-ghost:hover {
+                background: var(--gray-50);
+            }
+            .btn-solid {
+                flex: 1;
+                border: none;
+                background: var(--green);
+                color: #fff;
+                font-size: 14px;
+                font-weight: 800;
+                padding: 13px;
+                border-radius: var(--r);
+                cursor: pointer;
+                transition: background 0.15s;
+            }
+            .btn-solid:hover {
+                background: #256427;
+            }
+
+            /* unusable state */
+            .unusable {
+                display: none;
+                text-align: center;
+                padding: 26px 18px;
+            }
+            .unusable.show {
+                display: block;
+            }
+            .unusable .un-emoji {
+                font-size: 44px;
+            }
+            .unusable h3 {
+                font-size: 17px;
+                font-weight: 800;
+                margin: 10px 0 6px;
+            }
+            .unusable p {
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--text-sec);
+                line-height: 1.5;
+                max-width: 340px;
+                margin: 0 auto 16px;
+            }
+
+            /* small demo helper */
+            .demo-hint {
+                text-align: center;
+                font-size: 11.5px;
+                font-weight: 600;
+                color: var(--text-light);
+                margin-bottom: 14px;
+            }
+            .demo-hint a {
+                color: var(--green);
+                font-weight: 700;
+                cursor: pointer;
+            }
+
+            /* ===== BOTTOM NAV ===== */
+            .bottom-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: var(--white);
+                border-top: 1px solid var(--gray-100);
+                display: flex;
+                align-items: stretch;
+                justify-content: space-around;
+                height: var(--nav-h);
+                padding-bottom: var(--safe-b);
+                z-index: 100;
+            }
+            .bnav {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 2px;
+                color: var(--gray-400);
+                font-size: 10px;
+                font-weight: 600;
+                cursor: pointer;
+                flex: 1;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .bnav.active {
+                color: var(--green);
+            }
+            .bnav svg {
+                width: 22px;
+                height: 22px;
+            }
+            .bnav.active svg {
+                stroke-width: 2.5;
+            }
+            .bnav-scan {
+                position: relative;
+                justify-content: flex-end;
+                padding-bottom: 7px;
+                overflow: visible;
+            }
+            .bnav-scan-circle {
+                position: absolute;
+                top: -24px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 54px;
+                height: 54px;
+                border-radius: 50%;
+                background: var(--green);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 14px rgba(46, 125, 50, 0.35);
+                border: 4px solid var(--white);
+                transition: transform 0.15s;
+            }
+            .bnav-scan-circle:active {
+                transform: translateX(-50%) scale(0.92);
+            }
+            .bnav-scan-circle svg {
+                width: 24px;
+                height: 24px;
+                color: #fff;
+            }
+            .bnav-scan .bnav-scan-label {
+                display: block;
+                margin-top: auto;
+                font-size: 10px;
+                font-weight: 700;
+                color: var(--green);
+                line-height: 1;
+            }
+
+            /* ===== SITE FOOTER (desktop) ===== */
+            .site-footer {
+                display: none;
+                background: #1f5c22;
+                color: rgba(255, 255, 255, 0.82);
+                margin-top: 48px;
+            }
+            .footer-inner {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 52px 32px 36px;
+                display: grid;
+                grid-template-columns: 1.7fr 1fr 1fr 1.5fr;
+                gap: 40px;
+            }
+            .footer-logo-row {
+                display: flex;
+                align-items: center;
+                gap: 11px;
+                margin-bottom: 16px;
+            }
+            .footer-logo {
+                width: 42px;
+                height: 42px;
+                border-radius: 12px;
+                background: var(--green-medium);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 21px;
+            }
+            .footer-brand-name {
+                font-size: 21px;
+                font-weight: 800;
+                color: #fff;
+            }
+            .footer-brand-name span {
+                color: #9fe0a6;
+            }
+            .footer-desc {
+                font-size: 13px;
+                line-height: 1.65;
+                max-width: 300px;
+                margin-bottom: 20px;
+            }
+            .footer-socials {
+                display: flex;
+                gap: 10px;
+            }
+            .footer-social {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: background 0.15s;
+            }
+            .footer-social:hover {
+                background: rgba(255, 255, 255, 0.22);
+            }
+            .footer-social svg {
+                width: 18px;
+                height: 18px;
+                color: #fff;
+            }
+            .footer-title {
+                font-size: 13px;
+                font-weight: 800;
+                color: #fff;
+                text-transform: uppercase;
+                letter-spacing: 0.6px;
+                margin-bottom: 16px;
+            }
+            .footer-col a {
+                display: block;
+                font-size: 13px;
+                font-weight: 500;
+                padding: 6px 0;
+                color: rgba(255, 255, 255, 0.78);
+                transition: color 0.15s;
+            }
+            .footer-col a:hover {
+                color: #fff;
+            }
+            .footer-contact {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                font-size: 13px;
+                line-height: 1.5;
+                margin-bottom: 13px;
+            }
+            .footer-contact svg {
+                width: 16px;
+                height: 16px;
+                flex-shrink: 0;
+                margin-top: 2px;
+                color: #9fe0a6;
+            }
+            .footer-bottom {
+                border-top: 1px solid rgba(255, 255, 255, 0.13);
+                text-align: center;
+                padding: 20px;
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.6);
+            }
+
+            /* ===== RESPONSIVE ===== */
+            @media (min-width: 640px) {
+                .main {
+                    padding: 24px 28px;
+                }
+                .page-title {
+                    font-size: 25px;
+                }
+                .mob-header {
+                    padding: 16px 28px;
+                }
+            }
+            @media (min-width: 1024px) {
+                .top-nav {
+                    display: block;
+                }
+                .mob-header {
+                    display: none;
+                }
+                .bottom-nav {
+                    display: none;
+                }
+                .drawer,
+                .drawer-overlay {
+                    display: none;
+                }
+                .site-footer {
+                    display: block;
+                }
+                body {
+                    padding-bottom: 0;
+                }
+                .main {
+                    padding: 32px 20px 48px;
+                }
+                .page-title {
+                    font-size: 27px;
+                }
+            }
+            @media (max-width: 360px) {
+                .main {
+                    padding: 14px 16px;
+                }
+                .field-grid {
+                    grid-template-columns: 1fr;
+                }
+                .farmer-input {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- ===== TOP NAV ===== -->
+        <nav class="top-nav">
+            <div class="top-nav-inner">
+                <a href="agrisenai-home.html" class="top-nav-logo">
+                    <div class="top-nav-logo-icon">🌱</div>
+                    AgriSenAi
+                </a>
+                <ul class="top-nav-links">
+                    <li><a href="agrisenai-home.html">Trang chủ</a></li>
+                    <li>
+                        <a href="agrisenai-thi-truong.html">Sàn thị trường</a>
+                    </li>
+                    <li><a href="#" class="active">AI đánh giá</a></li>
+                    <li>
+                        <a href="agrisenai-khuyen-nghi.html">Khuyến nghị</a>
+                    </li>
+                    <li><a href="#">Về chúng tôi</a></li>
+                </ul>
+                <div class="top-nav-right">
+                    <div class="top-nav-search">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <circle cx="11" cy="11" r="8" />
+                            <path stroke-linecap="round" d="M21 21l-4.35-4.35" />
+                        </svg>
+                        <input type="text" placeholder="Tìm nông sản..." />
+                    </div>
+                    <button class="top-nav-icon" aria-label="Thông báo">
+                        <svg
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+                            />
+                        </svg>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="top-nav-icon" aria-label="Giỏ hàng">
+                        <svg
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+                            />
+                        </svg>
+                    </button>
+                    <div class="top-nav-avatar" aria-label="Tài khoản">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                            />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ===== DRAWER ===== -->
+        <div class="drawer-overlay" id="drawerOverlay"></div>
+        <aside class="drawer" id="drawer">
+            <div class="drawer-head">
+                <div class="drawer-logo">🌱</div>
+                <div>
+                    <div class="drawer-brand">Agri<span>SenAi</span></div>
+                    <div class="drawer-tag">Sàn nông sản Đồng Tháp</div>
+                </div>
+            </div>
+            <nav class="drawer-nav">
+                <a class="drawer-link" href="agrisenai-home.html">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"
+                        />
+                    </svg>
+                    Trang chủ
+                </a>
+                <a class="drawer-link" href="agrisenai-thi-truong.html">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72l1.189-1.19A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72M6.75 18h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z"
+                        />
+                    </svg>
+                    Sàn thị trường
+                </a>
+                <a class="drawer-link active">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
+                        />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"
+                        />
+                    </svg>
+                    AI đánh giá chất lượng
+                </a>
+                <a class="drawer-link" href="agrisenai-khuyen-nghi.html">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
+                        />
+                    </svg>
+                    Khuyến nghị giá bán
+                </a>
+                <a class="drawer-link">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5zM13.5 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5z"
+                        />
+                    </svg>
+                    Quét QR truy xuất
+                </a>
+                <div class="drawer-divider"></div>
+                <a class="drawer-link" href="agrisenai-dang-nhap.html">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                        />
+                    </svg>
+                    Đăng nhập / Đăng ký
+                </a>
+            </nav>
+            <div class="drawer-foot">
+                <div class="drawer-user">
+                    <div class="drawer-user-avatar">👨‍🌾</div>
+                    <div>
+                        <div class="drawer-user-name">Cao Phúc Thịnh</div>
+                        <div class="drawer-user-role">Nông dân · Cao Lãnh</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ===== MOBILE HEADER ===== -->
+        <header class="mob-header">
+            <div class="mob-header-row">
+                <div class="mob-header-left">
+                    <button class="mob-menu-btn" id="menuBtn" aria-label="Menu">
+                        <span></span><span></span><span></span>
+                    </button>
+                    <div class="mob-logo">🌱</div>
+                    <div>
+                        <div class="mob-brand">Agri<span>SenAi</span></div>
+                        <div class="mob-sub">AI đánh giá chất lượng</div>
+                    </div>
+                </div>
+                <div class="mob-icons">
+                    <button class="mob-icon-btn" aria-label="Thông báo">
+                        <svg
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+                            />
+                        </svg>
+                        <span class="dot"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="mob-search">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <circle cx="11" cy="11" r="8" />
+                    <path stroke-linecap="round" d="M21 21l-4.35-4.35" />
+                </svg>
+                <input type="text" placeholder="Tìm nông sản..." />
+            </div>
+        </header>
+
+        <!-- ===== MAIN ===== -->
+        <main class="main">
+            <div class="page-head">
+                <h1 class="page-title">AI đánh giá chất lượng nông sản</h1>
+                <p class="page-desc">
+                    Chụp ảnh trái cây, AI phân hạng theo tiêu chuẩn quốc gia
+                    TCVN 9766:2013 và gợi ý cách bán.
+                </p>
+            </div>
+
+            <div class="info-banner">
+                <span class="ib-icon">🎯</span>
+                <p>
+                    AI chỉ chấm <b>phần nhìn thấy qua ảnh</b> (màu sắc, bề mặt,
+                    hình dạng). <b>Khối lượng và độ ngọt do bạn cân đo & nhập</b>
+                    — AI không đoán từ ảnh để đảm bảo trung thực.
+                </p>
+            </div>
+
+            <form id="assessForm">
+                <!-- STEP 1: product -->
+                <div class="card">
+                    <div class="step-head">
+                        <div class="step-num">1</div>
+                        <div>
+                            <div class="step-title">Chọn loại nông sản</div>
+                            <div class="step-hint">
+                                Mỗi loại có bộ mẫu chuẩn riêng để chấm chính xác
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-row" id="productRow">
+                        <div
+                            class="product-chip active"
+                            data-product="Xoài Cát Hòa Lộc"
+                        >
+                            <span class="pc-emoji">🥭</span>
+                            <span class="pc-name">Xoài Cát<br />Hòa Lộc</span>
+                        </div>
+                        <div
+                            class="product-chip"
+                            data-product="Quýt hồng Lai Vung"
+                        >
+                            <span class="pc-emoji">🍊</span>
+                            <span class="pc-name">Quýt hồng<br />Lai Vung</span>
+                        </div>
+                        <div class="product-chip" data-product="Nhãn Châu Thành">
+                            <span class="pc-emoji">🫐</span>
+                            <span class="pc-name">Nhãn<br />Châu Thành</span>
+                        </div>
+                        <div class="product-chip" data-product="Sầu riêng Ri6">
+                            <span class="pc-emoji">🍈</span>
+                            <span class="pc-name">Sầu riêng<br />Ri6</span>
+                        </div>
+                        <div class="product-chip" data-product="Sen Đồng Tháp">
+                            <span class="pc-emoji">🪷</span>
+                            <span class="pc-name">Sen<br />Đồng Tháp</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: upload -->
+                <div class="card">
+                    <div class="step-head">
+                        <div class="step-num">2</div>
+                        <div>
+                            <div class="step-title">Chụp / tải ảnh</div>
+                            <div class="step-hint">
+                                1–3 ảnh, nền sáng, rõ nét. Ảnh đầu bắt buộc.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="upload-grid" id="uploadGrid">
+                        <label class="upload-slot" data-tag="Toàn quả">
+                            <input type="file" accept="image/*" capture="environment" />
+                            <svg
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="1.6"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
+                                />
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"
+                                />
+                            </svg>
+                            <span class="us-label">Toàn quả</span>
+                            <span class="us-tag">Bắt buộc</span>
+                            <button
+                                type="button"
+                                class="us-remove"
+                                aria-label="Xoá ảnh"
+                            >
+                                <svg
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+                        </label>
+                        <label class="upload-slot" data-tag="Cận vỏ">
+                            <input type="file" accept="image/*" capture="environment" />
+                            <svg
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="1.6"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M12 4.5v15m7.5-7.5h-15"
+                                />
+                            </svg>
+                            <span class="us-label">Cận vỏ</span>
+                            <button
+                                type="button"
+                                class="us-remove"
+                                aria-label="Xoá ảnh"
+                            >
+                                <svg
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+                        </label>
+                        <label class="upload-slot" data-tag="Mặt cắt">
+                            <input type="file" accept="image/*" capture="environment" />
+                            <svg
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="1.6"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M12 4.5v15m7.5-7.5h-15"
+                                />
+                            </svg>
+                            <span class="us-label">Mặt cắt</span>
+                            <button
+                                type="button"
+                                class="us-remove"
+                                aria-label="Xoá ảnh"
+                            >
+                                <svg
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+                        </label>
+                    </div>
+                    <p class="upload-note">
+                        💡 Chụp trên nền sáng, đủ ánh sáng tự nhiên. Nếu ảnh mờ
+                        hoặc không phải nông sản, AI sẽ báo "ảnh chưa dùng được"
+                        và yêu cầu chụp lại.
+                    </p>
+                </div>
+
+                <!-- STEP 3: measurements -->
+                <div class="card">
+                    <div class="step-head">
+                        <div class="step-num">3</div>
+                        <div>
+                            <div class="step-title">Thông tin cân đo</div>
+                            <div class="step-hint">
+                                Phần AI không đoán được — bạn nhập
+                            </div>
+                        </div>
+                    </div>
+                    <div class="measure-note">
+                        <span>⚖️</span>
+                        <span
+                            >Khối lượng và độ Brix (độ ngọt) không thể suy ra từ
+                            ảnh. Bạn cân đo rồi nhập để hệ thống gộp vào kết quả
+                            cuối.</span
+                        >
+                    </div>
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="variety">Giống</label>
+                            <select id="variety">
+                                <option>Xoài Cát Hòa Lộc</option>
+                                <option>Xoài Cát Chu</option>
+                                <option>Xoài tượng da xanh</option>
+                                <option>Khác</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="weight"
+                                >Khối lượng TB (g/trái)</label
+                            >
+                            <input
+                                type="number"
+                                id="weight"
+                                inputmode="numeric"
+                                placeholder="VD: 420"
+                            />
+                        </div>
+                        <div class="field">
+                            <label for="quantity">Số trái trong lô</label>
+                            <input
+                                type="number"
+                                id="quantity"
+                                inputmode="numeric"
+                                placeholder="VD: 85"
+                            />
+                        </div>
+                        <div class="field">
+                            <label for="brix"
+                                >Độ Brix <span class="opt">(nếu có)</span></label
+                            >
+                            <input
+                                type="number"
+                                id="brix"
+                                inputmode="decimal"
+                                placeholder="VD: 18"
+                            />
+                        </div>
+                        <div class="field full">
+                            <label for="region">Vùng trồng</label>
+                            <input
+                                type="text"
+                                id="region"
+                                placeholder="VD: Cao Lãnh, Đồng Tháp"
+                                value="Cao Lãnh, Đồng Tháp"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <p class="demo-hint">
+                    Bản demo — chưa nối API Gemini.
+                    <a id="demoUnusable">Xem ví dụ ảnh chưa đạt →</a>
+                </p>
+
+                <button type="submit" class="btn-assess" id="assessBtn">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M14.343 3A6 6 0 0 0 22 10.657V18a1 1 0 0 1-1 1h-6.55L12 22.5L9.55 19H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm5.186-1.68a.507.507 0 0 1 .942 0l.253.61a4.37 4.37 0 0 0 2.25 2.327l.717.32a.53.53 0 0 1 0 .962l-.758.338a4.36 4.36 0 0 0-2.22 2.25l-.246.566a.506.506 0 0 1-.934 0l-.247-.565a4.36 4.36 0 0 0-2.219-2.251l-.76-.338a.53.53 0 0 1 0-.963l.718-.32a4.37 4.37 0 0 0 2.251-2.325z"
+                        />
+                    </svg>
+                    <span>Đánh giá chất lượng</span>
+                </button>
+            </form>
+
+            <!-- ===== RESULT ===== -->
+            <div class="card result" id="result">
+                <!-- Unusable branch -->
+                <div class="unusable" id="unusableBox">
+                    <div class="un-emoji">📷</div>
+                    <h3>Ảnh chưa dùng được</h3>
+                    <p id="unusableReason">
+                        Ảnh bị mờ hoặc thiếu sáng nên AI chưa thể đánh giá chính
+                        xác. Vui lòng chụp lại ở nơi đủ sáng, lấy nét vào quả.
+                    </p>
+                    <button type="button" class="btn-solid" id="retryBtn2"
+                        >Chụp lại</button
+                    >
+                </div>
+
+                <!-- Normal result branch -->
+                <div id="resultBox">
+                    <div class="result-top">
+                        <div class="grade-ring g-hang_1" id="gradeRing">
+                            <span class="gr-score" id="scoreVal">7.8</span>
+                            <span class="gr-max">/10</span>
+                        </div>
+                        <div class="result-meta">
+                            <span
+                                class="grade-badge badge-hang_1"
+                                id="gradeBadge"
+                                >✔ Hạng I</span
+                            >
+                            <div class="result-product" id="resProduct">
+                                Xoài Cát Hòa Lộc
+                            </div>
+                            <div class="result-confidence" id="resConfidence">
+                                Độ tự tin của AI: 88%
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- warning / override notes -->
+                    <div
+                        class="note-flag note-warning"
+                        id="lowConfNote"
+                        style="display: none"
+                    >
+                        <svg
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+                            />
+                        </svg>
+                        <span
+                            >AI chưa chắc chắn về kết quả này. Nên chụp lại rõ
+                            hơn hoặc nhờ người có kinh nghiệm xem thêm.</span
+                        >
+                    </div>
+                    <div
+                        class="note-flag note-override"
+                        id="overrideNote"
+                        style="display: none"
+                    >
+                        <svg
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                            />
+                        </svg>
+                        <span id="overrideText"></span>
+                    </div>
+
+                    <!-- scores -->
+                    <div class="result-block">
+                        <div class="rb-title">Điểm chi tiết (AI chấm qua ảnh)</div>
+                        <div id="scoresList"></div>
+                    </div>
+
+                    <!-- defects -->
+                    <div class="result-block">
+                        <div class="rb-title">Khuyết tật phát hiện</div>
+                        <div id="defectsList"></div>
+                    </div>
+
+                    <!-- reasoning -->
+                    <div class="result-block">
+                        <div class="rb-title">Nhận xét của AI</div>
+                        <p class="rb-text" id="reasoningText"></p>
+                    </div>
+
+                    <!-- advice -->
+                    <div class="result-block">
+                        <div class="rb-title">Lời khuyên</div>
+                        <div class="advice-box">
+                            <span class="ab-icon">💡</span>
+                            <p id="adviceText"></p>
+                        </div>
+                    </div>
+
+                    <!-- farmer input -->
+                    <div class="result-block">
+                        <div class="rb-title">Số liệu bạn cung cấp</div>
+                        <div class="farmer-input" id="farmerInput"></div>
+                    </div>
+
+                    <div class="tcvn-ref">
+                        <svg
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                            />
+                        </svg>
+                        <span>
+                            Phân hạng theo <b>TCVN 9766:2013</b> (Xoài quả
+                            tươi). Điểm AI chỉ mang tính tham khảo về hình thức;
+                            hệ thống có quyền hạ hạng theo tiêu chuẩn nhưng không
+                            nâng hạng. Kết quả hiển thị kèm ảnh gốc để người mua
+                            tự kiểm chứng, không thay thế kiểm định.
+                        </span>
+                    </div>
+
+                    <div class="result-actions">
+                        <button type="button" class="btn-ghost" id="retryBtn">
+                            Đánh giá lại
+                        </button>
+                        <a
+                            class="btn-solid"
+                            href="agrisenai-khuyen-nghi.html"
+                            style="
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            "
+                        >
+                            Xem khuyến nghị giá →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ===== SITE FOOTER ===== -->
+        <footer class="site-footer">
+            <div class="footer-inner">
+                <div class="footer-col">
+                    <div class="footer-logo-row">
+                        <div class="footer-logo">🌱</div>
+                        <div class="footer-brand-name">Agri<span>SenAi</span></div>
+                    </div>
+                    <p class="footer-desc">
+                        Sàn nông sản Đồng Tháp ứng dụng AI đánh giá chất lượng và
+                        khuyến nghị thời điểm bán tối ưu, kết nối nông dân với
+                        người mua.
+                    </p>
+                    <div class="footer-socials">
+                        <a class="footer-social" aria-label="Facebook"
+                            ><svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5H17V3.6c-.3-.04-1.3-.13-2.47-.13-2.45 0-4.13 1.5-4.13 4.25v2.37H7.7V13h2.7v8h3.1z"
+                                /></svg
+                        ></a>
+                        <a class="footer-social" aria-label="YouTube"
+                            ><svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M21.6 7.2a2.5 2.5 0 00-1.75-1.77C18.3 5 12 5 12 5s-6.3 0-7.85.43A2.5 2.5 0 002.4 7.2 26 26 0 002 12a26 26 0 00.4 4.8 2.5 2.5 0 001.75 1.77C5.7 19 12 19 12 19s6.3 0 7.85-.43a2.5 2.5 0 001.75-1.77A26 26 0 0022 12a26 26 0 00-.4-4.8zM10 15V9l5.2 3-5.2 3z"
+                                /></svg
+                        ></a>
+                        <a class="footer-social" aria-label="Zalo"
+                            ><svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"
+                                /></svg
+                        ></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-title">Khám phá</h4>
+                    <a href="agrisenai-home.html">Trang chủ</a>
+                    <a href="agrisenai-thi-truong.html">Nông sản</a>
+                    <a href="#">AI đánh giá</a>
+                    <a href="agrisenai-khuyen-nghi.html">Khuyến nghị giá</a>
+                    <a href="#">Quét QR truy xuất</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-title">Hỗ trợ</h4>
+                    <a href="#">Hướng dẫn sử dụng</a>
+                    <a href="#">Câu hỏi thường gặp</a>
+                    <a href="#">Chính sách bảo mật</a>
+                    <a href="#">Điều khoản dịch vụ</a>
+                    <a href="#">Về chúng tôi</a>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-title">Liên hệ</h4>
+                    <div class="footer-contact">
+                        <svg
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                            />
+                        </svg>
+                        <span>TP. Cao Lãnh, Tỉnh Đồng Tháp</span>
+                    </div>
+                    <div class="footer-contact">
+                        <svg
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+                            />
+                        </svg>
+                        <span>hotro@agrisenai.vn</span>
+                    </div>
+                    <div class="footer-contact">
+                        <svg
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"
+                            />
+                        </svg>
+                        <span>1900 1234</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2026 AgriSenAi · Sàn nông sản Đồng Tháp. Mọi quyền được bảo
+                lưu.
+            </div>
+        </footer>
+
+        <!-- ===== BOTTOM NAV ===== -->
+        <nav class="bottom-nav">
+            <a class="bnav" href="agrisenai-home.html">
+                <svg
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                    />
+                </svg>
+                <span>Trang chủ</span>
+            </a>
+            <a class="bnav" href="agrisenai-thi-truong.html">
+                <svg
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72l1.189-1.19A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72M6.75 18h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z"
+                    />
+                </svg>
+                <span>Thị trường</span>
+            </a>
+            <a class="bnav bnav-scan active">
+                <div class="bnav-scan-circle">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
+                        />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"
+                        />
+                    </svg>
+                </div>
+                <span class="bnav-scan-label">AI đánh giá</span>
+            </a>
+            <a class="bnav" href="agrisenai-khuyen-nghi.html">
+                <svg
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
+                    />
+                </svg>
+                <span>Khuyến nghị</span>
+            </a>
+            <a class="bnav" href="agrisenai-dang-nhap.html">
+                <svg
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                    />
+                </svg>
+                <span>Tài khoản</span>
+            </a>
+        </nav>
+
+        <script>
+            /* ===== DRAWER ===== */
+            const drawer = document.getElementById("drawer"),
+                drawerOverlay = document.getElementById("drawerOverlay"),
+                menuBtn = document.getElementById("menuBtn");
+            menuBtn.addEventListener("click", () => {
+                drawer.classList.add("open");
+                drawerOverlay.classList.add("open");
+                document.body.style.overflow = "hidden";
+            });
+            function closeDrawer() {
+                drawer.classList.remove("open");
+                drawerOverlay.classList.remove("open");
+                document.body.style.overflow = "";
+            }
+            drawerOverlay.addEventListener("click", closeDrawer);
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") closeDrawer();
+            });
+
+            /* ===== PRODUCT SELECT ===== */
+            let currentProduct = "Xoài Cát Hòa Lộc";
+            document.querySelectorAll(".product-chip").forEach((chip) => {
+                chip.addEventListener("click", () => {
+                    document
+                        .querySelectorAll(".product-chip")
+                        .forEach((c) => c.classList.remove("active"));
+                    chip.classList.add("active");
+                    currentProduct = chip.dataset.product;
+                });
+            });
+
+            /* ===== IMAGE UPLOAD PREVIEW ===== */
+            document.querySelectorAll(".upload-slot").forEach((slot) => {
+                const input = slot.querySelector("input");
+                const removeBtn = slot.querySelector(".us-remove");
+                input.addEventListener("change", () => {
+                    const file = input.files[0];
+                    if (!file) return;
+                    const url = URL.createObjectURL(file);
+                    const img = document.createElement("img");
+                    img.src = url;
+                    slot.querySelectorAll("img").forEach((i) => i.remove());
+                    slot.appendChild(img);
+                    slot.classList.add("filled");
+                });
+                removeBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    input.value = "";
+                    slot.querySelectorAll("img").forEach((i) => i.remove());
+                    slot.classList.remove("filled");
+                });
+            });
+
+            /* ===== ASSESS (demo simulation) ===== */
+            const form = document.getElementById("assessForm");
+            const assessBtn = document.getElementById("assessBtn");
+            const result = document.getElementById("result");
+            const resultBox = document.getElementById("resultBox");
+            const unusableBox = document.getElementById("unusableBox");
+
+            // Kết quả demo (khớp responseSchema mục 6 của tài liệu)
+            const demoResult = {
+                usable: true,
+                detected_product: "Xoài Cát Hòa Lộc",
+                grade: "hang_1",
+                grade_label: "Hạng I",
+                overall_score: 7.8,
+                confidence: 0.88,
+                scores: {
+                    "Màu sắc": 8.5,
+                    "Bề mặt vỏ": 7.0,
+                    "Hình dạng": 8.2,
+                    "Độ đồng đều": 7.5,
+                    "Độ chín (ước lượng)": 8.0,
+                },
+                defects: [
+                    {
+                        type: "Xước vỏ",
+                        emoji: "🩹",
+                        severity: "nhe",
+                        area_percent: 2,
+                        note: "Vết xước dài ~2cm ở phần vai quả, đã khô, không ăn vào thịt.",
+                    },
+                ],
+                reasoning:
+                    "Màu vàng cam khá đều, đặc trưng giống Cát Hòa Lộc. Có 1 vết xước nhẹ ở vai quả nhưng nông, không ảnh hưởng thịt quả, nên vẫn đạt Hạng I theo TCVN 9766:2013.",
+                advice:
+                    "Chất lượng Hạng I, phù hợp bán ở kênh chợ đầu mối và siêu thị. Bọc giấy lót vai quả khi vận chuyển để tránh vết xước lan rộng.",
+            };
+
+            const gradeMeta = {
+                dac_biet: { badge: "★ Đặc biệt", ring: "g-dac_biet", bClass: "badge-dac_biet" },
+                hang_1: { badge: "✔ Hạng I", ring: "g-hang_1", bClass: "badge-hang_1" },
+                hang_2: { badge: "● Hạng II", ring: "g-hang_2", bClass: "badge-hang_2" },
+                khong_dat: { badge: "✕ Không đạt", ring: "g-khong_dat", bClass: "badge-khong_dat" },
+            };
+
+            function renderResult(r) {
+                unusableBox.classList.remove("show");
+                resultBox.style.display = "block";
+
+                const meta = gradeMeta[r.grade];
+                const ring = document.getElementById("gradeRing");
+                ring.className = "grade-ring " + meta.ring;
+                document.getElementById("scoreVal").textContent =
+                    r.overall_score.toFixed(1);
+                const badge = document.getElementById("gradeBadge");
+                badge.className = "grade-badge " + meta.bClass;
+                badge.textContent = meta.badge;
+                document.getElementById("resProduct").textContent =
+                    r.detected_product;
+                document.getElementById("resConfidence").textContent =
+                    "Độ tự tin của AI: " + Math.round(r.confidence * 100) + "%";
+
+                // low confidence
+                document.getElementById("lowConfNote").style.display =
+                    r.confidence < 0.6 ? "flex" : "none";
+                // override note
+                const ov = document.getElementById("overrideNote");
+                if (r.override_note) {
+                    ov.style.display = "flex";
+                    document.getElementById("overrideText").textContent =
+                        r.override_note;
+                } else {
+                    ov.style.display = "none";
+                }
+
+                // scores
+                const sl = document.getElementById("scoresList");
+                sl.innerHTML = "";
+                Object.entries(r.scores).forEach(([k, v]) => {
+                    const item = document.createElement("div");
+                    item.className = "score-item";
+                    item.innerHTML =
+                        '<div class="score-row"><span>' +
+                        k +
+                        "</span><span>" +
+                        v.toFixed(1) +
+                        '</span></div><div class="score-track"><div class="score-fill"></div></div>';
+                    sl.appendChild(item);
+                    requestAnimationFrame(() => {
+                        item.querySelector(".score-fill").style.width =
+                            v * 10 + "%";
+                    });
+                });
+
+                // defects
+                const dl = document.getElementById("defectsList");
+                dl.innerHTML = "";
+                if (!r.defects || r.defects.length === 0) {
+                    dl.innerHTML =
+                        '<div class="no-defect">✓ Không phát hiện khuyết tật đáng kể</div>';
+                } else {
+                    r.defects.forEach((d) => {
+                        const el = document.createElement("div");
+                        el.className = "defect";
+                        el.innerHTML =
+                            '<div class="defect-icon">' +
+                            (d.emoji || "⚠️") +
+                            '</div><div class="defect-body"><div class="defect-top"><span class="defect-name">' +
+                            d.type +
+                            '</span><span class="sev sev-' +
+                            d.severity +
+                            '">' +
+                            { nhe: "Nhẹ", trung_binh: "Trung bình", nang: "Nặng" }[
+                                d.severity
+                            ] +
+                            '</span><span class="defect-area">~' +
+                            d.area_percent +
+                            '% bề mặt</span></div><div class="defect-note">' +
+                            d.note +
+                            "</div></div>";
+                        dl.appendChild(el);
+                    });
+                }
+
+                document.getElementById("reasoningText").textContent =
+                    r.reasoning;
+                document.getElementById("adviceText").textContent = r.advice;
+
+                // farmer input
+                const weight = document.getElementById("weight").value;
+                const quantity = document.getElementById("quantity").value;
+                const brix = document.getElementById("brix").value;
+                const fi = document.getElementById("farmerInput");
+                fi.innerHTML = "";
+                const items = [
+                    { lbl: "Khối lượng TB", val: weight ? weight + " g" : "—" },
+                    { lbl: "Số trái", val: quantity || "—" },
+                    { lbl: "Độ Brix", val: brix ? brix + "°" : "—" },
+                ];
+                items.forEach((it) => {
+                    const box = document.createElement("div");
+                    box.className = "fi-item";
+                    box.innerHTML =
+                        '<div class="fi-val">' +
+                        it.val +
+                        '</div><div class="fi-lbl">' +
+                        it.lbl +
+                        '</div><span class="fi-src">Bạn nhập</span>';
+                    fi.appendChild(box);
+                });
+
+                result.classList.add("show");
+                result.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+
+            function renderUnusable(reason) {
+                resultBox.style.display = "none";
+                document.getElementById("unusableReason").textContent = reason;
+                unusableBox.classList.add("show");
+                result.classList.add("show");
+                result.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+
+            function hasImage() {
+                return [...document.querySelectorAll(".upload-slot input")].some(
+                    (i) => i.files.length > 0,
+                );
+            }
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                if (!hasImage()) {
+                    alert("Vui lòng tải ít nhất 1 ảnh (Toàn quả) để đánh giá.");
+                    return;
+                }
+                const label = assessBtn.querySelector("span");
+                const icon = assessBtn.querySelector("svg");
+                assessBtn.disabled = true;
+                icon.style.display = "none";
+                label.textContent = "AI đang phân tích...";
+                const sp = document.createElement("div");
+                sp.className = "spinner";
+                assessBtn.insertBefore(sp, label);
+
+                setTimeout(() => {
+                    sp.remove();
+                    icon.style.display = "";
+                    label.textContent = "Đánh giá chất lượng";
+                    assessBtn.disabled = false;
+                    const r = { ...demoResult, detected_product: currentProduct };
+                    renderResult(r);
+                }, 1600);
+            });
+
+            // Demo: xem trạng thái ảnh chưa đạt
+            document
+                .getElementById("demoUnusable")
+                .addEventListener("click", () => {
+                    renderUnusable(
+                        "Ảnh bị mờ hoặc thiếu sáng nên AI chưa thể đánh giá chính xác. Vui lòng chụp lại ở nơi đủ sáng, lấy nét vào quả.",
+                    );
+                });
+
+            function resetToForm() {
+                result.classList.remove("show");
+                form.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+            document
+                .getElementById("retryBtn")
+                .addEventListener("click", resetToForm);
+            document
+                .getElementById("retryBtn2")
+                .addEventListener("click", resetToForm);
+        </script>
+    </body>
+</html>
