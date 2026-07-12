@@ -1,0 +1,2917 @@
+<!doctype html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+        />
+        <meta name="theme-color" content="#FFFFFF" />
+        <title>AgriSenAi — Sàn nông sản Đồng Tháp</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            :root {
+                --green: #2e7d32;
+                --green-medium: #43a047;
+                --green-light: #e8f5e9;
+                --green-bg: #eff8f0;
+                --green-banner-1: #d5edda;
+                --green-banner-2: #b8dfc0;
+                --white: #ffffff;
+                --bg: #fafafa;
+                --gray-50: #f5f5f5;
+                --gray-100: #eeeeee;
+                --gray-200: #e0e0e0;
+                --gray-300: #bdbdbd;
+                --gray-400: #9e9e9e;
+                --text: #212121;
+                --text-sec: #757575;
+                --text-light: #9e9e9e;
+                --shadow-sm:
+                    0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+                --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.07);
+                --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+                --r: 14px;
+                --r-sm: 10px;
+                --r-lg: 18px;
+                --nav-h: 64px;
+                --safe-b: env(safe-area-inset-bottom, 0px);
+            }
+
+            html {
+                -webkit-text-size-adjust: 100%;
+                scroll-behavior: smooth;
+            }
+
+            body {
+                font-family:
+                    "Nunito",
+                    -apple-system,
+                    system-ui,
+                    sans-serif;
+                color: var(--text);
+                background: var(--bg);
+                -webkit-font-smoothing: antialiased;
+                overflow-x: hidden;
+            }
+
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
+            button {
+                font-family: inherit;
+            }
+            input {
+                font-family: inherit;
+            }
+
+            /* =============================================
+   DESKTOP TOP NAV (hidden on mobile)
+   ============================================= */
+            .top-nav {
+                display: none;
+                background: var(--white);
+                border-bottom: 1px solid var(--gray-100);
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+
+            .top-nav-inner {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 32px;
+                height: 64px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .top-nav-logo {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 20px;
+                font-weight: 800;
+                color: var(--text);
+            }
+
+            .top-nav-logo-icon {
+                width: 36px;
+                height: 36px;
+                background: var(--green);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+            }
+
+            .top-nav-logo span {
+                color: var(--green);
+            }
+
+            .top-nav-links {
+                display: flex;
+                align-items: center;
+                gap: 32px;
+                list-style: none;
+            }
+
+            .top-nav-links a {
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--text-sec);
+                transition: color 0.15s;
+            }
+
+            .top-nav-links a:hover {
+                color: var(--green);
+            }
+            .top-nav-links a.active {
+                color: var(--green);
+            }
+
+            .top-nav-right {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .top-nav-search {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: var(--gray-50);
+                border: 1.5px solid var(--gray-100);
+                border-radius: var(--r);
+                padding: 9px 16px;
+                width: 260px;
+                transition: border-color 0.2s;
+            }
+
+            .top-nav-search:focus-within {
+                border-color: var(--green);
+            }
+
+            .top-nav-search svg {
+                width: 16px;
+                height: 16px;
+                color: var(--gray-400);
+                flex-shrink: 0;
+            }
+
+            .top-nav-search input {
+                border: none;
+                background: transparent;
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--text);
+                outline: none;
+                width: 100%;
+            }
+
+            .top-nav-search input::placeholder {
+                color: var(--gray-300);
+            }
+
+            .top-nav-icon {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                background: var(--gray-50);
+                border: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                position: relative;
+                transition: background 0.15s;
+            }
+
+            .top-nav-icon:hover {
+                background: var(--gray-100);
+            }
+            .top-nav-icon svg {
+                width: 18px;
+                height: 18px;
+                color: var(--text);
+            }
+            .top-nav-icon .dot {
+                position: absolute;
+                top: 7px;
+                right: 7px;
+                width: 8px;
+                height: 8px;
+                background: #ef5350;
+                border-radius: 50%;
+                border: 2px solid var(--white);
+            }
+
+            .top-nav-avatar {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background: var(--green-light);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                cursor: pointer;
+            }
+            .top-nav-avatar svg {
+                width: 20px;
+                height: 20px;
+                color: var(--green);
+            }
+
+            /* =============================================
+   MOBILE HEADER (hidden on desktop)
+   ============================================= */
+            .mob-header {
+                background: var(--white);
+                padding: 14px 20px;
+                position: sticky;
+                top: 0;
+                z-index: 50;
+            }
+
+            .mob-header-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 14px;
+            }
+
+            .mob-header-left {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .mob-menu-btn {
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+                border: none;
+                background: transparent;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                cursor: pointer;
+                flex-shrink: 0;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .mob-menu-btn:active {
+                background: var(--gray-50);
+            }
+
+            .mob-menu-btn span {
+                display: block;
+                width: 20px;
+                height: 2px;
+                background: var(--text);
+                border-radius: 2px;
+            }
+
+            .mob-logo {
+                width: 40px;
+                height: 40px;
+                border-radius: 11px;
+                background: var(--green);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+                flex-shrink: 0;
+            }
+
+            .mob-brand {
+                font-size: 18px;
+                font-weight: 800;
+                line-height: 1.15;
+            }
+            .mob-brand span {
+                color: var(--green);
+            }
+            .mob-sub {
+                font-size: 12px;
+                color: var(--text-sec);
+                font-weight: 500;
+            }
+
+            /* Slide-out drawer */
+            .drawer-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 998;
+                opacity: 0;
+                visibility: hidden;
+                transition:
+                    opacity 0.25s,
+                    visibility 0.25s;
+            }
+            .drawer-overlay.open {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .drawer {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 78%;
+                max-width: 300px;
+                background: var(--white);
+                z-index: 999;
+                transform: translateX(-100%);
+                transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+                display: flex;
+                flex-direction: column;
+                box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
+            }
+            .drawer.open {
+                transform: translateX(0);
+            }
+
+            .drawer-head {
+                padding: 24px 20px 20px;
+                border-bottom: 1px solid var(--gray-100);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .drawer-logo {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+                background: var(--green);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 22px;
+            }
+
+            .drawer-brand {
+                font-size: 19px;
+                font-weight: 800;
+            }
+            .drawer-brand span {
+                color: var(--green);
+            }
+            .drawer-tag {
+                font-size: 11px;
+                color: var(--text-sec);
+                font-weight: 600;
+            }
+
+            .drawer-nav {
+                flex: 1;
+                padding: 12px 0;
+                overflow-y: auto;
+            }
+
+            .drawer-link {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                padding: 13px 20px;
+                font-size: 15px;
+                font-weight: 700;
+                color: var(--text);
+                cursor: pointer;
+                transition: background 0.15s;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .drawer-link:active {
+                background: var(--gray-50);
+            }
+            .drawer-link.active {
+                color: var(--green);
+                background: var(--green-light);
+            }
+            .drawer-link svg {
+                width: 21px;
+                height: 21px;
+                flex-shrink: 0;
+            }
+
+            .drawer-divider {
+                height: 1px;
+                background: var(--gray-100);
+                margin: 10px 20px;
+            }
+
+            .drawer-foot {
+                padding: 16px 20px 22px;
+                border-top: 1px solid var(--gray-100);
+            }
+
+            .drawer-user {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 10px;
+                border-radius: var(--r);
+                background: var(--gray-50);
+                cursor: pointer;
+            }
+
+            .drawer-user-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: var(--green-light);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 20px;
+                flex-shrink: 0;
+            }
+
+            .drawer-user-name {
+                font-size: 14px;
+                font-weight: 700;
+            }
+            .drawer-user-role {
+                font-size: 11px;
+                color: var(--text-sec);
+                font-weight: 600;
+            }
+
+            .mob-icons {
+                display: flex;
+                gap: 6px;
+            }
+
+            .mob-icon-btn {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                border: none;
+                background: var(--gray-50);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                position: relative;
+            }
+
+            .mob-icon-btn:active {
+                background: var(--gray-100);
+            }
+            .mob-icon-btn svg {
+                width: 20px;
+                height: 20px;
+                color: var(--text);
+            }
+            .mob-icon-btn .dot {
+                position: absolute;
+                top: 6px;
+                right: 6px;
+                width: 8px;
+                height: 8px;
+                background: #ef5350;
+                border-radius: 50%;
+                border: 2px solid var(--white);
+            }
+
+            .mob-icon-btn--green {
+                background: var(--green);
+            }
+            .mob-icon-btn--green svg {
+                color: white;
+            }
+
+            .mob-search {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                background: var(--gray-50);
+                border: 1.5px solid var(--gray-100);
+                border-radius: var(--r);
+                padding: 11px 16px;
+            }
+
+            .mob-search svg {
+                width: 18px;
+                height: 18px;
+                color: var(--gray-400);
+                flex-shrink: 0;
+            }
+
+            .mob-search input {
+                border: none;
+                background: transparent;
+                font-size: 14px;
+                font-weight: 500;
+                color: var(--text);
+                outline: none;
+                width: 100%;
+            }
+
+            .mob-search input::placeholder {
+                color: var(--gray-300);
+            }
+
+            /* =============================================
+   MAIN CONTENT
+   ============================================= */
+            .main {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 16px 20px;
+            }
+
+            /* — Categories — */
+            .categories {
+                display: flex;
+                gap: 12px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                padding: 2px 0 4px;
+                margin-bottom: 20px;
+            }
+            .categories::-webkit-scrollbar {
+                display: none;
+            }
+
+            .cat {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
+                min-width: 68px;
+                cursor: pointer;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .cat-icon {
+                width: 54px;
+                height: 54px;
+                border-radius: var(--r);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 26px;
+                border: 2px solid transparent;
+                transition:
+                    border-color 0.15s,
+                    transform 0.15s;
+            }
+
+            .cat-icon:active {
+                transform: scale(0.93);
+            }
+            .cat.active .cat-icon {
+                border-color: var(--green);
+            }
+
+            .cat-label {
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--text-sec);
+                text-align: center;
+                white-space: nowrap;
+            }
+
+            .cat.active .cat-label {
+                color: var(--green);
+                font-weight: 700;
+            }
+
+            /* — Hero Banner — */
+            .hero-banner {
+                border-radius: var(--r-lg);
+                margin-bottom: 28px;
+                position: relative;
+                overflow: hidden;
+                cursor: pointer;
+            }
+
+            .hero-banner-img {
+                width: 100%;
+                height: 180px;
+                object-fit: cover;
+                object-position: 65% center;
+                display: block;
+            }
+
+            .hero-banner-overlay {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0.92) 0%,
+                    rgba(255, 255, 255, 0.6) 40%,
+                    transparent 70%
+                );
+                display: flex;
+                align-items: center;
+                padding: 20px 22px;
+            }
+
+            .hero-banner-text {
+                max-width: 55%;
+            }
+
+            .hero-banner-tag {
+                display: inline-block;
+                background: var(--green);
+                color: var(--white);
+                font-size: 9px;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+                padding: 3px 8px;
+                border-radius: 5px;
+                margin-bottom: 8px;
+            }
+
+            .hero-banner-title {
+                font-size: 17px;
+                font-weight: 800;
+                color: var(--text);
+                line-height: 1.25;
+                margin-bottom: 6px;
+            }
+
+            .hero-banner-title span {
+                color: var(--green);
+            }
+
+            .hero-banner-desc {
+                font-size: 11px;
+                color: var(--text-sec);
+                line-height: 1.45;
+                font-weight: 500;
+                margin-bottom: 12px;
+            }
+
+            .hero-banner-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: var(--green);
+                color: var(--white);
+                border: none;
+                border-radius: var(--r-sm);
+                padding: 9px 18px;
+                font-family: inherit;
+                font-size: 12px;
+                font-weight: 700;
+                cursor: pointer;
+                transition: background 0.15s;
+            }
+
+            .hero-banner-btn:active {
+                background: #256427;
+            }
+
+            /* Dots indicator */
+            .hero-dots {
+                position: absolute;
+                bottom: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                gap: 6px;
+            }
+
+            .hero-dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: rgba(0, 0, 0, 0.15);
+            }
+
+            .hero-dot.active {
+                width: 18px;
+                border-radius: 3px;
+                background: var(--green);
+            }
+
+            /* — Section header — */
+            .sec-head {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 14px;
+            }
+
+            .sec-title {
+                font-size: 17px;
+                font-weight: 800;
+            }
+
+            .sec-link {
+                font-size: 13px;
+                font-weight: 700;
+                color: var(--green);
+                cursor: pointer;
+            }
+
+            /* — Product grid — */
+            .pgrid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 14px;
+                margin-bottom: 28px;
+            }
+
+            .pcard {
+                background: var(--white);
+                border-radius: var(--r);
+                overflow: hidden;
+                box-shadow: var(--shadow-sm);
+                border: 1px solid var(--gray-100);
+                cursor: pointer;
+                transition:
+                    transform 0.15s,
+                    box-shadow 0.2s;
+            }
+
+            .pcard:hover {
+                box-shadow: var(--shadow-md);
+            }
+            .pcard:active {
+                transform: scale(0.97);
+            }
+
+            .pcard-img {
+                width: 100%;
+                aspect-ratio: 1.15 / 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+            }
+
+            .pcard-img .emoji {
+                font-size: 60px;
+                filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.08));
+            }
+
+            .pcard-img img {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .bg-1 {
+                background: linear-gradient(160deg, #fff9e6 30%, #ffe9a0);
+            }
+            .bg-2 {
+                background: linear-gradient(160deg, #fff4e6 30%, #ffdab3);
+            }
+            .bg-3 {
+                background: linear-gradient(160deg, #fff7e6 30%, #ffe0b8);
+            }
+            .bg-4 {
+                background: linear-gradient(160deg, #f2faf0 30%, #c5e8bf);
+            }
+            .bg-5 {
+                background: linear-gradient(160deg, #f0f9f0 30%, #b8e0b8);
+            }
+            .bg-6 {
+                background: linear-gradient(160deg, #fcf0f4 30%, #f5ccd9);
+            }
+
+            .pcard-tag {
+                position: absolute;
+                top: 8px;
+                left: 8px;
+                font-size: 10px;
+                font-weight: 700;
+                padding: 3px 8px;
+                border-radius: 6px;
+                background: rgba(255, 255, 255, 0.92);
+                color: var(--green);
+                backdrop-filter: blur(4px);
+                z-index: 2;
+            }
+
+            .pcard-body {
+                padding: 12px;
+            }
+
+            .pcard-name {
+                font-size: 14px;
+                font-weight: 700;
+                line-height: 1.3;
+                margin-bottom: 2px;
+            }
+
+            .pcard-origin {
+                font-size: 11px;
+                color: var(--text-light);
+                font-weight: 500;
+                margin-bottom: 10px;
+            }
+
+            .pcard-foot {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .pcard-price {
+                font-size: 15px;
+                font-weight: 800;
+                color: var(--text);
+            }
+
+            .pcard-price span {
+                font-size: 12px;
+                font-weight: 500;
+                color: var(--text-sec);
+            }
+
+            .pcard-add {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: var(--green);
+                border: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition:
+                    transform 0.1s,
+                    background 0.15s;
+            }
+
+            .pcard-add:active {
+                transform: scale(0.9);
+                background: #256427;
+            }
+
+            .pcard-add svg {
+                width: 16px;
+                height: 16px;
+                stroke: white;
+                stroke-width: 2.5;
+                fill: none;
+            }
+
+            /* — AI quick entry — */
+            .ai-entry {
+                background: var(--green-light);
+                border-radius: var(--r);
+                padding: 16px;
+                margin-bottom: 28px;
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                cursor: pointer;
+                transition: background 0.15s;
+            }
+
+            .ai-entry:active {
+                background: #d5edda;
+            }
+
+            .ai-icon-box {
+                width: 48px;
+                height: 48px;
+                border-radius: var(--r-sm);
+                background: var(--white);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 24px;
+                flex-shrink: 0;
+                box-shadow: var(--shadow-sm);
+            }
+
+            .ai-text {
+                flex: 1;
+            }
+            .ai-text-title {
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--green);
+                margin-bottom: 2px;
+            }
+            .ai-text-desc {
+                font-size: 12px;
+                color: #5b8c5e;
+                font-weight: 500;
+                line-height: 1.35;
+            }
+
+            .ai-arrow {
+                color: var(--green);
+                font-size: 22px;
+                font-weight: 300;
+            }
+
+            /* — Weather widget — */
+            .weather {
+                background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+                border-radius: var(--r);
+                padding: 18px;
+                margin-bottom: 28px;
+                color: #fff;
+                box-shadow: var(--shadow-md);
+            }
+            .weather-top {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+            .weather-loc {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 13px;
+                font-weight: 700;
+            }
+            .weather-loc svg {
+                width: 15px;
+                height: 15px;
+            }
+            .weather-date {
+                font-size: 11px;
+                font-weight: 600;
+                color: rgba(255, 255, 255, 0.8);
+            }
+            .weather-main {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .weather-icon {
+                font-size: 52px;
+                line-height: 1;
+            }
+            .weather-temp {
+                font-size: 42px;
+                font-weight: 800;
+                line-height: 1;
+            }
+            .weather-cond {
+                font-size: 13px;
+                font-weight: 600;
+                color: rgba(255, 255, 255, 0.9);
+                margin-top: 3px;
+            }
+            .weather-grid {
+                display: flex;
+                gap: 8px;
+                margin-top: 14px;
+            }
+            .wstat {
+                flex: 1;
+                background: rgba(255, 255, 255, 0.13);
+                border-radius: var(--r-sm);
+                padding: 10px 6px;
+                text-align: center;
+            }
+            .wstat-val {
+                font-size: 15px;
+                font-weight: 800;
+            }
+            .wstat-label {
+                font-size: 10px;
+                font-weight: 600;
+                color: rgba(255, 255, 255, 0.78);
+                margin-top: 2px;
+            }
+            .weather-note {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: rgba(255, 255, 255, 0.15);
+                border-radius: var(--r-sm);
+                padding: 9px 12px;
+                font-size: 12px;
+                font-weight: 600;
+                margin-top: 12px;
+            }
+
+            /* — AI Scan CTA — */
+            .scan-cta {
+                border-radius: var(--r-lg);
+                background: linear-gradient(120deg, #256427 0%, #43a047 100%);
+                color: #fff;
+                padding: 24px 22px;
+                margin-bottom: 28px;
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 18px;
+                box-shadow: var(--shadow-md);
+                cursor: pointer;
+            }
+            .scan-cta-icon {
+                width: 60px;
+                height: 60px;
+                border-radius: 16px;
+                background: rgba(255, 255, 255, 0.16);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+            .scan-cta-icon svg {
+                width: 30px;
+                height: 30px;
+                color: #fff;
+            }
+            .scan-cta-text {
+                flex: 1;
+                min-width: 180px;
+            }
+            .scan-cta-title {
+                font-size: 18px;
+                font-weight: 800;
+                margin-bottom: 5px;
+            }
+            .scan-cta-desc {
+                font-size: 12.5px;
+                font-weight: 500;
+                color: rgba(255, 255, 255, 0.88);
+                line-height: 1.5;
+            }
+            .scan-cta-btn {
+                background: #fff;
+                color: var(--green);
+                border: none;
+                border-radius: var(--r-sm);
+                padding: 11px 22px;
+                font-family: inherit;
+                font-size: 13px;
+                font-weight: 800;
+                cursor: pointer;
+                white-space: nowrap;
+                flex-shrink: 0;
+                transition: transform 0.12s;
+            }
+            .scan-cta-btn:active {
+                transform: scale(0.95);
+            }
+
+            /* — Contact section — */
+            .contact {
+                margin-bottom: 28px;
+            }
+            .contact-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                background: var(--white);
+                border-radius: var(--r-lg);
+                overflow: hidden;
+                box-shadow: var(--shadow-sm);
+                border: 1px solid var(--gray-100);
+            }
+            .contact-img {
+                width: 100%;
+                height: 100px;
+                object-fit: cover;
+                display: block;
+            }
+            .contact-form {
+                padding: 10px;
+            }
+            .contact-form-title {
+                font-size: 16px;
+                font-weight: 800;
+                margin-bottom: 4px;
+            }
+            .contact-form-sub {
+                font-size: 12.5px;
+                color: var(--text-sec);
+                font-weight: 500;
+                margin-bottom: 16px;
+            }
+            .field {
+                margin-bottom: 12px;
+            }
+            .field label {
+                display: block;
+                font-size: 12px;
+                font-weight: 700;
+                color: var(--text-sec);
+                margin-bottom: 5px;
+            }
+            .field input,
+            .field textarea {
+                width: 100%;
+                border: 1.5px solid var(--gray-200);
+                border-radius: var(--r-sm);
+                padding: 11px 14px;
+                font-family: inherit;
+                font-size: 14px;
+                color: var(--text);
+                outline: none;
+                background: var(--white);
+                transition: border-color 0.15s;
+            }
+            .field input:focus,
+            .field textarea:focus {
+                border-color: var(--green);
+            }
+            .field textarea {
+                resize: vertical;
+                min-height: 90px;
+            }
+            .contact-submit {
+                width: 100%;
+                background: var(--green);
+                color: #fff;
+                border: none;
+                border-radius: var(--r-sm);
+                padding: 13px;
+                font-family: inherit;
+                font-size: 14px;
+                font-weight: 800;
+                cursor: pointer;
+                margin-top: 4px;
+                transition: background 0.15s;
+            }
+            .contact-submit:active {
+                background: #256427;
+            }
+
+            /* — Horizontal scroll cards — */
+            .hscroll {
+                display: flex;
+                gap: 12px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                padding: 2px 0 6px;
+                margin-bottom: 28px;
+            }
+            .hscroll::-webkit-scrollbar {
+                display: none;
+            }
+
+            .hcard {
+                min-width: 170px;
+                background: var(--white);
+                border-radius: var(--r);
+                overflow: hidden;
+                box-shadow: var(--shadow-sm);
+                border: 1px solid var(--gray-100);
+                flex-shrink: 0;
+                cursor: pointer;
+                transition:
+                    transform 0.15s,
+                    box-shadow 0.2s;
+            }
+
+            .hcard:hover {
+                box-shadow: var(--shadow-md);
+            }
+            .hcard:active {
+                transform: scale(0.97);
+            }
+
+            .hcard-img {
+                width: 100%;
+                height: 90px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 40px;
+                overflow: hidden;
+            }
+
+            .hcard-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .hcard-body {
+                padding: 10px 12px 12px;
+            }
+            .hcard-name {
+                font-size: 13px;
+                font-weight: 700;
+                margin-bottom: 4px;
+            }
+
+            .hcard-meta {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                margin-bottom: 4px;
+            }
+
+            .hcard-price {
+                font-size: 13px;
+                font-weight: 700;
+                color: var(--text-sec);
+            }
+
+            .signal {
+                display: inline-flex;
+                align-items: center;
+                gap: 3px;
+                font-size: 10px;
+                font-weight: 700;
+                padding: 2px 7px;
+                border-radius: 4px;
+            }
+
+            .signal--g {
+                background: var(--green-light);
+                color: var(--green);
+            }
+            .signal--y {
+                background: #fff8e1;
+                color: #f9a825;
+            }
+
+            .hcard-note {
+                font-size: 11px;
+                color: var(--text-light);
+                font-weight: 500;
+            }
+
+            /* =============================================
+   BOTTOM NAV (mobile / tablet only)
+   ============================================= */
+            .bottom-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: var(--white);
+                border-top: 1px solid var(--gray-100);
+                display: flex;
+                align-items: stretch;
+                justify-content: space-around;
+                height: var(--nav-h);
+                padding-bottom: var(--safe-b);
+                z-index: 100;
+            }
+
+            .bnav {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 2px;
+                color: var(--gray-400);
+                font-size: 10px;
+                font-weight: 600;
+                cursor: pointer;
+                flex: 1;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .bnav.active {
+                color: var(--green);
+            }
+            .bnav svg {
+                width: 22px;
+                height: 22px;
+            }
+            .bnav.active svg {
+                stroke-width: 2.5;
+            }
+
+            .bnav-scan {
+                position: relative;
+                justify-content: flex-end;
+                padding-bottom: 7px;
+                overflow: visible;
+            }
+
+            .bnav-scan-circle {
+                position: absolute;
+                top: -24px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 54px;
+                height: 54px;
+                border-radius: 50%;
+                background: var(--green);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 14px rgba(46, 125, 50, 0.35);
+                border: 4px solid var(--white);
+                transition: transform 0.15s;
+            }
+
+            .bnav-scan-circle:active {
+                transform: translateX(-50%) scale(0.92);
+            }
+
+            .bnav-scan-circle svg {
+                width: 24px;
+                height: 24px;
+                color: white;
+            }
+
+            /* Label sits below the circle, never underneath it */
+            .bnav-scan .bnav-scan-label {
+                display: block;
+                margin-top: auto;
+                font-size: 10px;
+                font-weight: 700;
+                color: var(--green);
+                line-height: 1;
+            }
+
+            /* Body padding for bottom nav */
+            body {
+                padding-bottom: calc(var(--nav-h) + var(--safe-b) + 8px);
+            }
+
+            /* =============================================
+   SVG ICON PATHS (reusable)
+   ============================================= */
+            .icon-home {
+                /* heroicon home */
+            }
+
+            /* =============================================
+   SITE FOOTER (desktop only)
+   ============================================= */
+            .site-footer {
+                display: none;
+                background: #1f5c22;
+                color: rgba(255, 255, 255, 0.82);
+                margin-top: 48px;
+            }
+
+            .footer-inner {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 52px 32px 36px;
+                display: grid;
+                grid-template-columns: 1.7fr 1fr 1fr 1.5fr;
+                gap: 40px;
+            }
+
+            .footer-logo-row {
+                display: flex;
+                align-items: center;
+                gap: 11px;
+                margin-bottom: 16px;
+            }
+
+            .footer-logo {
+                width: 42px;
+                height: 42px;
+                border-radius: 12px;
+                background: var(--green-medium);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 21px;
+            }
+
+            .footer-brand-name {
+                font-size: 21px;
+                font-weight: 800;
+                color: #fff;
+            }
+            .footer-brand-name span {
+                color: #9fe0a6;
+            }
+
+            .footer-desc {
+                font-size: 13px;
+                line-height: 1.65;
+                max-width: 300px;
+                margin-bottom: 20px;
+            }
+
+            .footer-socials {
+                display: flex;
+                gap: 10px;
+            }
+
+            .footer-social {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: background 0.15s;
+            }
+            .footer-social:hover {
+                background: rgba(255, 255, 255, 0.22);
+            }
+            .footer-social svg {
+                width: 18px;
+                height: 18px;
+                color: #fff;
+            }
+
+            .footer-title {
+                font-size: 13px;
+                font-weight: 800;
+                color: #fff;
+                text-transform: uppercase;
+                letter-spacing: 0.6px;
+                margin-bottom: 16px;
+            }
+
+            .footer-col a {
+                display: block;
+                font-size: 13px;
+                font-weight: 500;
+                padding: 6px 0;
+                color: rgba(255, 255, 255, 0.78);
+                transition: color 0.15s;
+            }
+            .footer-col a:hover {
+                color: #fff;
+            }
+
+            .footer-contact {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                font-size: 13px;
+                line-height: 1.5;
+                margin-bottom: 13px;
+            }
+            .footer-contact svg {
+                width: 16px;
+                height: 16px;
+                flex-shrink: 0;
+                margin-top: 2px;
+                color: #9fe0a6;
+            }
+
+            .footer-bottom {
+                border-top: 1px solid rgba(255, 255, 255, 0.13);
+                text-align: center;
+                padding: 20px;
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.6);
+            }
+
+            /* =============================================
+   RESPONSIVE
+   ============================================= */
+
+            /* ---- Tablet (≥ 640px) ---- */
+            @media (min-width: 640px) {
+                .main {
+                    padding: 20px 28px;
+                }
+
+                .pgrid {
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 16px;
+                }
+
+                .contact-grid {
+                    grid-template-columns: 0.95fr 1.05fr;
+                    align-items: stretch;
+                }
+                .contact-img {
+                    height: 100%;
+                    min-height: 340px;
+                }
+                .contact-form {
+                    padding: 28px;
+                }
+
+                .hero-banner-img {
+                    height: 220px;
+                }
+                .hero-banner-title {
+                    font-size: 20px;
+                }
+                .hero-banner-desc {
+                    font-size: 13px;
+                }
+                .hero-banner-text {
+                    max-width: 50%;
+                }
+
+                .categories {
+                    gap: 16px;
+                }
+                .cat-icon {
+                    width: 60px;
+                    height: 60px;
+                    font-size: 28px;
+                }
+                .cat-label {
+                    font-size: 12px;
+                }
+
+                .hcard {
+                    min-width: 200px;
+                }
+                .hcard-img {
+                    height: 110px;
+                    font-size: 46px;
+                }
+
+                .sec-title {
+                    font-size: 19px;
+                }
+
+                .mob-header {
+                    padding: 16px 28px;
+                }
+            }
+
+            /* ---- Small desktop / large tablet (≥ 900px) ---- */
+            @media (min-width: 900px) {
+                .pgrid {
+                    grid-template-columns: repeat(4, 1fr);
+                }
+
+                .hscroll {
+                    gap: 16px;
+                }
+                .hcard {
+                    min-width: 220px;
+                }
+
+                .main {
+                    padding: 24px 32px;
+                }
+                .mob-header {
+                    padding: 16px 32px;
+                }
+            }
+
+            /* ---- Desktop (≥ 1024px) ---- */
+            @media (min-width: 1024px) {
+                /* Show top nav, hide mobile header & bottom nav */
+                .top-nav {
+                    display: block;
+                }
+                .mob-header {
+                    display: none;
+                }
+                .bottom-nav {
+                    display: none;
+                }
+                .site-footer {
+                    display: block;
+                }
+                .drawer,
+                .drawer-overlay {
+                    display: none;
+                }
+                body {
+                    padding-bottom: 0;
+                }
+
+                .main {
+                    padding: 28px 32px;
+                    max-width: 1200px;
+                }
+
+                .pgrid {
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 18px;
+                }
+
+                .pcard-img .emoji {
+                    font-size: 68px;
+                }
+
+                .hero-banner {
+                    border-radius: 22px;
+                }
+                .hero-banner-img {
+                    height: 280px;
+                    object-position: center center;
+                }
+                .hero-banner-overlay {
+                    padding: 36px 44px;
+                }
+                .hero-banner-title {
+                    font-size: 26px;
+                    margin-bottom: 10px;
+                }
+                .hero-banner-desc {
+                    font-size: 14px;
+                    margin-bottom: 16px;
+                }
+                .hero-banner-tag {
+                    font-size: 10px;
+                    padding: 4px 10px;
+                    margin-bottom: 10px;
+                }
+                .hero-banner-btn {
+                    padding: 11px 24px;
+                    font-size: 14px;
+                }
+                .hero-banner-text {
+                    max-width: 45%;
+                }
+
+                .categories {
+                    gap: 20px;
+                    justify-content: flex-start;
+                }
+                .cat-icon {
+                    width: 64px;
+                    height: 64px;
+                    font-size: 30px;
+                }
+                .cat-label {
+                    font-size: 12px;
+                }
+
+                .sec-title {
+                    font-size: 20px;
+                }
+                .sec-link {
+                    font-size: 14px;
+                }
+
+                .ai-entry {
+                    padding: 20px;
+                }
+
+                .hcard {
+                    min-width: 240px;
+                }
+                .hcard-img {
+                    height: 120px;
+                    font-size: 50px;
+                }
+            }
+
+            /* ---- Wide desktop (≥ 1280px) ---- */
+            @media (min-width: 1280px) {
+                .pgrid {
+                    grid-template-columns: repeat(5, 1fr);
+                }
+
+                .main {
+                    max-width: 1320px;
+                    padding: 32px 48px;
+                }
+                .top-nav-inner {
+                    max-width: 1320px;
+                    padding: 0 48px;
+                }
+
+                .hero-banner-img {
+                    height: 320px;
+                }
+                .hero-banner-overlay {
+                    padding: 48px 56px;
+                }
+                .hero-banner-title {
+                    font-size: 30px;
+                }
+            }
+
+            /* ---- Very small phone (≤ 360px) ---- */
+            @media (max-width: 360px) {
+                .main {
+                    padding: 14px 16px;
+                }
+                .mob-header {
+                    padding: 12px 16px;
+                }
+                .pgrid {
+                    gap: 10px;
+                }
+                .pcard-name {
+                    font-size: 13px;
+                }
+                .pcard-img .emoji {
+                    font-size: 48px;
+                }
+                .cat-icon {
+                    width: 48px;
+                    height: 48px;
+                    font-size: 22px;
+                }
+                .hero-banner-img {
+                    height: 150px;
+                }
+                .hero-banner-title {
+                    font-size: 14px;
+                }
+                .hero-banner-desc {
+                    font-size: 10px;
+                    margin-bottom: 8px;
+                }
+                .hero-banner-btn {
+                    padding: 7px 14px;
+                    font-size: 11px;
+                }
+                .hero-banner-text {
+                    max-width: 60%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- ===== TOP NAV (desktop only) ===== -->
+        <nav class="top-nav">
+            <div class="top-nav-inner">
+                <a href="agrisenai-home.html" class="top-nav-logo">
+                    <div class="top-nav-logo-icon">🌱</div>
+                    AgriSenAi
+                </a>
+                <ul class="top-nav-links">
+                    <li><a href="agrisenai-home.html" class="active">Trang chủ</a></li>
+                    <li><a href="agrisenai-thi-truong.html">Sàn thị trường</a></li>
+                    <li><a href="#">AI đánh giá</a></li>
+                    <li><a href="#">Khuyến nghị</a></li>
+                    <li><a href="#">Về chúng tôi</a></li>
+                </ul>
+                <div class="top-nav-right">
+                    <div class="top-nav-search">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <circle cx="11" cy="11" r="8" />
+                            <path
+                                stroke-linecap="round"
+                                d="M21 21l-4.35-4.35"
+                            />
+                        </svg>
+                        <input type="text" placeholder="Tìm nông sản..." />
+                    </div>
+                    <button class="top-nav-icon" aria-label="Thông báo">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+                            />
+                        </svg>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="top-nav-icon" aria-label="Giỏ hàng">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+                            />
+                        </svg>
+                    </button>
+                    <div class="top-nav-avatar" aria-label="Tài khoản">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                            />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ===== DRAWER (mobile menu) ===== -->
+        <div class="drawer-overlay" id="drawerOverlay"></div>
+        <aside class="drawer" id="drawer">
+            <div class="drawer-head">
+                <div class="drawer-logo">🌱</div>
+                <div>
+                    <div class="drawer-brand">Agri<span>SenAi</span></div>
+                    <div class="drawer-tag">Sàn nông sản Đồng Tháp</div>
+                </div>
+            </div>
+            <nav class="drawer-nav">
+                <a class="drawer-link active" href="agrisenai-home.html">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"
+                        />
+                    </svg>
+                    Trang chủ
+                </a>
+                <a class="drawer-link" href="agrisenai-thi-truong.html">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z"
+                        />
+                    </svg>
+                    Sàn thị trường
+                </a>
+                <a class="drawer-link">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
+                        />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"
+                        />
+                    </svg>
+                    AI đánh giá chất lượng
+                </a>
+                <a class="drawer-link">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
+                        />
+                    </svg>
+                    Khuyến nghị giá bán
+                </a>
+                <a class="drawer-link">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1em"
+                        height="1em"
+                        viewBox="0 0 24 24"
+                    >
+                        <path d="M0 0h24v24H0z" fill="none" />
+                        <path
+                            fill="currentColor"
+                            d="M3 4.5v5c0 .83.67 1.5 1.5 1.5h5c.83 0 1.5-.67 1.5-1.5v-5c0-.83-.67-1.5-1.5-1.5h-5C3.67 3 3 3.67 3 4.5M5 5h4v4H5zM3 19.5c0 .83.67 1.5 1.5 1.5h5c.83 0 1.5-.67 1.5-1.5v-5c0-.83-.67-1.5-1.5-1.5h-5c-.83 0-1.5.67-1.5 1.5zM5 15h4v4H5zM19.5 3h-5c-.83 0-1.5.67-1.5 1.5v5c0 .83.67 1.5 1.5 1.5h5c.83 0 1.5-.67 1.5-1.5v-5c0-.83-.67-1.5-1.5-1.5M19 9h-4V5h4zm-6 4h2v2h-2zm2 2h2v2h-2zm-2 2h2v2h-2zm4 0h2v2h-2zm2 2h2v2h-2zm-4 0h2v2h-2zm2-6h2v2h-2zm2 2h2v2h-2z"
+                        />
+                    </svg>
+
+                    Quét QR truy xuất
+                </a>
+
+                <div class="drawer-divider"></div>
+
+                <a class="drawer-link">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272"
+                        />
+                    </svg>
+                    Giỏ hàng
+                </a>
+                <a class="drawer-link">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                        />
+                    </svg>
+                    Tài khoản
+                </a>
+                <a class="drawer-link">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
+                        />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                    </svg>
+                    Cài đặt
+                </a>
+            </nav>
+            <div class="drawer-foot">
+                <div class="drawer-user">
+                    <div class="drawer-user-avatar">👨‍🌾</div>
+                    <div>
+                        <div class="drawer-user-name">Cao Phúc Thịnh</div>
+                        <div class="drawer-user-role">Nông dân · Cao Lãnh</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ===== MOBILE HEADER ===== -->
+        <header class="mob-header">
+            <div class="mob-header-row">
+                <div class="mob-header-left">
+                    <button class="mob-menu-btn" id="menuBtn" aria-label="Menu">
+                        <span></span><span></span><span></span>
+                    </button>
+                    <div class="mob-logo">🌱</div>
+                    <div>
+                        <div class="mob-brand">AgriSenAi</div>
+                        <div class="mob-sub">Nông sản Đồng Tháp</div>
+                    </div>
+                </div>
+                <div class="mob-icons">
+                    <button class="mob-icon-btn" aria-label="Thông báo">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+                            />
+                        </svg>
+                        <span class="dot"></span>
+                    </button>
+                    <button
+                        class="mob-icon-btn mob-icon-btn--green"
+                        aria-label="Tin nhắn"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                        >
+                            <path
+                                d="M14.343 3A6 6 0 0 0 22 10.657V18a1 1 0 0 1-1 1h-6.55L12 22.5L9.55 19H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm5.186-1.68a.507.507 0 0 1 .942 0l.253.61a4.37 4.37 0 0 0 2.25 2.327l.717.32a.53.53 0 0 1 0 .962l-.758.338a4.36 4.36 0 0 0-2.22 2.25l-.246.566a.506.506 0 0 1-.934 0l-.247-.565a4.36 4.36 0 0 0-2.219-2.251l-.76-.338a.53.53 0 0 1 0-.963l.718-.32a4.37 4.37 0 0 0 2.251-2.325z"
+                            />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="mob-search">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+                    <circle cx="11" cy="11" r="8" />
+                    <path stroke-linecap="round" d="M21 21l-4.35-4.35" />
+                </svg>
+                <input type="text" placeholder="Tìm nông sản..." />
+            </div>
+        </header>
+
+        <!-- ===== MAIN ===== -->
+        <main class="main">
+            <!-- Hero Banner -->
+            <div class="hero-banner">
+                <img
+                    class="hero-banner-img"
+                    src="../public/images/banners/hero-banner.jpg"
+                    alt="AgriSenAi - AI đánh giá chất lượng nông sản"
+                />
+                <div class="hero-banner-overlay">
+                    <div class="hero-banner-text">
+                        <span class="hero-banner-tag">AI Nông nghiệp</span>
+                        <div class="hero-banner-title">
+                            Đánh giá chất lượng<br /><span
+                                >nông sản bằng AI</span
+                            >
+                        </div>
+                        <div class="hero-banner-desc">
+                            Chụp ảnh nông sản, nhận điểm chất lượng và khuyến
+                            nghị thời điểm bán tối ưu
+                        </div>
+                        <button class="hero-banner-btn">Thử ngay →</button>
+                    </div>
+                </div>
+                <div class="hero-dots">
+                    <div class="hero-dot active"></div>
+                    <div class="hero-dot"></div>
+                    <div class="hero-dot"></div>
+                </div>
+            </div>
+
+            <!-- Featured Products -->
+            <div class="sec-head">
+                <h2 class="sec-title">Nông sản nổi bật</h2>
+                <a class="sec-link">Xem tất cả</a>
+            </div>
+
+            <div class="pgrid">
+                <div class="pcard">
+                    <div class="pcard-img bg-1">
+                        <span class="pcard-tag">⭐ 9.2</span>
+                        <img
+                            src="../public/images/products/anh-xoai-cat-hoa-loc.jpg"
+                            alt="Xoài cát Hòa Lộc"
+                        />
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">Xoài cát Hòa Lộc</div>
+                        <div class="pcard-origin">📍 Cao Lãnh, Đồng Tháp</div>
+                        <div class="pcard-foot">
+                            <div class="pcard-price">₫45k<span>/kg</span></div>
+                            <button class="pcard-add">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pcard">
+                    <div class="pcard-img bg-2">
+                        <span class="pcard-tag">⭐ 8.8</span>
+                        <img
+                            src="../public/images/products/quyt-hong-lai-vung.jpg"
+                            alt="Quýt hồng"
+                        />
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">Quýt hồng</div>
+                        <div class="pcard-origin">📍 Lai Vung, Đồng Tháp</div>
+                        <div class="pcard-foot">
+                            <div class="pcard-price">₫35k<span>/kg</span></div>
+                            <button class="pcard-add">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pcard">
+                    <div class="pcard-img bg-3">
+                        <span class="pcard-tag">⭐ 9.0</span>
+                        <img
+                            src="../public/images/products/nhan-chau-thanh.jpg"
+                            alt="Nhãn xuồng"
+                        />
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">Nhãn xuồng</div>
+                        <div class="pcard-origin">📍 Châu Thành, Đồng Tháp</div>
+                        <div class="pcard-foot">
+                            <div class="pcard-price">₫55k<span>/kg</span></div>
+                            <button class="pcard-add">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pcard">
+                    <div class="pcard-img bg-4">
+                        <span class="pcard-tag">⭐ 9.5</span>
+                        <img
+                            src="../public/images/products/anh-xoai-cat-hoa-loc.jpg"
+                            alt="Sầu riêng Ri6"
+                        />
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">Sầu riêng Ri6</div>
+                        <div class="pcard-origin">📍 Cù lao, Đồng Tháp</div>
+                        <div class="pcard-foot">
+                            <div class="pcard-price">₫85k<span>/kg</span></div>
+                            <button class="pcard-add">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pcard">
+                    <div class="pcard-img bg-5">
+                        <span class="pcard-tag">⭐ 8.6</span>
+                        <img
+                            src="../public/images/products/buoi-phong-hoa.jpg"
+                            alt="Bưởi da xanh"
+                        />
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">Bưởi da xanh</div>
+                        <div class="pcard-origin">📍 Lấp Vò, Đồng Tháp</div>
+                        <div class="pcard-foot">
+                            <div class="pcard-price">
+                                ₫30k<span>/trái</span>
+                            </div>
+                            <button class="pcard-add">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pcard">
+                    <div class="pcard-img bg-6">
+                        <span class="pcard-tag">⭐ 9.1</span>
+                        <img
+                            src="../public/images/products/anh-xoai-cat-hoa-loc.jpg"
+                            alt="Sen Tháp Mười"
+                        />
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">Sen Tháp Mười</div>
+                        <div class="pcard-origin">📍 Tháp Mười, Đồng Tháp</div>
+                        <div class="pcard-foot">
+                            <div class="pcard-price">₫60k<span>/kg</span></div>
+                            <button class="pcard-add">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pcard">
+                    <div class="pcard-img bg-1">
+                        <span class="pcard-tag">⭐ 8.7</span>
+                        <img
+                            src="../public/images/products/anh-xoai-cat-hoa-loc.jpg"
+                            alt="Xoài keo"
+                        />
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">Xoài keo</div>
+                        <div class="pcard-origin">📍 Thanh Bình, Đồng Tháp</div>
+                        <div class="pcard-foot">
+                            <div class="pcard-price">₫32k<span>/kg</span></div>
+                            <button class="pcard-add">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pcard">
+                    <div class="pcard-img bg-2">
+                        <span class="pcard-tag">⭐ 8.4</span>
+                        <img
+                            src="../public/images/products/quyt-hong-lai-vung.jpg"
+                            alt="Quýt tiều"
+                        />
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">Quýt tiều</div>
+                        <div class="pcard-origin">📍 Lai Vung, Đồng Tháp</div>
+                        <div class="pcard-foot">
+                            <div class="pcard-price">₫33k<span>/kg</span></div>
+                            <button class="pcard-add">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pcard">
+                    <div class="pcard-img bg-3">
+                        <span class="pcard-tag">⭐ 9.3</span>
+                        <img
+                            src="../public/images/products/nhan-chau-thanh.jpg"
+                            alt="Nhãn Ido"
+                        />
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">Nhãn Ido</div>
+                        <div class="pcard-origin">📍 Châu Thành, Đồng Tháp</div>
+                        <div class="pcard-foot">
+                            <div class="pcard-price">₫62k<span>/kg</span></div>
+                            <button class="pcard-add">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pcard">
+                    <div class="pcard-img bg-5">
+                        <span class="pcard-tag">⭐ 8.5</span>
+                        <img
+                            src="../public/images/products/buoi-phong-hoa.jpg"
+                            alt="Bưởi năm roi"
+                        />
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">Bưởi năm roi</div>
+                        <div class="pcard-origin">📍 Lấp Vò, Đồng Tháp</div>
+                        <div class="pcard-foot">
+                            <div class="pcard-price">
+                                ₫26k<span>/trái</span>
+                            </div>
+                            <button class="pcard-add">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather (dự báo thời tiết địa phương) -->
+            <div class="weather">
+                <div class="weather-top">
+                    <div class="weather-loc">
+                        <svg
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                            />
+                        </svg>
+                        Cao Lãnh, Đồng Tháp
+                    </div>
+                    <div class="weather-date">Hôm nay · Cập nhật 14:00</div>
+                </div>
+                <div class="weather-main">
+                    <div class="weather-icon">⛅</div>
+                    <div>
+                        <div class="weather-temp">32°</div>
+                        <div class="weather-cond">
+                            Nắng gián đoạn, có mây · 25°–33°
+                        </div>
+                    </div>
+                </div>
+                <div class="weather-grid">
+                    <div class="wstat">
+                        <div class="wstat-val">68%</div>
+                        <div class="wstat-label">Độ ẩm</div>
+                    </div>
+                    <div class="wstat">
+                        <div class="wstat-val">12 km/h</div>
+                        <div class="wstat-label">Gió</div>
+                    </div>
+                    <div class="wstat">
+                        <div class="wstat-val">20%</div>
+                        <div class="wstat-label">Khả năng mưa</div>
+                    </div>
+                </div>
+                <div class="weather-note">
+                    🌾 Thời tiết thuận lợi để thu hoạch và phơi nông sản hôm nay
+                </div>
+            </div>
+
+            <!-- AI Recommendations -->
+            <div class="sec-head">
+                <h2 class="sec-title">AI khuyến nghị</h2>
+                <a class="sec-link">Xem thêm</a>
+            </div>
+
+            <div class="hscroll">
+                <div class="hcard">
+                    <div class="hcard-img bg-1">
+                        <img
+                            src="../public/images/products/anh-xoai-cat-hoa-loc.jpg"
+                            alt="Xoài Cao Lãnh"
+                        />
+                    </div>
+                    <div class="hcard-body">
+                        <div class="hcard-name">Xoài Cao Lãnh</div>
+                        <div class="hcard-meta">
+                            <span class="hcard-price">45k/kg</span>
+                            <span class="signal signal--g">Bán ngay</span>
+                        </div>
+                        <div class="hcard-note">Giá cao nhất 6 tháng</div>
+                    </div>
+                </div>
+
+                <div class="hcard">
+                    <div class="hcard-img bg-2">
+                        <img
+                            src="../public/images/products/quyt-hong-lai-vung.jpg"
+                            alt="Quýt hồng Lai Vung"
+                        />
+                    </div>
+                    <div class="hcard-body">
+                        <div class="hcard-name">Quýt hồng Lai Vung</div>
+                        <div class="hcard-meta">
+                            <span class="hcard-price">35k/kg</span>
+                            <span class="signal signal--y">Chờ thêm</span>
+                        </div>
+                        <div class="hcard-note">Giá sẽ tăng tuần tới</div>
+                    </div>
+                </div>
+
+                <div class="hcard">
+                    <div class="hcard-img bg-5">
+                        <img
+                            src="../public/images/products/buoi-phong-hoa.jpg"
+                            alt="Bưởi da xanh"
+                        />
+                    </div>
+                    <div class="hcard-body">
+                        <div class="hcard-name">Bưởi da xanh</div>
+                        <div class="hcard-meta">
+                            <span class="hcard-price">30k/trái</span>
+                            <span class="signal signal--g">Bán ngay</span>
+                        </div>
+                        <div class="hcard-note">Nhu cầu tăng mạnh</div>
+                    </div>
+                </div>
+
+                <div class="hcard">
+                    <div class="hcard-img bg-4">
+                        <img
+                            src="../public/images/products/anh-xoai-cat-hoa-loc.jpg"
+                            alt="Sầu riêng Ri6"
+                        />
+                    </div>
+                    <div class="hcard-body">
+                        <div class="hcard-name">Sầu riêng Ri6</div>
+                        <div class="hcard-meta">
+                            <span class="hcard-price">85k/kg</span>
+                            <span class="signal signal--g">Bán ngay</span>
+                        </div>
+                        <div class="hcard-note">Đang vào vụ chính</div>
+                    </div>
+                </div>
+
+                <div class="hcard">
+                    <div class="hcard-img bg-3">
+                        <img
+                            src="../public/images/products/nhan-chau-thanh.jpg"
+                            alt="Nhãn Châu Thành"
+                        />
+                    </div>
+                    <div class="hcard-body">
+                        <div class="hcard-name">Nhãn Châu Thành</div>
+                        <div class="hcard-meta">
+                            <span class="hcard-price">58k/kg</span>
+                            <span class="signal signal--y">Chờ thêm</span>
+                        </div>
+                        <div class="hcard-note">Giá dự báo tăng cuối vụ</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More Products -->
+            <div class="sec-head">
+                <h2 class="sec-title">Đặc sản Đồng Tháp</h2>
+                <a class="sec-link">Xem tất cả</a>
+            </div>
+
+            <div class="pgrid" style="margin-bottom: 16px">
+                <div class="pcard">
+                    <div class="pcard-img bg-1">
+                        <img
+                            src="../public/images/products/anh-xoai-cat-hoa-loc.jpg"
+                            alt="Xoài Đài Loan"
+                        />
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">Xoài Đài Loan</div>
+                        <div class="pcard-origin">📍 Cao Lãnh, Đồng Tháp</div>
+                        <div class="pcard-foot">
+                            <div class="pcard-price">₫38k<span>/kg</span></div>
+                            <button class="pcard-add">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pcard">
+                    <div class="pcard-img bg-3">
+                        <img
+                            src="../public/images/products/nhan-chau-thanh.jpg"
+                            alt="Nhãn tiêu da bò"
+                        />
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">Nhãn tiêu da bò</div>
+                        <div class="pcard-origin">📍 Châu Thành, Đồng Tháp</div>
+                        <div class="pcard-foot">
+                            <div class="pcard-price">₫48k<span>/kg</span></div>
+                            <button class="pcard-add">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pcard">
+                    <div class="pcard-img bg-2">
+                        <img
+                            src="../public/images/products/quyt-hong-lai-vung.jpg"
+                            alt="Quýt đường"
+                        />
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">Quýt đường</div>
+                        <div class="pcard-origin">📍 Lai Vung, Đồng Tháp</div>
+                        <div class="pcard-foot">
+                            <div class="pcard-price">₫28k<span>/kg</span></div>
+                            <button class="pcard-add">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pcard">
+                    <div class="pcard-img bg-4">
+                        <img
+                            src="../public/images/products/anh-xoai-cat-hoa-loc.jpg"
+                            alt="Gạo ST25"
+                        />
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">Gạo ST25</div>
+                        <div class="pcard-origin">📍 Tháp Mười, Đồng Tháp</div>
+                        <div class="pcard-foot">
+                            <div class="pcard-price">₫22k<span>/kg</span></div>
+                            <button class="pcard-add">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Scan CTA (nối tới tính năng quét AI) -->
+            <div class="scan-cta">
+                <div class="scan-cta-icon">
+                    <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
+                        />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"
+                        />
+                    </svg>
+                </div>
+                <div class="scan-cta-text">
+                    <div class="scan-cta-title">
+                        Quét AI — Đánh giá nông sản tức thì
+                    </div>
+                    <div class="scan-cta-desc">
+                        Chụp hoặc tải ảnh nông sản, AI chấm điểm chất lượng và
+                        gợi ý giá bán, thời điểm thu hoạch tối ưu ngay trên điện
+                        thoại.
+                    </div>
+                </div>
+                <button class="scan-cta-btn">Quét ngay →</button>
+            </div>
+
+            <!-- Contact (ảnh trái · form phải) -->
+            <div class="sec-head">
+                <h2 class="sec-title">Liên hệ với chúng tôi</h2>
+            </div>
+            <div class="contact">
+                <div class="contact-grid">
+                    <img
+                        class="contact-img"
+                        src="../public/images/banners/banner-lien-he.jpg"
+                        alt="Liên hệ AgriSenAi"
+                    />
+                    <div class="contact-form">
+                        <div class="contact-form-title">
+                            Gửi câu hỏi cho AgriSenAi
+                        </div>
+                        <div class="contact-form-sub">
+                            Chúng tôi sẽ phản hồi trong vòng 24 giờ làm việc.
+                        </div>
+                        <form onsubmit="return false;">
+                            <div class="field">
+                                <label>Họ và tên</label>
+                                <input type="text" placeholder="Nguyễn Văn A" />
+                            </div>
+                            <div class="field">
+                                <label>Số điện thoại / Email</label>
+                                <input type="text" placeholder="0901 234 567" />
+                            </div>
+                            <div class="field">
+                                <label>Nội dung</label>
+                                <textarea
+                                    placeholder="Bạn cần hỗ trợ điều gì?"
+                                ></textarea>
+                            </div>
+                            <button class="contact-submit" type="submit">
+                                Gửi liên hệ
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ===== FOOTER (desktop only) ===== -->
+        <footer class="site-footer">
+            <div class="footer-inner">
+                <div class="footer-col">
+                    <div class="footer-logo-row">
+                        <div class="footer-logo">🌱</div>
+                        <div class="footer-brand-name">
+                            Agri<span>SenAi</span>
+                        </div>
+                    </div>
+                    <p class="footer-desc">
+                        Sàn nông sản Đồng Tháp ứng dụng AI đánh giá chất lượng
+                        và khuyến nghị thời điểm bán tối ưu, kết nối nông dân
+                        với người mua.
+                    </p>
+                    <div class="footer-socials">
+                        <a class="footer-social" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5H17V3.6c-.3-.04-1.3-.13-2.47-.13-2.45 0-4.13 1.5-4.13 4.25v2.37H7.7V13h2.7v8h3.1z"
+                                />
+                            </svg>
+                        </a>
+                        <a class="footer-social" aria-label="YouTube">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M21.6 7.2a2.5 2.5 0 00-1.75-1.77C18.3 5 12 5 12 5s-6.3 0-7.85.43A2.5 2.5 0 002.4 7.2 26 26 0 002 12a26 26 0 00.4 4.8 2.5 2.5 0 001.75 1.77C5.7 19 12 19 12 19s6.3 0 7.85-.43a2.5 2.5 0 001.75-1.77A26 26 0 0022 12a26 26 0 00-.4-4.8zM10 15V9l5.2 3-5.2 3z"
+                                />
+                            </svg>
+                        </a>
+                        <a class="footer-social" aria-label="Zalo">
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"
+                                />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Khám phá</h4>
+                    <a href="#">Trang chủ</a>
+                    <a href="#">Nông sản</a>
+                    <a href="#">AI đánh giá</a>
+                    <a href="#">Khuyến nghị giá</a>
+                    <a href="#">Quét QR truy xuất</a>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Hỗ trợ</h4>
+                    <a href="#">Hướng dẫn sử dụng</a>
+                    <a href="#">Câu hỏi thường gặp</a>
+                    <a href="#">Chính sách bảo mật</a>
+                    <a href="#">Điều khoản dịch vụ</a>
+                    <a href="#">Về chúng tôi</a>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Liên hệ</h4>
+                    <div class="footer-contact">
+                        <svg
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                            />
+                        </svg>
+                        <span>TP. Cao Lãnh, Tỉnh Đồng Tháp</span>
+                    </div>
+                    <div class="footer-contact">
+                        <svg
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+                            />
+                        </svg>
+                        <span>hotro@agrisenai.vn</span>
+                    </div>
+                    <div class="footer-contact">
+                        <svg
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"
+                            />
+                        </svg>
+                        <span>1900 1234</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2026 AgriSenAi · Sàn nông sản Đồng Tháp. Mọi quyền được bảo
+                lưu.
+            </div>
+        </footer>
+
+        <!-- ===== BOTTOM NAV (mobile/tablet) ===== -->
+        <nav class="bottom-nav">
+            <a class="bnav active" href="agrisenai-home.html">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                    />
+                </svg>
+                <span>Trang chủ</span>
+            </a>
+            <a class="bnav" href="agrisenai-thi-truong.html">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72l1.189-1.19A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72M6.75 18h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z"
+                    />
+                </svg>
+                <span>Thị trường</span>
+            </a>
+            <a class="bnav bnav-scan">
+                <div class="bnav-scan-circle">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"
+                        />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"
+                        />
+                    </svg>
+                </div>
+                <span class="bnav-scan-label">AI Scan</span>
+            </a>
+            <a class="bnav">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+                    />
+                </svg>
+                <span>Giỏ hàng</span>
+            </a>
+            <a class="bnav">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                    />
+                </svg>
+                <span>Tài khoản</span>
+            </a>
+        </nav>
+
+        <script>
+            // Category tap
+            document.querySelectorAll(".cat").forEach((c) => {
+                c.addEventListener("click", () => {
+                    document
+                        .querySelectorAll(".cat")
+                        .forEach((x) => x.classList.remove("active"));
+                    c.classList.add("active");
+                });
+            });
+
+            // Add button feedback
+            document.querySelectorAll(".pcard-add").forEach((btn) => {
+                btn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    btn.innerHTML =
+                        '<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:white;stroke-width:2.5;fill:none;"><polyline points="20 6 9 17 4 12"/></svg>';
+                    setTimeout(() => {
+                        btn.innerHTML =
+                            '<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:white;stroke-width:2.5;fill:none;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+                    }, 1000);
+                });
+            });
+
+            // Bottom nav
+            document.querySelectorAll(".bnav:not(.bnav-scan)").forEach((n) => {
+                n.addEventListener("click", () => {
+                    document
+                        .querySelectorAll(".bnav")
+                        .forEach((x) => x.classList.remove("active"));
+                    n.classList.add("active");
+                });
+            });
+
+            // Drawer (mobile menu)
+            const drawer = document.getElementById("drawer");
+            const overlay = document.getElementById("drawerOverlay");
+            const menuBtn = document.getElementById("menuBtn");
+
+            function openDrawer() {
+                drawer.classList.add("open");
+                overlay.classList.add("open");
+                document.body.style.overflow = "hidden";
+            }
+            function closeDrawer() {
+                drawer.classList.remove("open");
+                overlay.classList.remove("open");
+                document.body.style.overflow = "";
+            }
+
+            menuBtn.addEventListener("click", openDrawer);
+            overlay.addEventListener("click", closeDrawer);
+
+            document.querySelectorAll(".drawer-link").forEach((link) => {
+                link.addEventListener("click", () => {
+                    document
+                        .querySelectorAll(".drawer-link")
+                        .forEach((x) => x.classList.remove("active"));
+                    link.classList.add("active");
+                    closeDrawer();
+                });
+            });
+
+            // Close drawer on Escape
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") closeDrawer();
+            });
+        </script>
+    </body>
+</html>
