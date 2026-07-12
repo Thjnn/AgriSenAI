@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF">
+<title>Khuyến nghị giá bán — AgriSenAi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --green:#2e7d32;--green-medium:#43a047;--green-light:#e8f5e9;--green-bg:#eff8f0;
+  --green-banner-1:#d5edda;--green-banner-2:#b8dfc0;
+  --white:#fff;--bg:#fafafa;--gray-50:#f5f5f5;--gray-100:#eee;--gray-200:#e0e0e0;
+  --gray-300:#bdbdbd;--gray-400:#9e9e9e;--text:#212121;--text-sec:#757575;--text-light:#9e9e9e;
+  --dark:#2C2F3E;--dark-2:#373B4D;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.07);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.08);
+  --r:14px;--r-sm:10px;--r-lg:18px;--nav-h:64px;--safe-b:env(safe-area-inset-bottom,0px);
+}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{font-family:'Nunito',-apple-system,system-ui,sans-serif;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-bottom:calc(var(--nav-h) + var(--safe-b) + 8px)}
+a{text-decoration:none;color:inherit}button,input,textarea{font-family:inherit}
+
+/* ===== TOP NAV (desktop) ===== */
+.top-nav{display:none;background:var(--white);border-bottom:1px solid var(--gray-100);position:sticky;top:0;z-index:100}
+.top-nav-inner{max-width:1200px;margin:0 auto;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.top-nav-logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800}
+.top-nav-logo-icon{width:36px;height:36px;background:var(--green);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.top-nav-logo span{color:var(--green)}
+.top-nav-links{display:flex;gap:30px;list-style:none}
+.top-nav-links a{font-size:14px;font-weight:700;color:var(--text-sec);transition:color .15s}
+.top-nav-links a:hover,.top-nav-links a.active{color:var(--green)}
+.top-nav-right{display:flex;align-items:center;gap:12px}
+.tn-icon{width:38px;height:38px;border-radius:50%;background:var(--gray-50);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.tn-icon:hover{background:var(--gray-100)}
+.tn-icon svg{width:18px;height:18px;color:var(--text)}
+.tn-icon .dot{position:absolute;top:7px;right:7px;width:8px;height:8px;background:#EF5350;border-radius:50%;border:2px solid var(--white)}
+.tn-avatar{width:36px;height:36px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer}
+
+/* ===== MOBILE HEADER ===== */
+.mob-header{background:var(--white);padding:14px 20px;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--gray-100)}
+.mob-header-row{display:flex;align-items:center;justify-content:space-between}
+.mob-header-left{display:flex;align-items:center;gap:12px}
+.mob-menu-btn{width:40px;height:40px;border-radius:10px;border:none;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.mob-menu-btn:active{background:var(--gray-50)}
+.mob-menu-btn span{display:block;width:20px;height:2px;background:var(--text);border-radius:2px}
+.mob-logo{width:40px;height:40px;border-radius:11px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.mob-brand{font-size:18px;font-weight:800;line-height:1.15}
+.mob-brand span{color:var(--green)}
+.mob-sub{font-size:12px;color:var(--text-sec);font-weight:500}
+.mob-icons{display:flex;gap:6px}
+.mob-icon-btn{width:40px;height:40px;border-radius:50%;border:none;background:var(--gray-50);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.mob-icon-btn:active{background:var(--gray-100)}
+.mob-icon-btn svg{width:20px;height:20px;color:var(--text)}
+.mob-icon-btn .dot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:#EF5350;border-radius:50%;border:2px solid var(--white)}
+
+/* ===== DRAWER ===== */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:998;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.drawer-overlay.open{opacity:1;visibility:visible}
+.drawer{position:fixed;top:0;left:0;bottom:0;width:78%;max-width:300px;background:var(--white);z-index:999;transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.1)}
+.drawer.open{transform:translateX(0)}
+.drawer-head{padding:24px 20px 20px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:12px}
+.drawer-logo{width:44px;height:44px;border-radius:12px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:22px}
+.drawer-brand{font-size:19px;font-weight:800}
+.drawer-brand span{color:var(--green)}
+.drawer-tag{font-size:11px;color:var(--text-sec);font-weight:600}
+.drawer-nav{flex:1;padding:12px 0;overflow-y:auto}
+.drawer-link{display:flex;align-items:center;gap:14px;padding:13px 20px;font-size:15px;font-weight:700;color:var(--text);cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.drawer-link:active{background:var(--gray-50)}
+.drawer-link.active{color:var(--green);background:var(--green-light)}
+.drawer-link svg{width:21px;height:21px;flex-shrink:0}
+.drawer-divider{height:1px;background:var(--gray-100);margin:10px 20px}
+.drawer-foot{padding:16px 20px 22px;border-top:1px solid var(--gray-100)}
+.drawer-user{display:flex;align-items:center;gap:12px;padding:10px;border-radius:var(--r);background:var(--gray-50);cursor:pointer}
+.drawer-user-avatar{width:40px;height:40px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.drawer-user-name{font-size:14px;font-weight:700}
+.drawer-user-role{font-size:11px;color:var(--text-sec);font-weight:600}
+
+/* ===== MAIN ===== */
+.main{max-width:1200px;margin:0 auto;padding:18px 20px}
+
+.page-head{margin-bottom:20px}
+.page-title{font-size:22px;font-weight:800;margin-bottom:4px}
+.page-desc{font-size:13px;color:var(--text-sec);font-weight:500;line-height:1.5}
+
+/* Layout grid — mobile stacked, desktop 2 col */
+.layout{display:flex;flex-direction:column;gap:20px}
+
+/* ===== WEATHER CARD ===== */
+.weather-card{background:linear-gradient(135deg,#4A90D9 0%,#5FA8E8 55%,#7EC0F0 100%);border-radius:var(--r-lg);padding:20px;color:#fff;position:relative;overflow:hidden;box-shadow:var(--shadow-md)}
+.weather-card::after{content:'';position:absolute;right:-30px;top:-30px;width:140px;height:140px;background:rgba(255,255,255,.12);border-radius:50%}
+.weather-top{display:flex;align-items:flex-start;justify-content:space-between;position:relative;z-index:1;margin-bottom:16px}
+.weather-loc{font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;opacity:.95}
+.weather-date{font-size:11px;font-weight:600;opacity:.8;margin-top:2px}
+.weather-icon{font-size:44px;line-height:1}
+.weather-main{display:flex;align-items:flex-end;gap:12px;position:relative;z-index:1;margin-bottom:16px}
+.weather-temp{font-size:44px;font-weight:800;line-height:1}
+.weather-cond{font-size:14px;font-weight:700;padding-bottom:5px;opacity:.95}
+.weather-stats{display:flex;gap:8px;position:relative;z-index:1}
+.weather-stat{flex:1;background:rgba(255,255,255,.18);border-radius:var(--r-sm);padding:9px 8px;text-align:center;backdrop-filter:blur(6px)}
+.weather-stat-val{font-size:14px;font-weight:800;line-height:1.2}
+.weather-stat-lbl{font-size:10px;font-weight:600;opacity:.85;margin-top:2px}
+.weather-alert{margin-top:14px;background:rgba(255,255,255,.2);border-radius:var(--r-sm);padding:10px 12px;font-size:12px;font-weight:600;line-height:1.45;display:flex;gap:8px;align-items:flex-start;position:relative;z-index:1;backdrop-filter:blur(6px)}
+
+/* ===== INFO CARDS ===== */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.info-card{background:var(--white);border-radius:var(--r);padding:16px;border:1px solid var(--gray-100);box-shadow:var(--shadow-sm);transition:box-shadow .2s}
+.info-card:hover{box-shadow:var(--shadow-md)}
+.info-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.info-card-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px}
+.ic-green{background:var(--green-light)}
+.ic-blue{background:#E3F2FD}
+.ic-orange{background:#FFF3E0}
+.ic-purple{background:#F3E5F5}
+.info-trend{font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;display:flex;align-items:center;gap:3px}
+.trend-up{background:var(--green-light);color:var(--green)}
+.trend-down{background:#FFEBEE;color:#C62828}
+.trend-flat{background:var(--gray-50);color:var(--text-sec)}
+.info-card-lbl{font-size:12px;color:var(--text-sec);font-weight:600;margin-bottom:3px}
+.info-card-val{font-size:19px;font-weight:800;line-height:1.2}
+.info-card-val small{font-size:12px;font-weight:600;color:var(--text-sec)}
+.info-card-note{font-size:11px;color:var(--text-light);font-weight:500;margin-top:4px}
+
+/* ===== PRICE CHART ===== */
+.chart-card{background:var(--white);border-radius:var(--r);padding:18px;border:1px solid var(--gray-100);box-shadow:var(--shadow-sm)}
+.chart-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.chart-title{font-size:15px;font-weight:800}
+.chart-sub{font-size:12px;color:var(--text-sec);font-weight:500;margin-bottom:16px}
+.chart-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
+.chart-tabs::-webkit-scrollbar{display:none}
+.chart-tab{padding:6px 13px;border-radius:100px;font-size:12px;font-weight:700;border:1.5px solid var(--gray-200);background:var(--white);cursor:pointer;white-space:nowrap;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.chart-tab.active{border-color:var(--green);background:var(--green-light);color:var(--green)}
+.chart-body{display:flex;align-items:flex-end;gap:6px;height:130px;padding-bottom:22px;border-bottom:1.5px solid var(--gray-100);position:relative}
+.chart-bar{flex:1;border-radius:5px 5px 0 0;position:relative;min-height:6px;transition:height .7s cubic-bezier(.34,1.2,.64,1)}
+.chart-bar::after{content:attr(data-m);position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:var(--text-light)}
+.chart-bar.peak{box-shadow:0 0 0 2px rgba(46,125,50,.25)}
+.chart-bar.peak::before{content:attr(data-v);position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:800;color:var(--green);white-space:nowrap}
+.chart-legend{display:flex;gap:14px;margin-top:16px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--text-sec)}
+.legend-dot{width:9px;height:9px;border-radius:3px}
+
+/* ===== RECOMMEND SIGNAL ===== */
+.signal-card{background:var(--green-light);border:1.5px solid var(--green);border-radius:var(--r);padding:16px;display:flex;gap:12px;align-items:flex-start}
+.signal-icon{width:44px;height:44px;border-radius:12px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.signal-title{font-size:15px;font-weight:800;color:var(--green);margin-bottom:4px}
+.signal-body{font-size:12.5px;color:#2E5730;line-height:1.55;font-weight:500}
+
+/* ===== CHAT ===== */
+.chat-card{background:var(--white);border-radius:var(--r-lg);border:1px solid var(--gray-100);box-shadow:var(--shadow-sm);overflow:hidden;display:flex;flex-direction:column}
+.chat-head{display:flex;align-items:center;gap:11px;padding:14px 16px;border-bottom:1px solid var(--gray-100);background:var(--white)}
+.chat-avatar{width:40px;height:40px;border-radius:11px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.chat-head-name{font-size:15px;font-weight:800}
+.chat-head-status{font-size:11px;color:var(--green);font-weight:600;display:flex;align-items:center;gap:4px}
+.chat-status-dot{width:6px;height:6px;background:var(--green);border-radius:50%}
+
+/* Chat body — dark like reference */
+.chat-body{background:var(--dark);padding:16px;min-height:320px;max-height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.chat-body::-webkit-scrollbar{width:4px}
+.chat-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:2px}
+
+.msg{display:flex;gap:9px;align-items:flex-start;max-width:88%}
+.msg-ai{align-self:flex-start}
+.msg-user{align-self:flex-end;flex-direction:row-reverse}
+.msg-avatar{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.msg-ai .msg-avatar{background:rgba(46,125,50,.25);border:1.5px solid var(--green-medium)}
+.msg-user .msg-avatar{background:rgba(255,255,255,.12)}
+.msg-bubble{padding:11px 14px;border-radius:14px;font-size:13px;line-height:1.55;font-weight:500}
+.msg-ai .msg-bubble{background:var(--green);color:#fff;border-top-left-radius:4px}
+.msg-user .msg-bubble{background:var(--dark-2);color:#E8E8E8;border-top-right-radius:4px}
+.msg-bubble strong{font-weight:800}
+.msg-time{font-size:10px;opacity:.65;margin-top:4px;display:block}
+
+/* typing indicator */
+.typing{display:flex;gap:4px;padding:13px 14px}
+.typing span{width:6px;height:6px;background:rgba(255,255,255,.7);border-radius:50%;animation:blink 1.3s infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+/* Suggestion chips */
+.chat-suggest{display:flex;gap:8px;padding:12px 16px;overflow-x:auto;scrollbar-width:none;background:var(--white);border-top:1px solid var(--gray-100)}
+.chat-suggest::-webkit-scrollbar{display:none}
+.sug-chip{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:100px;font-size:12px;font-weight:700;border:1.5px solid var(--gray-200);background:var(--white);color:var(--text);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.sug-chip:active,.sug-chip:hover{border-color:var(--green);background:var(--green-light);color:var(--green)}
+
+/* Chat input */
+.chat-input-row{display:flex;align-items:center;gap:8px;padding:12px 16px 14px;background:var(--white);border-top:1px solid var(--gray-100)}
+.chat-input-wrap{flex:1;display:flex;align-items:center;gap:8px;background:var(--gray-50);border:1.5px solid var(--gray-100);border-radius:100px;padding:9px 14px;transition:border-color .2s}
+.chat-input-wrap:focus-within{border-color:var(--green)}
+.chat-input{flex:1;border:none;background:transparent;font-size:13.5px;font-weight:500;color:var(--text);outline:none;min-width:0}
+.chat-input::placeholder{color:var(--gray-300)}
+.chat-mic{width:28px;height:28px;border-radius:50%;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.chat-mic svg{width:17px;height:17px;color:var(--green)}
+.chat-cam{width:28px;height:28px;border-radius:7px;border:none;background:var(--green);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.chat-cam svg{width:16px;height:16px;color:#fff}
+.chat-send{width:42px;height:42px;border-radius:50%;border:none;background:var(--green);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 3px 10px rgba(46,125,50,.3);transition:transform .12s}
+.chat-send:active{transform:scale(.9)}
+.chat-send svg{width:19px;height:19px;color:#fff}
+
+/* Section title */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sec-title{font-size:17px;font-weight:800}
+.sec-link{font-size:13px;font-weight:700;color:var(--green);cursor:pointer}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--gray-100);display:flex;align-items:stretch;justify-content:space-around;height:var(--nav-h);padding-bottom:var(--safe-b);z-index:100}
+.bnav{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--gray-400);font-size:10px;font-weight:600;cursor:pointer;flex:1;-webkit-tap-highlight-color:transparent}
+.bnav.active{color:var(--green)}
+.bnav svg{width:22px;height:22px}
+.bnav.active svg{stroke-width:2.5}
+.bnav-scan{position:relative;justify-content:flex-end;padding-bottom:7px;overflow:visible}
+.bnav-scan-circle{position:absolute;top:-24px;left:50%;transform:translateX(-50%);width:54px;height:54px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(46,125,50,.35);border:4px solid var(--white);transition:transform .15s}
+.bnav-scan-circle:active{transform:translateX(-50%) scale(.92)}
+.bnav-scan-circle svg{width:24px;height:24px;color:#fff}
+.bnav-scan .bnav-scan-label{display:block;margin-top:auto;font-size:10px;font-weight:700;color:var(--green);line-height:1}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media(min-width:640px){
+  .main{padding:24px 28px}
+  .page-title{font-size:25px}
+  .info-grid{grid-template-columns:repeat(4,1fr)}
+  .weather-card{padding:24px}
+  .weather-temp{font-size:50px}
+  .chart-body{height:160px}
+  .chat-body{min-height:360px;max-height:460px}
+  .mob-header{padding:16px 28px}
+}
+
+@media(min-width:900px){
+  .main{padding:26px 32px}
+  .chart-body{height:180px}
+}
+
+@media(min-width:1024px){
+  .top-nav{display:block}
+  .mob-header{display:none}
+  .bottom-nav{display:none}
+  .drawer,.drawer-overlay{display:none}
+  body{padding-bottom:0}
+
+  .main{padding:32px}
+  .page-title{font-size:28px}
+  .page-desc{font-size:14px}
+
+  /* 2 column: left = data, right = chat (sticky) */
+  .layout{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:start}
+  .col-left{display:flex;flex-direction:column;gap:20px}
+  .col-right{position:sticky;top:88px}
+
+  .chat-body{min-height:440px;max-height:calc(100vh - 320px)}
+  .info-grid{grid-template-columns:1fr 1fr}
+  .chart-body{height:190px}
+  .weather-temp{font-size:48px}
+}
+
+@media(min-width:1280px){
+  .main{max-width:1320px;padding:36px 48px}
+  .top-nav-inner{max-width:1320px;padding:0 48px}
+  .layout{grid-template-columns:1.2fr .8fr;gap:28px}
+  .info-grid{grid-template-columns:repeat(4,1fr)}
+  .chart-body{height:210px}
+}
+
+@media(max-width:360px){
+  .main{padding:14px 16px}
+  .mob-header{padding:12px 16px}
+  .page-title{font-size:19px}
+  .info-grid{gap:9px}
+  .info-card{padding:13px}
+  .info-card-val{font-size:17px}
+  .weather-temp{font-size:38px}
+  .weather-stat-val{font-size:13px}
+  .chat-body{min-height:280px}
+  .msg{max-width:92%}
+  .chat-input{font-size:13px}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== TOP NAV ===== -->
+<nav class="top-nav"><div class="top-nav-inner">
+  <a href="agrisenai-home.html" class="top-nav-logo"><div class="top-nav-logo-icon">🌱</div>Agri<span>SenAi</span></a>
+  <ul class="top-nav-links">
+    <li><a href="agrisenai-home.html">Trang chủ</a></li>
+    <li><a href="agrisenai-thi-truong.html">Sàn thị trường</a></li>
+    <li><a href="#">AI đánh giá</a></li>
+    <li><a href="#" class="active">Khuyến nghị giá</a></li>
+    <li><a href="#">Quét QR</a></li>
+  </ul>
+  <div class="top-nav-right">
+    <button class="tn-icon" aria-label="Thông báo">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+      <span class="dot"></span>
+    </button>
+    <div class="tn-avatar">👨‍🌾</div>
+  </div>
+</div></nav>
+
+<!-- ===== DRAWER ===== -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="drawer-logo">🌱</div>
+    <div>
+      <div class="drawer-brand">Agri<span>SenAi</span></div>
+      <div class="drawer-tag">Sàn nông sản Đồng Tháp</div>
+    </div>
+  </div>
+  <nav class="drawer-nav">
+    <a class="drawer-link" href="agrisenai-home.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>
+      Trang chủ
+    </a>
+    <a class="drawer-link" href="agrisenai-thi-truong.html">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72l1.189-1.19A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72M6.75 18h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z"/></svg>
+      Sàn thị trường
+    </a>
+    <a class="drawer-link">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>
+      AI đánh giá chất lượng
+    </a>
+    <a class="drawer-link active">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+      Khuyến nghị giá bán
+    </a>
+    <a class="drawer-link">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5zM13.5 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5z"/></svg>
+      Quét QR truy xuất
+    </a>
+    <div class="drawer-divider"></div>
+    <a class="drawer-link">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272"/></svg>
+      Giỏ hàng
+    </a>
+    <a class="drawer-link">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+      Tài khoản
+    </a>
+    <a class="drawer-link">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Cài đặt
+    </a>
+  </nav>
+  <div class="drawer-foot">
+    <div class="drawer-user">
+      <div class="drawer-user-avatar">👨‍🌾</div>
+      <div>
+        <div class="drawer-user-name">Cao Phúc Thịnh</div>
+        <div class="drawer-user-role">Nông dân · Cao Lãnh</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ===== MOBILE HEADER ===== -->
+<header class="mob-header">
+  <div class="mob-header-row">
+    <div class="mob-header-left">
+      <button class="mob-menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
+      <div class="mob-logo">🌱</div>
+      <div>
+        <div class="mob-brand">Agri<span>SenAi</span></div>
+        <div class="mob-sub">Khuyến nghị giá bán</div>
+      </div>
+    </div>
+    <div class="mob-icons">
+      <button class="mob-icon-btn" aria-label="Thông báo">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+        <span class="dot"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+
+  <div class="page-head">
+    <h1 class="page-title">Khuyến nghị giá & thời điểm bán</h1>
+    <p class="page-desc">AI phân tích thời tiết, giá thị trường và mùa vụ để tư vấn bạn nên bán ngay hay chờ thêm.</p>
+  </div>
+
+  <div class="layout">
+
+    <!-- ===== LEFT COLUMN: DATA ===== -->
+    <div class="col-left">
+
+      <!-- Weather -->
+      <div class="weather-card">
+        <div class="weather-top">
+          <div>
+            <div class="weather-loc">📍 Cao Lãnh, Đồng Tháp</div>
+            <div class="weather-date">Chủ nhật, 12/07/2026</div>
+          </div>
+          <div class="weather-icon">⛅</div>
+        </div>
+        <div class="weather-main">
+          <div class="weather-temp">31°</div>
+          <div class="weather-cond">Nhiều mây, có mưa rào</div>
+        </div>
+        <div class="weather-stats">
+          <div class="weather-stat">
+            <div class="weather-stat-val">78%</div>
+            <div class="weather-stat-lbl">Độ ẩm</div>
+          </div>
+          <div class="weather-stat">
+            <div class="weather-stat-val">12 km/h</div>
+            <div class="weather-stat-lbl">Gió</div>
+          </div>
+          <div class="weather-stat">
+            <div class="weather-stat-val">65%</div>
+            <div class="weather-stat-lbl">Khả năng mưa</div>
+          </div>
+          <div class="weather-stat">
+            <div class="weather-stat-val">7</div>
+            <div class="weather-stat-lbl">Chỉ số UV</div>
+          </div>
+        </div>
+        <div class="weather-alert">
+          <span>⚠️</span>
+          <span>Dự báo mưa lớn 3 ngày tới (15–17/07). Nên thu hoạch và xuất bán trước 14/07 để tránh giảm chất lượng.</span>
+        </div>
+      </div>
+
+      <!-- Info cards -->
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-card-top">
+            <div class="info-card-icon ic-green">💰</div>
+            <span class="info-trend trend-up">▲ 12%</span>
+          </div>
+          <div class="info-card-lbl">Giá xoài hôm nay</div>
+          <div class="info-card-val">45k<small>/kg</small></div>
+          <div class="info-card-note">Cao nhất 6 tháng qua</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-top">
+            <div class="info-card-icon ic-blue">📦</div>
+            <span class="info-trend trend-down">▼ 8%</span>
+          </div>
+          <div class="info-card-lbl">Nguồn cung thị trường</div>
+          <div class="info-card-val">Thấp</div>
+          <div class="info-card-note">Lợi thế cho người bán</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-top">
+            <div class="info-card-icon ic-orange">🛒</div>
+            <span class="info-trend trend-up">▲ 24%</span>
+          </div>
+          <div class="info-card-lbl">Nhu cầu thu mua</div>
+          <div class="info-card-val">Cao</div>
+          <div class="info-card-note">18 đơn hỏi mua tuần này</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-top">
+            <div class="info-card-icon ic-purple">🌱</div>
+            <span class="info-trend trend-flat">— Ổn định</span>
+          </div>
+          <div class="info-card-lbl">Giai đoạn mùa vụ</div>
+          <div class="info-card-val">Chính vụ</div>
+          <div class="info-card-note">Tuần 3/8 của vụ</div>
+        </div>
+      </div>
+
+      <!-- Signal -->
+      <div class="signal-card">
+        <div class="signal-icon">🟢</div>
+        <div>
+          <div class="signal-title">Nên bán ngay — trong 3 ngày tới</div>
+          <div class="signal-body">Giá xoài cát Hòa Lộc đang ở đỉnh 6 tháng (45.000đ/kg), nguồn cung thị trường thấp trong khi nhu cầu thu mua tăng 24%. Tuy nhiên dự báo mưa lớn từ 15/07 có thể làm giảm chất lượng và kéo giá xuống 15–20%. <strong>Khuyến nghị: xuất bán trước ngày 14/07.</strong></div>
+        </div>
+      </div>
+
+      <!-- Price chart -->
+      <div class="chart-card">
+        <div class="chart-head">
+          <div class="chart-title">Biến động giá 8 tháng</div>
+        </div>
+        <div class="chart-sub">Giá trung bình (nghìn VNĐ/kg) tại chợ đầu mối Đồng Tháp</div>
+
+        <div class="chart-tabs">
+          <div class="chart-tab active">🥭 Xoài</div>
+          <div class="chart-tab">🍊 Quýt hồng</div>
+          <div class="chart-tab">🫐 Nhãn</div>
+          <div class="chart-tab">🍈 Sầu riêng</div>
+          <div class="chart-tab">🪷 Sen</div>
+        </div>
+
+        <div class="chart-body" id="chartBody">
+          <div class="chart-bar" data-m="T12" data-h="35%" style="background:var(--gray-200)"></div>
+          <div class="chart-bar" data-m="T1" data-h="42%" style="background:var(--gray-200)"></div>
+          <div class="chart-bar" data-m="T2" data-h="48%" style="background:#FFE082"></div>
+          <div class="chart-bar" data-m="T3" data-h="55%" style="background:#FFD54F"></div>
+          <div class="chart-bar" data-m="T4" data-h="66%" style="background:#FFCA28"></div>
+          <div class="chart-bar" data-m="T5" data-h="74%" style="background:#FFB300"></div>
+          <div class="chart-bar" data-m="T6" data-h="86%" style="background:#66BB6A"></div>
+          <div class="chart-bar peak" data-m="T7" data-h="100%" data-v="45k" style="background:var(--green)"></div>
+        </div>
+
+        <div class="chart-legend">
+          <div class="legend-item"><span class="legend-dot" style="background:var(--green)"></span> Giá cao — nên bán</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#FFB300"></span> Giá trung bình</div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--gray-200)"></span> Giá thấp — nên chờ</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== RIGHT COLUMN: CHAT ===== -->
+    <div class="col-right">
+
+      <div class="sec-head">
+        <h2 class="sec-title">Trợ lý AI nông nghiệp</h2>
+        <span class="sec-link">Xoá hội thoại</span>
+      </div>
+
+      <div class="chat-card">
+        <div class="chat-head">
+          <div class="chat-avatar">🌱</div>
+          <div style="flex:1">
+            <div class="chat-head-name">AgriSenAi Assistant</div>
+            <div class="chat-head-status"><span class="chat-status-dot"></span> Đang hoạt động</div>
+          </div>
+        </div>
+
+        <div class="chat-body" id="chatBody">
+          <div class="msg msg-ai">
+            <div class="msg-avatar">🌱</div>
+            <div class="msg-bubble">
+              Xin chào <strong>Thịnh</strong>! 👋 Tôi là trợ lý AI của AgriSenAi. Tôi có thể tư vấn về giá bán, thời điểm thu hoạch, thời tiết và kỹ thuật canh tác. Bạn cần hỗ trợ gì hôm nay?
+              <span class="msg-time">18:35</span>
+            </div>
+          </div>
+
+          <div class="msg msg-user">
+            <div class="msg-avatar">👨‍🌾</div>
+            <div class="msg-bubble">
+              Xoài của tôi chín rồi, giờ bán được chưa hay nên chờ giá lên?
+              <span class="msg-time">18:36</span>
+            </div>
+          </div>
+
+          <div class="msg msg-ai">
+            <div class="msg-avatar">🌱</div>
+            <div class="msg-bubble">
+              Bạn <strong>nên bán ngay</strong> trong 3 ngày tới. Lý do:<br><br>
+              📈 Giá xoài đang ở mức <strong>45.000đ/kg</strong> — cao nhất 6 tháng qua<br>
+              📦 Nguồn cung thị trường đang thấp (giảm 8%)<br>
+              🌧️ Dự báo mưa lớn từ 15/07 sẽ làm giá giảm 15–20%<br><br>
+              Nếu chờ thêm, bạn có thể mất khoảng <strong>7.000–9.000đ/kg</strong>.
+              <span class="msg-time">18:36</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-suggest" id="chatSuggest">
+          <button class="sug-chip">💰 Giá quýt hồng hôm nay?</button>
+          <button class="sug-chip">🌦️ Thời tiết tuần tới</button>
+          <button class="sug-chip">🐛 Cách trị sâu đục trái</button>
+          <button class="sug-chip">📅 Khi nào nên thu hoạch nhãn?</button>
+          <button class="sug-chip">🌱 Kỹ thuật bón phân xoài</button>
+        </div>
+
+        <div class="chat-input-row">
+          <div class="chat-input-wrap">
+            <button class="chat-mic" aria-label="Ghi âm">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"/></svg>
+            </button>
+            <input class="chat-input" id="chatInput" type="text" placeholder="Nhập câu hỏi của bạn...">
+            <button class="chat-cam" aria-label="Chụp ảnh">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>
+            </button>
+          </div>
+          <button class="chat-send" id="chatSend" aria-label="Gửi">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<!-- ===== BOTTOM NAV ===== -->
+<nav class="bottom-nav">
+  <a class="bnav" href="agrisenai-home.html">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+    <span>Trang chủ</span>
+  </a>
+  <a class="bnav" href="agrisenai-thi-truong.html">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72l1.189-1.19A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72M6.75 18h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z"/></svg>
+    <span>Thị trường</span>
+  </a>
+  <a class="bnav bnav-scan">
+    <div class="bnav-scan-circle">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>
+    </div>
+    <span class="bnav-scan-label">AI Scan</span>
+  </a>
+  <a class="bnav active">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+    <span>Khuyến nghị</span>
+  </a>
+  <a class="bnav">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+    <span>Tài khoản</span>
+  </a>
+</nav>
+
+<script>
+/* ===== DRAWER ===== */
+const drawer=document.getElementById('drawer'),
+      overlay=document.getElementById('drawerOverlay'),
+      menuBtn=document.getElementById('menuBtn');
+function openDrawer(){drawer.classList.add('open');overlay.classList.add('open');document.body.style.overflow='hidden'}
+function closeDrawer(){drawer.classList.remove('open');overlay.classList.remove('open');document.body.style.overflow=''}
+menuBtn.addEventListener('click',openDrawer);
+overlay.addEventListener('click',closeDrawer);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+
+/* ===== CHART ANIMATION ===== */
+window.addEventListener('load',()=>{
+  document.querySelectorAll('.chart-bar').forEach((b,i)=>{
+    setTimeout(()=>{b.style.height=b.dataset.h},i*70);
+  });
+});
+
+/* ===== CHART TABS ===== */
+const priceData={
+  'Xoài':['35%','42%','48%','55%','66%','74%','86%','100%'],
+  'Quýt hồng':['80%','92%','75%','58%','44%','38%','35%','48%'],
+  'Nhãn':['40%','45%','52%','60%','72%','88%','95%','82%'],
+  'Sầu riêng':['30%','38%','50%','68%','85%','96%','90%','76%'],
+  'Sen':['55%','60%','68%','75%','82%','88%','92%','86%']
+};
+document.querySelectorAll('.chart-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.chart-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const key=tab.textContent.trim().replace(/^[^\s]+\s/,'');
+    const data=priceData[key]||priceData['Xoài'];
+    const bars=document.querySelectorAll('.chart-bar');
+    const maxIdx=data.indexOf(data.reduce((a,b)=>parseInt(a)>parseInt(b)?a:b));
+    bars.forEach((b,i)=>{
+      b.style.height='0%';
+      b.classList.remove('peak');
+      setTimeout(()=>{
+        b.style.height=data[i];
+        const pct=parseInt(data[i]);
+        b.style.background = pct>=85?'var(--green)' : pct>=60?'#FFB300' : pct>=45?'#FFD54F' : 'var(--gray-200)';
+        if(i===maxIdx){b.classList.add('peak')}
+      },i*70);
+    });
+  });
+});
+
+/* ===== CHAT ===== */
+const chatBody=document.getElementById('chatBody'),
+      chatInput=document.getElementById('chatInput'),
+      chatSend=document.getElementById('chatSend');
+
+const replies={
+  'giá quýt':'Quýt hồng Lai Vung hiện ở mức <strong>35.000đ/kg</strong>, thấp hơn 12% so với đỉnh mùa. 📉<br><br>Dự báo giá sẽ <strong>tăng 15–18%</strong> trong 2 tuần tới do vào cuối vụ, nguồn cung giảm.<br><br>💡 <strong>Khuyến nghị: chờ thêm 10–14 ngày</strong> rồi bán để được giá tốt hơn.',
+  'thời tiết':'Thời tiết Đồng Tháp 7 ngày tới:<br><br>☀️ 12–14/07: Nắng gián đoạn, 30–33°C<br>🌧️ 15–17/07: <strong>Mưa lớn</strong>, 26–29°C, lượng mưa 80–120mm<br>⛅ 18/07: Trời quang, 31°C<br><br>⚠️ Mưa lớn giữa tuần có thể làm nứt trái xoài và giảm độ ngọt. Nên thu hoạch trước 14/07.',
+  'sâu đục':'🐛 <strong>Trị sâu đục trái xoài:</strong><br><br>1️⃣ Bao trái khi trái to bằng quả trứng gà (35–45 ngày sau đậu trái)<br>2️⃣ Vệ sinh vườn, thu gom trái rụng đem tiêu huỷ<br>3️⃣ Đặt bẫy pheromone dẫn dụ con trưởng thành<br>4️⃣ Nếu nhiễm nặng: phun luân phiên hoạt chất Emamectin benzoate hoặc Spinetoram<br><br>⚠️ Ngưng phun ít nhất 10 ngày trước thu hoạch.',
+  'thu hoạch nhãn':'🫐 <strong>Nhãn Châu Thành</strong> nên thu hoạch khi:<br><br>✅ Vỏ chuyển màu nâu vàng đều<br>✅ Cùi dày, trong, tách dễ khỏi hạt<br>✅ Độ Brix đạt 19–21%<br>✅ Khoảng 110–120 ngày sau khi đậu trái<br><br>📅 Vườn của bạn (trồng T3) dự kiến thu hoạch <strong>giữa tháng 8</strong>. Giá dự báo lúc đó: 50–58k/kg.',
+  'bón phân':'🌱 <strong>Bón phân xoài theo giai đoạn:</strong><br><br>🔹 <strong>Sau thu hoạch:</strong> NPK 20-20-15, 0.5–1kg/cây + phân hữu cơ 10–15kg<br>🔹 <strong>Trước ra hoa:</strong> NPK 10-50-17 để kích thích phân hoá mầm hoa<br>🔹 <strong>Nuôi trái:</strong> NPK 15-5-25 + Canxi-Bo, chia 2–3 lần<br><br>💧 Tưới đủ ẩm sau mỗi lần bón. Không bón khi đất quá khô.',
+  'default':'Tôi hiểu câu hỏi của bạn. Dựa trên dữ liệu thị trường và thời tiết Đồng Tháp hiện tại:<br><br>📈 Giá nông sản đang ở mức <strong>tốt</strong> cho người bán<br>🌧️ Mưa lớn dự báo từ 15/07 có thể ảnh hưởng chất lượng<br><br>Bạn có thể hỏi cụ thể hơn về: giá từng loại nông sản, thời điểm thu hoạch, kỹ thuật canh tác, hoặc phòng trừ sâu bệnh.'
+};
+
+function timeNow(){
+  const d=new Date();
+  return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
+}
+
+function addMsg(text,who){
+  const div=document.createElement('div');
+  div.className='msg msg-'+who;
+  div.innerHTML=`<div class="msg-avatar">${who==='ai'?'🌱':'👨‍🌾'}</div>
+    <div class="msg-bubble">${text}<span class="msg-time">${timeNow()}</span></div>`;
+  chatBody.appendChild(div);
+  chatBody.scrollTop=chatBody.scrollHeight;
+  return div;
+}
+
+function showTyping(){
+  const div=document.createElement('div');
+  div.className='msg msg-ai';
+  div.id='typingMsg';
+  div.innerHTML=`<div class="msg-avatar">🌱</div>
+    <div class="msg-bubble" style="padding:0"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  chatBody.appendChild(div);
+  chatBody.scrollTop=chatBody.scrollHeight;
+}
+
+function getReply(q){
+  const low=q.toLowerCase();
+  for(const key in replies){
+    if(key!=='default' && low.includes(key)) return replies[key];
+  }
+  if(low.includes('quýt')) return replies['giá quýt'];
+  if(low.includes('mưa')||low.includes('nắng')) return replies['thời tiết'];
+  if(low.includes('sâu')||low.includes('bệnh')) return replies['sâu đục'];
+  if(low.includes('nhãn')) return replies['thu hoạch nhãn'];
+  if(low.includes('phân')) return replies['bón phân'];
+  return replies['default'];
+}
+
+function send(text){
+  if(!text.trim()) return;
+  addMsg(text,'user');
+  chatInput.value='';
+  showTyping();
+  setTimeout(()=>{
+    document.getElementById('typingMsg')?.remove();
+    addMsg(getReply(text),'ai');
+  },1300);
+}
+
+chatSend.addEventListener('click',()=>send(chatInput.value));
+chatInput.addEventListener('keydown',e=>{if(e.key==='Enter')send(chatInput.value)});
+
+document.querySelectorAll('.sug-chip').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    send(chip.textContent.trim().replace(/^[^\s]+\s/,''));
+  });
+});
+</script>
+</body>
+</html>
