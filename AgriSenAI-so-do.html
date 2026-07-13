@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dongthap_nongsan — Luồng hoạt động CSDL</title>
+<script>
+  (function () {
+    const saved = localStorage.getItem('theme');
+    const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.classList.toggle('dark', dark);
+  })();
+</script>
+<style>
+  :root {
+    --bg: #FAF9F5; --surface: #FFFFFF; --surface2: #F0EEE6;
+    --ink: #141413; --body: #3D3D3A; --muted: #87867F;
+    --line: #D1CFC5; --line-soft: #E6E3DA;
+
+    --clay: #D9634A;  --clay-soft: rgba(217,99,74,0.10);
+    --blue: #4F7A93;  --blue-soft: rgba(79,122,147,0.10);
+    --olive:#6E8B4E;  --olive-soft: rgba(110,139,78,0.11);
+    --plum: #86609F;  --plum-soft: rgba(134,96,159,0.10);
+    --gold: #B5872B;  --gold-soft: rgba(181,135,43,0.11);
+    --teal: #3B8378;  --teal-soft: rgba(59,131,120,0.10);
+
+    --zone: rgba(20,20,19,0.022); --zone-line: #D1CFC5;
+    --serif: ui-serif, Georgia, "Times New Roman", serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  html.dark {
+    --bg: #141413; --surface: #1F1F1D; --surface2: #2A2A28;
+    --ink: #FAF9F5; --body: #D1CFC5; --muted: #8B8A82;
+    --line: #3D3D3A; --line-soft: #2A2A28;
+
+    --clay: #F0795C;  --clay-soft: rgba(240,121,92,0.15);
+    --blue: #7FA3BC;  --blue-soft: rgba(127,163,188,0.14);
+    --olive:#9DB07C;  --olive-soft: rgba(157,176,124,0.15);
+    --plum: #B79AD0;  --plum-soft: rgba(183,154,208,0.14);
+    --gold: #D9B05C;  --gold-soft: rgba(217,176,92,0.14);
+    --teal: #6FBFB2;  --teal-soft: rgba(111,191,178,0.13);
+
+    --zone: rgba(250,249,245,0.028); --zone-line: #3D3D3A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg); color: var(--body); font-family: var(--sans);
+    -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  /* ── top bar ─────────────────────────────── */
+  .bar {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 10px 18px; border-bottom: 1px solid var(--line-soft); flex: none;
+  }
+  .bar h1 { font-family: var(--serif); font-weight: 500; font-size: 18px; color: var(--ink); letter-spacing: -0.01em; }
+  .bar .sub { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+  .spacer { flex: 1; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.03em;
+    padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px;
+    background: transparent; color: var(--muted); cursor: pointer; transition: all .15s ease; white-space: nowrap;
+  }
+  .chip:hover { color: var(--ink); border-color: var(--muted); }
+  .chip.on { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+  .btn {
+    font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 5px 9px; border: 1px solid var(--line); border-radius: 6px;
+    background: transparent; color: var(--muted); cursor: pointer; white-space: nowrap;
+  }
+  .btn:hover { color: var(--ink); border-color: var(--muted); }
+  .tools { display: flex; align-items: center; gap: 6px; }
+  #zoomInd { font-family: var(--mono); font-size: 10.5px; color: var(--muted); min-width: 42px; text-align: right; }
+
+  /* ── stage ───────────────────────────────── */
+  .stage { flex: 1; position: relative; min-height: 0; overflow: hidden; }
+  .stage svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
+  .stage.dragging svg { cursor: grabbing; }
+
+  /* zones */
+  .zone rect { fill: var(--zone); stroke: var(--zone-line); stroke-width: 1; stroke-dasharray: 5 5; rx: 16; }
+  .zone .ztitle { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; fill: var(--muted); }
+  .zone .zsub { font-family: var(--mono); font-size: 10.5px; fill: var(--muted); opacity: 0.75; }
+
+  /* notes */
+  .note-h { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; fill: var(--muted); }
+  .note   { font-family: var(--mono); font-size: 11px; fill: var(--muted); opacity: 0.85; }
+
+  /* nodes */
+  .node { cursor: pointer; }
+  .node rect { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; rx: 10; transition: stroke .15s ease, opacity .2s ease; }
+  .node:hover rect { stroke: var(--ink); }
+  .node.sel rect { stroke: var(--clay) !important; stroke-width: 2.5; }
+  .node .t { font-family: var(--sans); font-size: 14.5px; font-weight: 600; fill: var(--ink); pointer-events: none; }
+  .node .m { font-family: var(--mono); font-size: 11px; fill: var(--muted); pointer-events: none; }
+  .node .k { font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em; pointer-events: none; }
+
+  .node.actor rect { fill: var(--surface2); stroke: var(--line); rx: 22; }
+  .node.core  rect { fill: var(--blue-soft);  stroke: var(--blue); }
+  .node.prod  rect { fill: var(--olive-soft); stroke: var(--olive); }
+  .node.ai    rect { fill: var(--plum-soft);  stroke: var(--plum); }
+  .node.tx    rect { fill: var(--gold-soft);  stroke: var(--gold); }
+  .node.soc   rect { fill: var(--teal-soft);  stroke: var(--teal); }
+  .node.ext   rect { fill: var(--surface); stroke: var(--muted); stroke-dasharray: 6 3; }
+
+  .node.core .k  { fill: var(--blue); }
+  .node.prod .k  { fill: var(--olive); }
+  .node.ai .k    { fill: var(--plum); }
+  .node.tx .k    { fill: var(--gold); }
+  .node.soc .k   { fill: var(--teal); }
+  .node.ext .k   { fill: var(--muted); }
+
+  /* edges */
+  .edge { stroke: var(--muted); stroke-width: 1.6; fill: none; marker-end: url(#a-mut); transition: opacity .2s ease, stroke .2s ease; }
+  .edge.logic { stroke-dasharray: 6 5; }
+  .edge.ext   { stroke-dasharray: 2 4; }
+  .elbl { font-family: var(--mono); font-size: 10.5px; fill: var(--muted); transition: opacity .2s ease; pointer-events: none; }
+
+  /* flow highlighting */
+  .stage.flowing .edge  { opacity: 0.10; }
+  .stage.flowing .elbl  { opacity: 0.10; }
+  .stage.flowing .node  { opacity: 0.26; }
+  .stage.flowing .zone  { opacity: 0.40; }
+  .stage.flowing .note, .stage.flowing .note-h { opacity: 0.15; }
+  .stage.flowing .edge.lit {
+    opacity: 1; stroke: var(--clay); stroke-width: 2.2; marker-end: url(#a-clay);
+    stroke-dasharray: 7 5; animation: march 0.9s linear infinite;
+  }
+  .stage.flowing .elbl.lit { opacity: 1; fill: var(--clay); }
+  .stage.flowing .node.lit { opacity: 1; }
+  .stage.flowing .node.lit rect { stroke: var(--clay); stroke-width: 2.2; }
+  @keyframes march { to { stroke-dashoffset: -12; } }
+  @media (prefers-reduced-motion: reduce) { .stage.flowing .edge.lit { animation: none; } }
+
+  /* ── floating cards ──────────────────────── */
+  .card {
+    position: absolute; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 13px 15px; box-shadow: 0 6px 26px rgba(0,0,0,0.10);
+  }
+  .card .x {
+    position: absolute; top: 7px; right: 8px; width: 22px; height: 22px; line-height: 1;
+    border: 1px solid var(--line); border-radius: 6px; background: transparent; color: var(--muted);
+    font-family: var(--mono); font-size: 13px; cursor: pointer; display: grid; place-items: center;
+  }
+  .card .x:hover { color: var(--ink); border-color: var(--muted); }
+  .card.hidden { display: none; }
+
+  #detail { right: 14px; bottom: 14px; width: 350px; }
+  #detail h3 { font-family: var(--serif); font-weight: 500; font-size: 17px; color: var(--ink); margin-bottom: 2px; padding-right: 26px; }
+  #detail .meta { font-family: var(--mono); font-size: 10.5px; color: var(--muted); margin-bottom: 8px; }
+  #detail p { font-size: 12.5px; line-height: 1.6; }
+  code { font-family: var(--mono); font-size: 11px; color: var(--clay); }
+
+  #flowcap { left: 14px; bottom: 14px; max-width: 470px; }
+  #flowcap .fname { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--clay); margin-bottom: 7px; padding-right: 26px; }
+  #flowcap ol { margin-left: 17px; }
+  #flowcap li { font-size: 12.5px; line-height: 1.6; margin-bottom: 2px; }
+
+  #legend { left: 14px; top: 14px; width: 268px; }
+  #legend .lh { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 9px; padding-right: 26px; }
+  #legend .row { display: flex; align-items: center; gap: 9px; margin-bottom: 6px; font-size: 12px; }
+  #legend .sw { width: 22px; height: 12px; border-radius: 4px; border: 1.5px solid var(--line); flex: none; }
+  #legend .ln { width: 22px; height: 0; border-top: 1.8px solid var(--muted); flex: none; }
+  #legend .ln.d { border-top-style: dashed; }
+  #legend .ln.t { border-top-style: dotted; border-top-width: 2.2px; }
+  #legend hr { border: 0; border-top: 1px solid var(--line-soft); margin: 9px 0; }
+  .sw.core { background: var(--blue-soft);  border-color: var(--blue); }
+  .sw.prod { background: var(--olive-soft); border-color: var(--olive); }
+  .sw.ai   { background: var(--plum-soft);  border-color: var(--plum); }
+  .sw.tx   { background: var(--gold-soft);  border-color: var(--gold); }
+  .sw.soc  { background: var(--teal-soft);  border-color: var(--teal); }
+  .sw.act  { background: var(--surface2);   border-color: var(--line); border-radius: 8px; }
+
+  .src { position: absolute; top: 12px; right: 16px; font-family: var(--mono); font-size: 10px; color: var(--muted); opacity: 0.75; }
+
+  @media (max-width: 900px) {
+    body { overflow: auto; }
+    .stage { min-height: 78vh; }
+    #detail, #flowcap, #legend { position: static; width: auto; max-width: none; margin: 10px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div>
+    <h1>dongthap_nongsan — luồng hoạt động</h1>
+    <div class="sub">AgriSenAI.sql · 15 bảng · MySQL 8 · utf8mb4</div>
+  </div>
+  <div class="spacer"></div>
+  <div class="chips" id="chips">
+    <button class="chip on" data-flow="all">Toàn cảnh</button>
+    <button class="chip" data-flow="onboard">Đăng ký</button>
+    <button class="chip" data-flow="listing">Đăng bán</button>
+    <button class="chip" data-flow="ai">AI quét ảnh</button>
+    <button class="chip" data-flow="price">Khuyến nghị giá</button>
+    <button class="chip" data-flow="order">Đặt hàng</button>
+    <button class="chip" data-flow="trace">Quét QR</button>
+    <button class="chip" data-flow="review">Đánh giá</button>
+    <button class="chip" data-flow="cascade">ON DELETE CASCADE</button>
+  </div>
+  <div class="tools">
+    <span id="zoomInd">100%</span>
+    <button class="btn" id="resetBtn">Reset</button>
+    <button class="btn" id="legendBtn">Chú giải</button>
+    <button class="btn" id="themeToggle">Theme</button>
+  </div>
+</div>
+
+<div class="stage" id="stage">
+<svg id="svg" viewBox="0 0 1980 1140" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Sơ đồ luồng hoạt động cơ sở dữ liệu dongthap_nongsan">
+  <defs>
+    <marker id="a-mut" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" style="fill: var(--muted)"/>
+    </marker>
+    <marker id="a-clay" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" style="fill: var(--clay)"/>
+    </marker>
+  </defs>
+
+  <g id="svg-content">
+
+  <!-- ══ ZONES ═══════════════════════════════ -->
+  <g class="zone">
+    <rect x="30" y="90" width="210" height="570"/>
+    <text class="ztitle" x="50" y="118">Tác nhân</text>
+    <text class="zsub" x="50" y="136">bảng roles quy định</text>
+  </g>
+  <g class="zone">
+    <rect x="280" y="90" width="300" height="570"/>
+    <text class="ztitle" x="300" y="118">Nhóm 1 · Người dùng</text>
+    <text class="zsub" x="300" y="136">roles · users · farmer_profiles</text>
+  </g>
+  <g class="zone">
+    <rect x="620" y="90" width="320" height="570"/>
+    <text class="ztitle" x="640" y="118">Nhóm 2 · Sản phẩm</text>
+    <text class="zsub" x="640" y="136">categories · products · images</text>
+  </g>
+  <g class="zone">
+    <rect x="980" y="90" width="620" height="570"/>
+    <text class="ztitle" x="1000" y="118">Nhóm 3 · AI</text>
+    <text class="zsub" x="1000" y="136">đánh giá chất lượng &amp; khuyến nghị bán</text>
+  </g>
+  <g class="zone">
+    <rect x="1640" y="90" width="300" height="570"/>
+    <text class="ztitle" x="1660" y="118">Nguồn ngoài</text>
+    <text class="zsub" x="1660" y="136">không nằm trong CSDL</text>
+  </g>
+  <g class="zone">
+    <rect x="280" y="700" width="320" height="400"/>
+    <text class="ztitle" x="300" y="728">Nhóm 4 · Giao dịch</text>
+    <text class="zsub" x="300" y="746">orders · order_items</text>
+  </g>
+  <g class="zone">
+    <rect x="640" y="700" width="700" height="400"/>
+    <text class="ztitle" x="660" y="728">Nhóm 5 · Truy xuất &amp; tương tác</text>
+    <text class="zsub" x="660" y="746">traceability_logs · reviews · notifications</text>
+  </g>
+
+  <!-- ══ EDGES ═══════════════════════════════ -->
+  <!-- tác nhân -->
+  <path class="edge" id="e-af-users"  d="M218,205 C 262,215 258,300 304,320"/>
+  <path class="edge" id="e-ab-users"  d="M218,328 C 258,335 262,350 304,358"/>
+  <path class="edge logic" id="e-ad-roles" d="M218,556 C 268,540 262,240 304,206"/>
+  <path class="edge" id="e-as-trace"  d="M218,452 C 270,466 252,690 348,692 L980,692 C 1026,692 1038,730 1042,769"/>
+
+  <!-- nhóm 1 -->
+  <path class="edge" id="e-roles-users" d="M430,242 L430,286"/>
+  <path class="edge" id="e-users-fp"    d="M430,417 L430,461"/>
+
+  <!-- nhóm 2 -->
+  <path class="edge" id="e-users-prod"  d="M552,344 C 596,342 604,350 646,352"/>
+  <path class="edge" id="e-cat-prod"    d="M780,242 L780,286"/>
+  <path class="edge" id="e-prod-img"    d="M780,447 L780,491"/>
+
+  <!-- nhóm 3 -->
+  <path class="edge" id="e-prod-ai"     d="M912,328 C 958,326 962,240 1006,236"/>
+  <path class="edge" id="e-cat-market"  d="M912,202 C 1012,208 984,388 1120,384 C 1232,381 1252,360 1315,356"/>
+  <path class="edge" id="e-weather-pr"  d="M1315,218 C 1292,228 1294,432 1330,466"/>
+  <path class="edge" id="e-market-pr"   d="M1445,417 L1445,466"/>
+  <path class="edge" id="e-prod-pr"     d="M910,438 C 952,466 962,502 1006,514"/>
+
+  <!-- nguồn ngoài -->
+  <path class="edge ext" id="e-gemini-ai"    d="M1662,196 C 1520,120 1300,116 1152,150"/>
+  <path class="edge ext" id="e-wapi-weather" d="M1662,338 C 1612,328 1610,250 1576,234"/>
+  <path class="edge ext" id="e-msrc-market"  d="M1662,482 C 1614,472 1612,410 1576,396"/>
+
+  <!-- nhóm 4 -->
+  <path class="edge" id="e-users-orders" d="M306,398 C 256,420 254,720 350,771"/>
+  <path class="edge" id="e-orders-oi"    d="M440,917 L440,946"/>
+  <path class="edge" id="e-prod-oi"      d="M660,447 C 600,540 590,945 574,1003"/>
+
+  <!-- nhóm 5 -->
+  <path class="edge" id="e-prod-trace"  d="M912,438 C 968,500 990,706 1148,769"/>
+  <path class="edge" id="e-prod-rev"    d="M690,447 C 616,545 612,915 664,968"/>
+  <path class="edge" id="e-users-rev"   d="M552,402 C 622,445 624,955 664,1017"/>
+  <path class="edge" id="e-users-notif" d="M306,410 C 248,438 244,668 336,670 L700,670 C 772,670 794,720 800,769"/>
+
+  <!-- quan hệ nghiệp vụ (không FK) -->
+  <path class="edge logic" id="e-ai-notif"     d="M1032,312 C 996,360 990,664 966,706 C 944,742 906,760 884,770"/>
+  <path class="edge logic" id="e-pr-notif"     d="M1006,560 C 962,606 950,714 928,770"/>
+  <path class="edge logic" id="e-orders-notif" d="M572,833 C 606,834 632,838 664,839"/>
+
+  <!-- ══ EDGE LABELS ═════════════════════════ -->
+  <text class="elbl" data-e="e-roles-users" x="438" y="268">role_id</text>
+  <text class="elbl" data-e="e-users-fp"    x="438" y="443">user_id</text>
+  <text class="elbl" data-e="e-users-prod"  x="600" y="332" text-anchor="middle">farmer_id</text>
+  <text class="elbl" data-e="e-cat-prod"    x="788" y="270">category_id</text>
+  <text class="elbl" data-e="e-prod-img"    x="788" y="476">product_id</text>
+  <text class="elbl" data-e="e-prod-ai"     x="958" y="262" text-anchor="middle">product_id</text>
+  <text class="elbl" data-e="e-cat-market"  x="1120" y="372" text-anchor="middle">category_id</text>
+  <text class="elbl" data-e="e-weather-pr"  x="1272" y="420" text-anchor="end">weather_ref_id</text>
+  <text class="elbl" data-e="e-market-pr"   x="1453" y="442">market_price_ref_id</text>
+  <text class="elbl" data-e="e-prod-pr"     x="1000" y="480" text-anchor="end">product_id</text>
+  <text class="elbl" data-e="e-gemini-ai"   x="1400" y="112" text-anchor="middle">raw_ai_response (JSON)</text>
+  <text class="elbl" data-e="e-wapi-weather" x="1610" y="292" text-anchor="middle">cache/ngày</text>
+  <text class="elbl" data-e="e-msrc-market" x="1560" y="450" text-anchor="end">giá tham chiếu</text>
+  <text class="elbl" data-e="e-users-orders" x="262" y="650" text-anchor="middle">buyer_id</text>
+  <text class="elbl" data-e="e-orders-oi"   x="450" y="938">order_id</text>
+  <text class="elbl" data-e="e-prod-oi"     x="596" y="935" text-anchor="end">product_id</text>
+  <text class="elbl" data-e="e-prod-rev"    x="652" y="930" text-anchor="end">product_id</text>
+  <text class="elbl" data-e="e-users-rev"   x="656" y="1046" text-anchor="end">buyer_id</text>
+  <text class="elbl" data-e="e-users-notif" x="500" y="658" text-anchor="middle">user_id</text>
+  <text class="elbl" data-e="e-prod-trace"  x="1032" y="640">product_id</text>
+  <text class="elbl" data-e="e-as-trace"    x="860" y="684" text-anchor="middle">quét QR → product_id</text>
+  <text class="elbl" data-e="e-ai-notif"    x="952" y="640" text-anchor="end">ai_result</text>
+  <text class="elbl" data-e="e-pr-notif"    x="996" y="742" text-anchor="end">price_alert</text>
+  <text class="elbl" data-e="e-orders-notif" x="618" y="824" text-anchor="middle">order</text>
+
+  <!-- ══ NODES: TÁC NHÂN ═════════════════════ -->
+  <g class="node actor" data-k="a_farmer">
+    <rect x="55" y="155" width="160" height="95"/>
+    <text class="t" x="72" y="185">Nông dân</text>
+    <text class="m" x="72" y="208">role: nong_dan</text>
+    <text class="m" x="72" y="228">đăng bán · chụp ảnh</text>
+  </g>
+  <g class="node actor" data-k="a_buyer">
+    <rect x="55" y="280" width="160" height="95"/>
+    <text class="t" x="72" y="310">Người mua</text>
+    <text class="m" x="72" y="333">role: nguoi_mua</text>
+    <text class="m" x="72" y="353">đặt hàng · đánh giá</text>
+  </g>
+  <g class="node actor" data-k="a_scan">
+    <rect x="55" y="405" width="160" height="95"/>
+    <text class="t" x="72" y="435">Người quét QR</text>
+    <text class="m" x="72" y="458">không cần login</text>
+    <text class="m" x="72" y="478">đọc truy xuất</text>
+  </g>
+  <g class="node actor" data-k="a_admin">
+    <rect x="55" y="530" width="160" height="80"/>
+    <text class="t" x="72" y="560">Admin</text>
+    <text class="m" x="72" y="583">role: admin</text>
+    <text class="m" x="72" y="601">quản trị danh mục</text>
+  </g>
+
+  <!-- ══ NODES: NHÓM 1 ═══════════════════════ -->
+  <g class="node core" data-k="roles">
+    <rect x="310" y="155" width="240" height="85"/>
+    <text class="t" x="330" y="185">roles</text>
+    <text class="m" x="330" y="208">id · name (UNIQUE)</text>
+    <text class="k" x="330" y="228">nong_dan · nguoi_mua · admin</text>
+  </g>
+  <g class="node core" data-k="users">
+    <rect x="310" y="290" width="240" height="125"/>
+    <text class="t" x="330" y="320">users</text>
+    <text class="m" x="330" y="343">role_id → roles</text>
+    <text class="m" x="330" y="363">email UNIQUE · password</text>
+    <text class="m" x="330" y="383">phone · avatar · address</text>
+    <text class="k" x="330" y="404">is_active</text>
+  </g>
+  <g class="node core" data-k="farmer_profiles">
+    <rect x="310" y="465" width="240" height="120"/>
+    <text class="t" x="330" y="495">farmer_profiles</text>
+    <text class="m" x="330" y="518">user_id UNIQUE (1–1)</text>
+    <text class="m" x="330" y="538">farm_name · region</text>
+    <text class="m" x="330" y="558">ocop_certificate</text>
+    <text class="k" x="330" y="577">ocop_star_rating 3–5</text>
+  </g>
+
+  <!-- ══ NODES: NHÓM 2 ═══════════════════════ -->
+  <g class="node prod" data-k="categories">
+    <rect x="650" y="155" width="260" height="85"/>
+    <text class="t" x="670" y="185">categories</text>
+    <text class="m" x="670" y="208">id · name · description</text>
+    <text class="k" x="670" y="228">Xoài · Quýt hồng · Sen · Nem</text>
+  </g>
+  <g class="node prod" data-k="products">
+    <rect x="650" y="290" width="260" height="155"/>
+    <text class="t" x="670" y="320">products</text>
+    <text class="m" x="670" y="343">farmer_id → users</text>
+    <text class="m" x="670" y="363">category_id → categories</text>
+    <text class="m" x="670" y="383">price · unit · quantity</text>
+    <text class="m" x="670" y="403">qr_code UNIQUE</text>
+    <text class="k" x="670" y="424">draft → active → sold_out</text>
+  </g>
+  <g class="node prod" data-k="product_images">
+    <rect x="650" y="495" width="260" height="95"/>
+    <text class="t" x="670" y="525">product_images</text>
+    <text class="m" x="670" y="548">product_id → products</text>
+    <text class="k" x="670" y="568">image_url · is_primary</text>
+  </g>
+
+  <!-- ══ NODES: NHÓM 3 ═══════════════════════ -->
+  <g class="node ai" data-k="ai_quality">
+    <rect x="1010" y="155" width="270" height="155"/>
+    <text class="t" x="1030" y="185">ai_quality_assessments</text>
+    <text class="m" x="1030" y="208">product_id · image_url</text>
+    <text class="m" x="1030" y="228">ripeness_level: xanh→qua_chin</text>
+    <text class="m" x="1030" y="248">quality_score 0–100</text>
+    <text class="m" x="1030" y="268">defect_detected · defect_note</text>
+    <text class="k" x="1030" y="290">raw_ai_response JSON</text>
+  </g>
+  <g class="node ai" data-k="weather">
+    <rect x="1320" y="155" width="250" height="110"/>
+    <text class="t" x="1340" y="185">weather_data_cache</text>
+    <text class="m" x="1340" y="208">temperature · humidity</text>
+    <text class="m" x="1340" y="228">rain_forecast</text>
+    <text class="k" x="1340" y="249">UNIQUE(region, date)</text>
+  </g>
+  <g class="node ai" data-k="market">
+    <rect x="1320" y="300" width="250" height="115"/>
+    <text class="t" x="1340" y="330">market_price_reference</text>
+    <text class="m" x="1340" y="353">category_id → categories</text>
+    <text class="m" x="1340" y="373">region · price · price_date</text>
+    <text class="k" x="1340" y="394">source</text>
+  </g>
+  <g class="node ai" data-k="price_rec">
+    <rect x="1010" y="470" width="560" height="135"/>
+    <text class="t" x="1030" y="500">price_recommendations</text>
+    <text class="m" x="1030" y="523">product_id → products  ·  weather_ref_id → weather_data_cache</text>
+    <text class="m" x="1030" y="543">market_price_ref_id → market_price_reference</text>
+    <text class="k" x="1030" y="566">recommended_action: ban_ngay · cho_them · giam_gia</text>
+    <text class="m" x="1030" y="588">reasoning_text (AI sinh) · valid_until</text>
+  </g>
+
+  <!-- ══ NODES: NGUỒN NGOÀI ══════════════════ -->
+  <g class="node ext" data-k="x_gemini">
+    <rect x="1665" y="155" width="250" height="110"/>
+    <text class="t" x="1685" y="185">Gemini Vision</text>
+    <text class="m" x="1685" y="208">phân tích ảnh nông sản</text>
+    <text class="m" x="1685" y="228">→ JSON độ chín, lỗi</text>
+    <text class="k" x="1685" y="249">lưu raw_ai_response</text>
+  </g>
+  <g class="node ext" data-k="x_wapi">
+    <rect x="1665" y="300" width="250" height="105"/>
+    <text class="t" x="1685" y="330">API thời tiết</text>
+    <text class="m" x="1685" y="353">nhiệt độ · độ ẩm · mưa</text>
+    <text class="m" x="1685" y="373">theo region + date</text>
+    <text class="k" x="1685" y="394">cache để khỏi gọi lại</text>
+  </g>
+  <g class="node ext" data-k="x_msrc">
+    <rect x="1665" y="445" width="250" height="105"/>
+    <text class="t" x="1685" y="475">Nguồn giá thị trường</text>
+    <text class="m" x="1685" y="498">chợ đầu mối · sàn TMĐT</text>
+    <text class="m" x="1685" y="518">nhập tay hoặc crawl</text>
+    <text class="k" x="1685" y="539">ghi vào cột source</text>
+  </g>
+
+  <!-- ══ NODES: NHÓM 4 ═══════════════════════ -->
+  <g class="node tx" data-k="orders">
+    <rect x="310" y="775" width="260" height="140"/>
+    <text class="t" x="330" y="805">orders</text>
+    <text class="m" x="330" y="828">buyer_id → users</text>
+    <text class="m" x="330" y="848">order_code UNIQUE</text>
+    <text class="m" x="330" y="868">total_amount · shipping</text>
+    <text class="k" x="330" y="890">pending → … → completed</text>
+  </g>
+  <g class="node tx" data-k="order_items">
+    <rect x="310" y="950" width="260" height="110"/>
+    <text class="t" x="330" y="980">order_items</text>
+    <text class="m" x="330" y="1003">order_id · product_id</text>
+    <text class="k" x="330" y="1024">quantity · unit_price · subtotal</text>
+    <text class="m" x="330" y="1045">(chốt giá lúc mua)</text>
+  </g>
+
+  <!-- ══ NODES: NHÓM 5 ═══════════════════════ -->
+  <g class="node soc" data-k="notifications">
+    <rect x="670" y="775" width="280" height="150"/>
+    <text class="t" x="690" y="805">notifications</text>
+    <text class="m" x="690" y="828">user_id → users</text>
+    <text class="m" x="690" y="848">message · is_read</text>
+    <text class="k" x="690" y="871">type: order · ai_result · price_alert</text>
+    <text class="m" x="690" y="893">created_at</text>
+  </g>
+  <g class="node soc" data-k="traceability">
+    <rect x="1000" y="775" width="280" height="140"/>
+    <text class="t" x="1020" y="805">traceability_logs</text>
+    <text class="m" x="1020" y="828">product_id → products</text>
+    <text class="k" x="1020" y="851">stage: thu_hoach · dong_goi ·</text>
+    <text class="k" x="1020" y="869">van_chuyen · dang_ban</text>
+    <text class="m" x="1020" y="893">location · happened_at</text>
+  </g>
+  <g class="node soc" data-k="reviews">
+    <rect x="670" y="950" width="280" height="130"/>
+    <text class="t" x="690" y="980">reviews</text>
+    <text class="m" x="690" y="1003">product_id → products</text>
+    <text class="m" x="690" y="1023">buyer_id → users</text>
+    <text class="m" x="690" y="1043">rating 1–5 · comment</text>
+    <text class="k" x="690" y="1065">⚠ không FK tới orders</text>
+  </g>
+
+  <!-- ══ GHI CHÚ ═════════════════════════════ -->
+  <text class="note-h" x="1010" y="960">Vòng đời truy xuất</text>
+  <text class="note" x="1010" y="988">products.qr_code (UNIQUE)</text>
+  <text class="note" x="1010" y="1010">→ khách quét mã, không cần login</text>
+  <text class="note" x="1010" y="1032">→ đọc traceability_logs theo product_id</text>
+  <text class="note" x="1010" y="1054">→ sắp xếp theo happened_at</text>
+
+  </g>
+</svg>
+
+  <div class="src">AgriSenAI.sql · CREATE DATABASE dongthap_nongsan</div>
+
+  <div class="card" id="legend">
+    <button class="x" id="legendX" aria-label="Đóng">×</button>
+    <div class="lh">Chú giải</div>
+    <div class="row"><span class="ln"></span> khoá ngoại (FOREIGN KEY)</div>
+    <div class="row"><span class="ln d"></span> quan hệ nghiệp vụ — <b>không</b> có FK</div>
+    <div class="row"><span class="ln t"></span> dữ liệu từ nguồn ngoài CSDL</div>
+    <hr>
+    <div class="row"><span class="sw act"></span> Tác nhân (giá trị trong <code>roles</code>)</div>
+    <div class="row"><span class="sw core"></span> Nhóm 1 — người dùng &amp; vai trò</div>
+    <div class="row"><span class="sw prod"></span> Nhóm 2 — sản phẩm</div>
+    <div class="row"><span class="sw ai"></span> Nhóm 3 — AI</div>
+    <div class="row"><span class="sw tx"></span> Nhóm 4 — giao dịch</div>
+    <div class="row"><span class="sw soc"></span> Nhóm 5 — truy xuất &amp; tương tác</div>
+  </div>
+
+  <div class="card hidden" id="flowcap">
+    <button class="x" id="flowX" aria-label="Đóng">×</button>
+    <div class="fname" id="f-name"></div>
+    <ol id="f-steps"></ol>
+  </div>
+
+  <div class="card" id="detail">
+    <button class="x" id="detailX" aria-label="Đóng">×</button>
+    <h3 id="d-title">Bấm vào một bảng bất kỳ</h3>
+    <div class="meta" id="d-meta">15 bảng · 5 nhóm · 1 file SQL</div>
+    <p id="d-body">Mỗi khối là một bảng trong <code>AgriSenAI.sql</code>. Các chip phía trên tô sáng từng luồng nghiệp vụ — đăng ký, đăng bán, AI quét ảnh, khuyến nghị giá, đặt hàng, quét QR, đánh giá — và cả 8 khoá ngoại có <code>ON DELETE CASCADE</code>. Kéo để di chuyển, cuộn chuột để phóng to.</p>
+  </div>
+</div>
+
+<script>
+const DETAIL = {
+  a_farmer: { t:"Nông dân", m:"tác nhân · roles.name = 'nong_dan'", b:"Chủ thể tạo dữ liệu. Một dòng <code>users</code> + một dòng <code>farmer_profiles</code> (quan hệ 1–1 vì <code>user_id</code> là UNIQUE). Họ đăng <code>products</code>, chụp ảnh cho AI chấm, và ghi các mốc <code>traceability_logs</code>." },
+  a_buyer:  { t:"Người mua", m:"tác nhân · roles.name = 'nguoi_mua'", b:"Chỉ có dòng trong <code>users</code>, không có hồ sơ farm. Tạo <code>orders</code> (<code>buyer_id</code>) và viết <code>reviews</code> (<code>buyer_id</code>)." },
+  a_scan:   { t:"Người quét QR", m:"tác nhân · không cần tài khoản", b:"Schema <b>không</b> yêu cầu đăng nhập để truy xuất: <code>products.qr_code</code> là UNIQUE, quét ra product_id rồi đọc thẳng <code>traceability_logs</code>. Đây là đường đọc công khai duy nhất." },
+  a_admin:  { t:"Admin", m:"tác nhân · roles.name = 'admin'", b:"Quản trị <code>roles</code>, <code>categories</code> và nhập <code>market_price_reference</code>. Lưu ý: file SQL chỉ seed sẵn 3 dòng roles — chưa có bảng permission nào, phân quyền phải làm ở tầng ứng dụng." },
+
+  roles: { t:"roles", m:"nhóm 1 · 3 dòng seed sẵn", b:"Bảng nhỏ nhất nhưng phải tồn tại <b>trước</b> mọi thứ: <code>INSERT INTO roles VALUES ('nong_dan'),('nguoi_mua'),('admin')</code> nằm ở cuối file, và <code>users.role_id</code> NOT NULL trỏ vào đây. Một user = đúng một vai trò." },
+  users: { t:"users", m:"nhóm 1 · trung tâm của schema", b:"Bảng được tham chiếu nhiều nhất: <code>farmer_profiles</code>, <code>products.farmer_id</code>, <code>orders.buyer_id</code>, <code>reviews.buyer_id</code>, <code>notifications.user_id</code>. <code>email</code> UNIQUE, <code>password</code> hash, <code>is_active</code> để khoá tài khoản thay vì xoá." },
+  farmer_profiles: { t:"farmer_profiles", m:"nhóm 1 · mở rộng 1–1 của users", b:"Tách riêng vì chỉ nông dân mới có. <code>user_id</code> UNIQUE ép quan hệ 1–1 và <code>ON DELETE CASCADE</code> — xoá user là hồ sơ farm biến mất theo. Chứa <code>ocop_certificate</code> và <code>ocop_star_rating</code> (3–5 sao, NULL nếu chưa đạt)." },
+
+  categories: { t:"categories", m:"nhóm 2 · danh mục nông sản", b:"Xoài, Quýt hồng, Sen, Nem… Được dùng ở <b>hai</b> chỗ: phân loại <code>products</code>, và làm khoá để tra <code>market_price_reference</code> — nhờ vậy AI so được giá sản phẩm với giá thị trường của <i>cùng loại</i>." },
+  products: { t:"products", m:"nhóm 2 · bảng bận rộn nhất", b:"Được 6 bảng khác trỏ vào: ảnh, đánh giá AI, khuyến nghị giá, order_items, traceability, reviews. <code>qr_code</code> UNIQUE là cầu nối sang truy xuất nguồn gốc. <code>status</code> chạy draft → active → sold_out → hidden; <code>quantity_available</code> là tồn kho." },
+  product_images: { t:"product_images", m:"nhóm 2 · 1–n, CASCADE", b:"Nhiều ảnh cho một sản phẩm, cờ <code>is_primary</code> chọn ảnh đại diện. Lưu ý schema không ép chỉ-một-ảnh-primary — phải kiểm ở tầng ứng dụng." },
+
+  ai_quality: { t:"ai_quality_assessments", m:"nhóm 3 · một lần quét = một dòng", b:"Nông dân up ảnh → gọi Gemini Vision → lưu kết quả: <code>ripeness_level</code> (xanh/vua_chin/chin/qua_chin), <code>quality_score</code> 0–100, <code>defect_detected</code>. Cột <code>raw_ai_response</code> kiểu JSON giữ nguyên phản hồi gốc để truy vết khi AI chấm sai." },
+  weather: { t:"weather_data_cache", m:"nhóm 3 · cache, không phải nguồn thật", b:"<code>UNIQUE(region, date)</code> là điểm mấu chốt: mỗi vùng mỗi ngày chỉ gọi API thời tiết một lần. Đây là bảng duy nhất trong file không có FK nào — nó độc lập, chỉ được <code>price_recommendations</code> trỏ tới." },
+  market: { t:"market_price_reference", m:"nhóm 3 · giá tham chiếu", b:"Giá thị trường theo <code>category_id</code> + <code>region</code> + <code>price_date</code>. So sánh nó với <code>products.price</code> cho ra khuyến nghị nên bán hay chờ. Cột <code>source</code> ghi lại lấy giá từ đâu." },
+  price_rec: { t:"price_recommendations", m:"nhóm 3 · giao điểm của 3 nguồn", b:"Bảng gộp <b>3 tín hiệu</b>: sản phẩm (giá + độ chín) + thời tiết (mưa thì thu hoạch gấp) + giá thị trường. Kết quả là <code>recommended_action</code> ∈ {ban_ngay, cho_them, giam_gia} kèm <code>reasoning_text</code> do AI viết bằng tiếng Việt. <code>valid_until</code> vì khuyến nghị hết hạn nhanh.<br><br>Hai FK <code>weather_ref_id</code> / <code>market_price_ref_id</code> cho phép NULL — nghĩa là vẫn ra được khuyến nghị khi thiếu dữ liệu." },
+
+  orders: { t:"orders", m:"nhóm 4 · đơn hàng", b:"<code>order_code</code> UNIQUE là mã hiển thị cho người dùng (khác id nội bộ). <code>status</code>: pending → confirmed → shipping → completed, hoặc cancelled. <code>total_amount</code> lưu sẵn thay vì tính lại từ order_items." },
+  order_items: { t:"order_items", m:"nhóm 4 · chi tiết đơn, CASCADE", b:"Điểm quan trọng: <code>unit_price</code> và <code>subtotal</code> được <b>chốt cứng</b> tại thời điểm mua. Nông dân sau này đổi <code>products.price</code> cũng không làm sai lệch đơn cũ. FK tới products <b>không</b> CASCADE — nên không thể xoá sản phẩm đã bán." },
+
+  traceability: { t:"traceability_logs", m:"nhóm 5 · dòng thời gian, CASCADE", b:"Mỗi mốc một dòng: thu_hoach → dong_goi → van_chuyen → dang_ban, kèm <code>location</code> và <code>happened_at</code>. <code>stage</code> để VARCHAR tự do chứ không ENUM — linh hoạt nhưng dễ sai chính tả, nên chuẩn hoá ở tầng ứng dụng." },
+  reviews: { t:"reviews", m:"nhóm 5 · ⚠ có lỗ hổng ràng buộc", b:"<code>rating</code> 1–5 sao, FK tới <code>products</code> và <code>users</code>. <b>Nhưng không có FK tới orders</b> — schema không hề ép \"phải mua rồi mới được đánh giá\", và cũng không có UNIQUE(product_id, buyer_id) nên một người spam được nhiều review. Cả hai phải chặn ở tầng ứng dụng." },
+  notifications: { t:"notifications", m:"nhóm 5 · đích đến của mọi sự kiện", b:"Ba luồng đều đổ về đây qua cột <code>type</code>: <code>order</code> (đơn hàng đổi trạng thái), <code>ai_result</code> (AI chấm xong), <code>price_alert</code> (có khuyến nghị giá mới). Chỉ có FK tới <code>users</code> — các đường đứt trên sơ đồ là logic ứng dụng, không phải ràng buộc CSDL." },
+
+  x_gemini: { t:"Gemini Vision", m:"ngoài CSDL · API thị giác", b:"Nhận <code>image_url</code>, trả JSON mô tả độ chín và khuyết tật. Toàn bộ phản hồi được đổ vào <code>ai_quality_assessments.raw_ai_response</code> (kiểu JSON của MySQL 8) để sau này còn đối chiếu." },
+  x_wapi: { t:"API thời tiết", m:"ngoài CSDL · gọi theo lịch", b:"Nguồn cho <code>weather_data_cache</code>. Ràng buộc <code>UNIQUE(region, date)</code> chính là cơ chế chống gọi trùng — insert lần hai trong ngày sẽ bị chặn." },
+  x_msrc: { t:"Nguồn giá thị trường", m:"ngoài CSDL · nhập tay hoặc crawl", b:"Chợ đầu mối, sàn TMĐT, sở NN… Mỗi bản ghi ghi rõ <code>source</code> để biết giá từ đâu ra khi khuyến nghị bị nghi ngờ." },
+};
+
+const FLOWS = {
+  onboard: {
+    name: "Đăng ký & hồ sơ nông dân",
+    edges: ["e-ad-roles","e-af-users","e-roles-users","e-users-fp"],
+    nodes: ["a_admin","a_farmer","roles","users","farmer_profiles"],
+    steps: [
+      "<code>roles</code> phải có dữ liệu trước — file SQL seed sẵn 3 dòng: nong_dan / nguoi_mua / admin",
+      "Đăng ký tạo 1 dòng <code>users</code> với <code>role_id</code> trỏ về roles, <code>email</code> UNIQUE",
+      "Nếu là nông dân: thêm <code>farmer_profiles</code> — <code>user_id</code> UNIQUE nên đúng 1 hồ sơ / 1 tài khoản",
+      "Hồ sơ giữ <code>ocop_certificate</code> và <code>ocop_star_rating</code> (3–5 sao, NULL nếu chưa đạt)"
+    ]
+  },
+  listing: {
+    name: "Đăng bán nông sản",
+    edges: ["e-af-users","e-users-prod","e-cat-prod","e-prod-img"],
+    nodes: ["a_farmer","users","categories","products","product_images"],
+    steps: [
+      "Nông dân tạo <code>products</code>: <code>farmer_id</code> → users, <code>category_id</code> → categories",
+      "Đặt <code>price</code>, <code>unit</code> (kg/thùng), <code>quantity_available</code>",
+      "Ảnh đổ vào <code>product_images</code>, một ảnh gắn cờ <code>is_primary</code>",
+      "<code>status</code> bắt đầu ở <code>draft</code>; khi chuyển <code>active</code> thì sinh <code>qr_code</code> (UNIQUE) để truy xuất"
+    ]
+  },
+  ai: {
+    name: "AI quét ảnh — chấm chất lượng",
+    edges: ["e-af-users","e-gemini-ai","e-prod-ai","e-ai-notif"],
+    nodes: ["a_farmer","products","x_gemini","ai_quality","notifications"],
+    steps: [
+      "Nông dân chụp ảnh nông sản → lưu <code>image_url</code>",
+      "Gọi <b>Gemini Vision</b>, nhận JSON và đổ nguyên vào <code>raw_ai_response</code> để còn truy vết",
+      "Bóc tách thành <code>ripeness_level</code> (xanh → qua_chin), <code>quality_score</code> 0–100, <code>defect_detected</code> + <code>defect_note</code>",
+      "Bắn <code>notifications</code> với <code>type = 'ai_result'</code> — đường đứt vì <b>không có FK</b>, chỉ là logic ứng dụng"
+    ]
+  },
+  price: {
+    name: "Khuyến nghị giá bán — gộp 3 nguồn",
+    edges: ["e-wapi-weather","e-msrc-market","e-cat-market","e-weather-pr","e-market-pr","e-prod-pr","e-pr-notif"],
+    nodes: ["x_wapi","x_msrc","weather","market","categories","products","price_rec","notifications"],
+    steps: [
+      "<code>weather_data_cache</code> hứng dự báo — <code>UNIQUE(region, date)</code> đảm bảo mỗi vùng/ngày chỉ gọi API một lần",
+      "<code>market_price_reference</code> giữ giá thị trường theo <code>category_id</code> + region + ngày",
+      "<code>price_recommendations</code> nối 3 khoá: sản phẩm (giá + độ chín) × thời tiết × giá thị trường",
+      "Ra <code>recommended_action</code>: <b>ban_ngay</b> / <b>cho_them</b> / <b>giam_gia</b>, kèm <code>reasoning_text</code> AI viết và <code>valid_until</code>",
+      "Bắn <code>notifications</code> <code>type = 'price_alert'</code>"
+    ]
+  },
+  order: {
+    name: "Đặt hàng",
+    edges: ["e-ab-users","e-users-orders","e-orders-oi","e-prod-oi","e-orders-notif"],
+    nodes: ["a_buyer","users","orders","order_items","products","notifications"],
+    steps: [
+      "Người mua tạo <code>orders</code>: <code>buyer_id</code> → users, <code>order_code</code> UNIQUE làm mã tra cứu",
+      "Mỗi sản phẩm trong giỏ = 1 dòng <code>order_items</code>, <b>chốt cứng</b> <code>unit_price</code> và <code>subtotal</code>",
+      "Nhờ chốt giá, nông dân đổi <code>products.price</code> sau này không làm sai lệch đơn cũ",
+      "Trừ <code>products.quantity_available</code>; <code>status</code> chạy pending → confirmed → shipping → completed",
+      "Mỗi lần đổi trạng thái → <code>notifications</code> <code>type = 'order'</code>"
+    ]
+  },
+  trace: {
+    name: "Quét QR — truy xuất nguồn gốc",
+    edges: ["e-prod-trace","e-as-trace"],
+    nodes: ["a_scan","products","traceability"],
+    steps: [
+      "Nông dân ghi từng mốc vào <code>traceability_logs</code>: thu_hoach → dong_goi → van_chuyen → dang_ban",
+      "Mỗi dòng có <code>location</code> và <code>happened_at</code> — ghép lại thành dòng thời gian",
+      "<code>products.qr_code</code> UNIQUE in trên tem; quét ra product_id",
+      "Người quét <b>không cần tài khoản</b> — đây là đường đọc công khai duy nhất trong schema"
+    ]
+  },
+  review: {
+    name: "Đánh giá sau mua",
+    edges: ["e-ab-users","e-prod-rev","e-users-rev"],
+    nodes: ["a_buyer","users","products","reviews"],
+    steps: [
+      "<code>reviews</code> chỉ có 2 khoá ngoại: <code>product_id</code> và <code>buyer_id</code>",
+      "⚠ <b>Không có FK tới <code>orders</code></b> — CSDL không hề ép \"phải mua rồi mới được đánh giá\"",
+      "⚠ Cũng không có <code>UNIQUE(product_id, buyer_id)</code> — một người review cùng sản phẩm bao nhiêu lần cũng được",
+      "Cả hai ràng buộc trên phải tự chặn ở tầng ứng dụng, hoặc bổ sung vào schema"
+    ]
+  },
+  cascade: {
+    name: "ON DELETE CASCADE — xoá dây chuyền",
+    edges: ["e-users-fp","e-users-notif","e-prod-img","e-prod-ai","e-prod-pr","e-prod-trace","e-prod-rev","e-orders-oi"],
+    nodes: ["users","products","orders","farmer_profiles","notifications","product_images","ai_quality","price_rec","traceability","reviews","order_items"],
+    steps: [
+      "Xoá 1 <code>users</code> → mất luôn <code>farmer_profiles</code> + <code>notifications</code>",
+      "Xoá 1 <code>products</code> → mất <code>product_images</code>, <code>ai_quality_assessments</code>, <code>price_recommendations</code>, <code>traceability_logs</code>, <code>reviews</code>",
+      "Xoá 1 <code>orders</code> → mất <code>order_items</code>",
+      "Ngược lại, <code>products.farmer_id</code> · <code>orders.buyer_id</code> · <code>order_items.product_id</code> <b>không</b> CASCADE → MySQL sẽ <b>chặn</b> việc xoá, bảo vệ lịch sử giao dịch",
+      "Hệ quả: muốn 'xoá' nông dân thì phải dùng <code>users.is_active = FALSE</code>, không DELETE thật"
+    ]
+  }
+};
+
+const stage = document.getElementById('stage');
+const nodes = document.querySelectorAll('.node');
+const edges = document.querySelectorAll('.edge');
+const elbls = document.querySelectorAll('.elbl');
+const chips = document.querySelectorAll('.chip');
+const fcap  = document.getElementById('flowcap');
+const detail = document.getElementById('detail');
+const legend = document.getElementById('legend');
+
+/* ── flows ───────────────────────────────── */
+function setFlow(key) {
+  chips.forEach(c => c.classList.toggle('on', c.dataset.flow === key));
+  edges.forEach(e => e.classList.remove('lit'));
+  elbls.forEach(l => l.classList.remove('lit'));
+  nodes.forEach(n => n.classList.remove('lit'));
+  if (key === 'all') { stage.classList.remove('flowing'); fcap.classList.add('hidden'); return; }
+  const f = FLOWS[key];
+  stage.classList.add('flowing');
+  f.edges.forEach(id => document.getElementById(id)?.classList.add('lit'));
+  elbls.forEach(l => { if (f.edges.includes(l.dataset.e)) l.classList.add('lit'); });
+  f.nodes.forEach(k => document.querySelector(`.node[data-k="${k}"]`)?.classList.add('lit'));
+  document.getElementById('f-name').textContent = f.name;
+  document.getElementById('f-steps').innerHTML = f.steps.map(s => `<li>${s}</li>`).join('');
+  fcap.classList.remove('hidden');
+}
+chips.forEach(c => c.addEventListener('click', () => setFlow(c.dataset.flow)));
+
+nodes.forEach(n => n.addEventListener('click', () => {
+  nodes.forEach(x => x.classList.remove('sel'));
+  n.classList.add('sel');
+  const d = DETAIL[n.dataset.k];
+  if (!d) return;
+  document.getElementById('d-title').textContent = d.t;
+  document.getElementById('d-meta').textContent = d.m;
+  document.getElementById('d-body').innerHTML = d.b;
+  detail.classList.remove('hidden');
+}));
+
+/* ── dismissible cards ───────────────────── */
+document.getElementById('detailX').addEventListener('click', () => detail.classList.add('hidden'));
+document.getElementById('flowX').addEventListener('click', () => fcap.classList.add('hidden'));
+document.getElementById('legendX').addEventListener('click', () => legend.classList.add('hidden'));
+document.getElementById('legendBtn').addEventListener('click', () => legend.classList.toggle('hidden'));
+
+/* ── theme ───────────────────────────────── */
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const dark = !document.documentElement.classList.contains('dark');
+  document.documentElement.classList.toggle('dark', dark);
+  localStorage.setItem('theme', dark ? 'dark' : 'light');
+});
+
+/* ── pan + zoom ──────────────────────────── */
+const svg = document.getElementById('svg');
+const content = document.getElementById('svg-content');
+const zoomInd = document.getElementById('zoomInd');
+let scale = 1, tx = 0, ty = 0;
+
+function apply() {
+  content.setAttribute('transform', `translate(${tx.toFixed(2)},${ty.toFixed(2)}) scale(${scale.toFixed(4)})`);
+  zoomInd.textContent = Math.round(scale * 100) + '%';
+}
+function toSvg(e) {
+  const p = svg.createSVGPoint();
+  p.x = e.clientX; p.y = e.clientY;
+  return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+
+svg.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const p = toSvg(e);
+  const next = Math.min(4, Math.max(0.3, scale * Math.exp(-e.deltaY * 0.0015)));
+  const r = next / scale;
+  tx = p.x - (p.x - tx) * r;
+  ty = p.y - (p.y - ty) * r;
+  scale = next;
+  apply();
+}, { passive: false });
+
+let dragging = false, moved = false, start = null, startTx = 0, startTy = 0;
+
+svg.addEventListener('pointerdown', (e) => {
+  if (e.button !== 0) return;
+  dragging = true; moved = false;
+  start = toSvg(e); startTx = tx; startTy = ty;
+  svg.setPointerCapture(e.pointerId);
+  stage.classList.add('dragging');
+});
+svg.addEventListener('pointermove', (e) => {
+  if (!dragging) return;
+  const cur = toSvg(e);
+  const dx = cur.x - start.x, dy = cur.y - start.y;
+  if (!moved && Math.hypot(dx, dy) * (svg.getBoundingClientRect().width / svg.viewBox.baseVal.width) > 5) moved = true;
+  tx = startTx + dx; ty = startTy + dy;
+  apply();
+});
+function endDrag(e) {
+  if (!dragging) return;
+  dragging = false;
+  stage.classList.remove('dragging');
+  try { svg.releasePointerCapture(e.pointerId); } catch (_) {}
+  if (moved) {
+    svg.addEventListener('click', (ev) => { ev.stopPropagation(); }, { capture: true, once: true });
+  }
+}
+svg.addEventListener('pointerup', endDrag);
+svg.addEventListener('pointercancel', endDrag);
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  scale = 1; tx = 0; ty = 0; apply();
+});
+apply();
+</script>
+</body>
+</html>
