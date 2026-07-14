@@ -1,0 +1,94 @@
+{
+  "_ghi_chu": [
+    "Cong thuc dung lai bo anh reference. Chay: php artisan reference:build xoai",
+    "Anh goc nam ngoai git (dataset/ da .gitignore). File nay ghi lai NGUON GOC",
+    "va KHUNG CAT de nguoi khac kiem chung duoc cach chon anh.",
+    "crop = [left, top, side] theo PIXEL cua anh SAU KHI da xoay theo EXIF."
+  ],
+  "loai": "xoai",
+  "nguon": "Anh tu chup bang dien thoai, gan nhan tren Roboflow (workspace: thinh-cao, project: phan-loai-xoai). 69 anh / 71 qua.",
+  "nguyen_tac_chon": [
+    "PHU BIEN, KHONG PHU GIUA: chon anh o ranh gioi giua cac hang, vi do la cho model de sai nhat.",
+    "",
+    "TRON NEN — nen KHONG duoc tuong quan voi hang:",
+    "  bang chuyen xanh: 01 (dac_biet), 03 (hang_1), 06 (khong_dat)",
+    "  ban go:           02 (dac_biet), 04 (hang_2), 05 (hang_2)",
+    "  -> ca hai nen deu xuat hien o dau tren VA dau duoi cua thang.",
+    "",
+    "TRON DO CHIN — do chin KHONG duoc tuong quan voi hang:",
+    "  hang cao nhat co CA qua chin vang (01) VA qua xanh (02)",
+    "  hang thap nhat (06) la qua CHIN VANG",
+    "  -> model khong the hoc 'xanh = diem cao' hay 'vang = diem thap'.",
+    "  Day la bay rieng cua xoai: xoai xanh la MOT SAN PHAM (an voi muoi ot),",
+    "  khong phai xoai chua chin. Xem config: agrisenai.muc_dich_ban.",
+    "",
+    "NEO TRAN = 01/02. NEO SAN = 06."
+  ],
+  "han_che_da_biet": [
+    "Trong 71 qua KHONG co qua nao THOI / MOC / NUT / DAP NAT.",
+    "Neo san (06) la qua bi than thu nang nhat co duoc — vet lom, lan rong,",
+    "KHONG phai qua thoi rua.",
+    "-> Qua thoi/moc/nut duoc chan bang RULE ENGINE (config: defects_loai_bo),",
+    "   khong dua vao anh mau. Xem docs/danh-gia-dataset.md muc 4.",
+    "",
+    "KHONG co qua chin nao SACH TUYET DOI trong 69 anh. Qua 01 la qua chin",
+    "sach nhat co duoc (vai dom rat nho). Nhan vang cua no phai ghi trung thuc",
+    "dieu do, khong duoc lam tron thanh 'hoan hao'."
+  ],
+  "anh": [
+    {
+      "file": "01_dac_biet_chin.jpg",
+      "grade": "dac_biet",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7004913695937_9dbb6ab245a6db15f06a8afaca531e0a_jpg.rf.l8lw0OZJLcvdwxp2s4rT.jpg",
+      "crop": [0, 562, 1871],
+      "nen": "bang chuyen xanh",
+      "do_chin": "chin vang",
+      "vai_tro": "NEO TRAN (chin) — qua chin sach nhat trong dataset. Vet nau o CUONG (vet nhua khi cat), ~2% be mat, khong an vao thit qua."
+    },
+    {
+      "file": "02_dac_biet_xanh.jpg",
+      "grade": "dac_biet",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7247192746477_5596678d84e56f346b1f07feeabf93b7_jpg.rf.0b6rAlTCjn8bE34Ec6IG.jpg",
+      "crop": [419, 1066, 1120],
+      "nen": "ban go",
+      "do_chin": "xanh",
+      "vai_tro": "NEO TRAN (xanh) — day AI: vo xanh la SAN PHAM, khong phai 'chua chin'"
+    },
+    {
+      "file": "03_hang_1.jpg",
+      "grade": "hang_1",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/test/images/IMG_2751_JPG.rf.fFjQYA9jWALEKE9QGPSq.JPG",
+      "crop": [329, 1725, 1913],
+      "nen": "bang chuyen xanh",
+      "do_chin": "chin vang",
+      "vai_tro": "Bien dac_biet / hang_1 — dom nau GIUA THAN qua (khong phai o cuong), ~5% be mat"
+    },
+    {
+      "file": "04_hang_2.jpg",
+      "grade": "hang_2",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7220771419268_f5958bf86d9275c9f66d53f6be88744b_jpg.rf.S4wNNGt4pcNVyXRQu6Sb.jpg",
+      "crop": [0, 320, 1920],
+      "nen": "ban go",
+      "do_chin": "uong",
+      "vai_tro": "Bien hang_1 / hang_2 — dom den rai rac khap qua"
+    },
+    {
+      "file": "05_hang_2_nang.jpg",
+      "grade": "hang_2",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7220771405143_1bac775d4aee5d1d04ccf9bf54aa9190_jpg.rf.Qa9WQFoBIrEbs9VFZvH2.jpg",
+      "crop": [0, 346, 1920],
+      "nen": "ban go",
+      "do_chin": "uong",
+      "vai_tro": "Bien hang_2 / khong_dat — vet than thu lon nhung tong dien tich chua qua 1/4 be mat"
+    },
+    {
+      "file": "06_khong_dat.jpg",
+      "grade": "khong_dat",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7200234148082_cc3928b75f64b118dacec33ccbe879ea_jpg.rf.V7NjfPSh5iKNs8pRWyPw.jpg",
+      "crop": [19, 320, 1920],
+      "nen": "bang chuyen xanh",
+      "do_chin": "chin vang",
+      "vai_tro": "NEO SAN — vet than thu lom, lan rong, vuot 1/4 be mat"
+    }
+  ]
+}

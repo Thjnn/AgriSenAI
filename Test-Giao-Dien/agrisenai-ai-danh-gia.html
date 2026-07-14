@@ -735,6 +735,9 @@
             .field {
                 display: flex;
                 flex-direction: column;
+                /* Ô lưới mặc định không co nhỏ hơn nội dung; không có dòng này thì
+                   input (rộng mặc định ~180px) làm 2 cột tràn ra ngoài thẻ trên mobile. */
+                min-width: 0;
             }
             .field.full {
                 grid-column: 1 / -1;
@@ -751,6 +754,8 @@
             }
             .field input,
             .field select {
+                width: 100%;
+                min-width: 0;
                 border: 1.5px solid var(--gray-200);
                 border-radius: var(--r-sm);
                 padding: 12px 14px;

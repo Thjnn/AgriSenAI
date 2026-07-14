@@ -2,3 +2,10 @@
 !private/
 !public/
 !.gitignore
+
+# Bo anh few-shot + tap test: BAT BUOC commit de nguoi khac clone ve chay duoc ngay.
+# Can ca dong `/**` — pattern `*` o tren an ca thu muc con.
+!reference/
+!reference/**
+!testset/
+!testset/**

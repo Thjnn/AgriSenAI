@@ -1,0 +1,199 @@
+{
+  "_huong_dan": [
+    "DAY KHONG PHAI FILE TRAIN. Day la NOI DUNG PROMPT.",
+    "Moi lan nong dan upload anh, Laravel doc 6 anh trong thu muc nay + 6 nhan",
+    "duoi day, ghep thanh cac cap (anh -> nhan) dat TRUOC anh can cham, roi gui",
+    "toan bo len Gemini. Do la few-shot prompting.",
+    "",
+    "reasoning PHAI NEU LY DO theo TCVN, khong duoc chi mo ta.",
+    "  Sai:  'Qua nay co dom den'",
+    "  Dung: 'Co dom den ~4% be mat, chua an vao thit qua nen van dat hang II'",
+    "",
+    "CANH BAO: nhan vang duoi day do AI de xuat, CHUA duoc chuyen gia nong nghiep",
+    "duyet. Truoc khi dung con so do chinh xac de di thi, phai co nguoi co chuyen",
+    "mon (thay huong dan / can bo khuyen nong / chu vua) soat lai."
+  ],
+
+  "_can_xac_nhan": [
+    "GIONG XOAI: cac nhan duoi dang ghi 'Xoài Cát Chu' — day la PHONG DOAN theo",
+    "hinh dang qua. Ban la nguoi chup anh, hay xac nhan dung giong. Neu sai giong,",
+    "sua o day truoc khi chay that, vi AI se hoc theo."
+  ],
+
+  "labels": [
+    {
+      "file": "01_dac_biet_chin.jpg",
+      "label": {
+        "usable": true,
+        "detected_product": "Xoài Cát Chu",
+        "muc_dich_ban": "an_chin",
+        "grade": "dac_biet",
+        "overall_score": 9.3,
+        "confidence": 0.90,
+        "scores": {
+          "color": 9.5,
+          "surface": 9.0,
+          "shape": 9.3,
+          "uniformity": 9.2,
+          "ripeness": 9.5
+        },
+        "defects": [
+          {
+            "type": "vet_nhua",
+            "severity": "nhe",
+            "area_percent": 2,
+            "note": "Vết nhựa nâu ở cuống, phát sinh khi cắt quả khỏi cây"
+          }
+        ],
+        "reasoning": "Vỏ vàng đều, căng bóng, quả cân đối. Khuyết tật duy nhất là vết nhựa nâu chiếm khoảng 2% bề mặt và nằm ngay ở cuống — đây là vết sinh ra lúc cắt cuống, chỉ ở lớp vỏ, không ăn vào thịt quả. TCVN 9766:2013 vẫn cho phép hạng đặc biệt có khuyết tật bề mặt rất nhẹ miễn là không ảnh hưởng hình thức chung của quả, nên quả này đạt hạng đặc biệt.",
+        "advice": "Quả đẹp nhất, bán được giá cao nhất. Lau sạch vết nhựa ở cuống trước khi đóng gói để tăng hình thức."
+      }
+    },
+    {
+      "file": "02_dac_biet_xanh.jpg",
+      "label": {
+        "usable": true,
+        "detected_product": "Xoài Cát Chu",
+        "muc_dich_ban": "an_xanh",
+        "grade": "dac_biet",
+        "overall_score": 9.3,
+        "confidence": 0.88,
+        "scores": {
+          "color": 9.3,
+          "surface": 9.2,
+          "shape": 9.4,
+          "uniformity": 9.3,
+          "ripeness": 9.5
+        },
+        "defects": [
+          {
+            "type": "xuoc_vo",
+            "severity": "nhe",
+            "area_percent": 1,
+            "note": "Vài vết xước rất nhỏ trên vỏ, không đáng kể"
+          }
+        ],
+        "reasoning": "Quả bán để ăn xanh. Vỏ xanh đậm, căng, bóng, thịt chắc — đây là ĐẶC TRƯNG của sản phẩm xoài xanh, KHÔNG PHẢI dấu hiệu quả chưa chín, nên không bị trừ điểm độ chín. Bề mặt gần như sạch hoàn toàn, chỉ vài vết xước rất nhỏ dưới 1% bề mặt, không ăn vào thịt quả. Dáng quả cân đối. Đạt hạng đặc biệt theo TCVN 9766:2013.",
+        "advice": "Xoài xanh loại 1, rất hợp bán để ăn sống chấm muối ớt. Giữ nơi thoáng mát, tránh để chín mềm sẽ mất giá trị của hàng ăn xanh."
+      }
+    },
+    {
+      "file": "03_hang_1.jpg",
+      "label": {
+        "usable": true,
+        "detected_product": "Xoài Cát Chu",
+        "muc_dich_ban": "an_chin",
+        "grade": "hang_1",
+        "overall_score": 8.2,
+        "confidence": 0.85,
+        "scores": {
+          "color": 9.0,
+          "surface": 7.2,
+          "shape": 9.0,
+          "uniformity": 8.0,
+          "ripeness": 9.0
+        },
+        "defects": [
+          {
+            "type": "nam_nang",
+            "severity": "nhe",
+            "area_percent": 5,
+            "note": "Mảng nâu nhạt và vài đốm sẫm ở giữa thân quả, bề mặt vẫn phẳng"
+          }
+        ],
+        "reasoning": "Vỏ vàng đẹp, quả cân đối, chín tới. Có mảng nâu nhạt và vài đốm sẫm chiếm khoảng 5% bề mặt, nằm giữa thân quả. Tổng khuyết tật dưới ngưỡng 1/10 bề mặt của hạng I theo TCVN 9766:2013, và bề mặt còn phẳng nên khuyết tật chưa ăn vào thịt quả — vẫn đạt hạng I. Không lên được hạng đặc biệt vì vết nằm giữa thân quả (không phải ở cuống), làm giảm hình thức chung.",
+        "advice": "Quả ngon, bán tươi bình thường được. Nên bán sớm vì đốm nấm có thể lan rộng khi quả chín thêm."
+      }
+    },
+    {
+      "file": "04_hang_2.jpg",
+      "label": {
+        "usable": true,
+        "detected_product": "Xoài Cát Chu",
+        "muc_dich_ban": "an_chin",
+        "grade": "hang_2",
+        "overall_score": 6.5,
+        "confidence": 0.85,
+        "scores": {
+          "color": 7.5,
+          "surface": 5.5,
+          "shape": 8.5,
+          "uniformity": 6.0,
+          "ripeness": 7.0
+        },
+        "defects": [
+          {
+            "type": "blackspot",
+            "severity": "trung_binh",
+            "area_percent": 12,
+            "note": "Đốm đen nhỏ rải rác khắp quả, kèm vài mảng nâu"
+          }
+        ],
+        "reasoning": "Quả ương, màu vỏ chưa đều (còn loang xanh–vàng). Đốm đen nhỏ rải rác khắp bề mặt, tổng khoảng 12% — đã vượt ngưỡng 1/10 bề mặt của hạng I nhưng vẫn dưới 1/4 bề mặt. Các đốm còn nông, bề mặt chưa lõm, tức chưa ăn vào thịt quả. Theo TCVN 9766:2013, quả đạt hạng II.",
+        "advice": "Vẫn bán tươi được nhưng nên hạ giá so với hàng loại 1. Bán nhanh trong vài ngày, đừng để lâu vì đốm sẽ lan."
+      }
+    },
+    {
+      "file": "05_hang_2_nang.jpg",
+      "label": {
+        "usable": true,
+        "detected_product": "Xoài Cát Chu",
+        "muc_dich_ban": "an_chin",
+        "grade": "hang_2",
+        "overall_score": 5.6,
+        "confidence": 0.80,
+        "scores": {
+          "color": 7.0,
+          "surface": 4.0,
+          "shape": 8.0,
+          "uniformity": 5.0,
+          "ripeness": 7.0
+        },
+        "defects": [
+          {
+            "type": "nam_nang",
+            "severity": "nang",
+            "area_percent": 18,
+            "note": "Mảng thán thư nâu sẫm tập trung ở vai và thân quả"
+          },
+          {
+            "type": "blackspot",
+            "severity": "trung_binh",
+            "area_percent": 5,
+            "note": "Đốm đen nhỏ rải rác quanh các mảng nấm"
+          }
+        ],
+        "reasoning": "Có mảng thán thư nâu sẫm khá lớn ở vai quả cộng với đốm đen rải rác, tổng khuyết tật khoảng 23% bề mặt — vẫn nằm trong giới hạn 1/4 bề mặt của hạng II theo TCVN 9766:2013. Bề mặt các vết còn tương đối phẳng, chưa thấy dấu hiệu lõm sâu vào thịt quả. Quả giữ được hạng II nhưng đã SÁT ranh giới bị loại; chỉ cần vết lan thêm hoặc lõm xuống là rớt xuống không đạt.",
+        "advice": "Chỉ nên bán giá thấp hoặc bán xô. Cần bán ngay trong 1–2 ngày, để thêm là nấm ăn vào thịt và mất trắng."
+      }
+    },
+    {
+      "file": "06_khong_dat.jpg",
+      "label": {
+        "usable": true,
+        "detected_product": "Xoài Cát Chu",
+        "muc_dich_ban": "an_chin",
+        "grade": "khong_dat",
+        "overall_score": 3.4,
+        "confidence": 0.85,
+        "scores": {
+          "color": 6.0,
+          "surface": 2.0,
+          "shape": 7.5,
+          "uniformity": 3.0,
+          "ripeness": 6.5
+        },
+        "defects": [
+          {
+            "type": "nam_nang",
+            "severity": "nang",
+            "area_percent": 30,
+            "note": "Nhiều mảng thán thư nâu đen liên kết thành vệt lớn, bề mặt LÕM xuống"
+          }
+        ],
+        "reasoning": "Các mảng thán thư nâu đen đã liên kết thành vệt lớn chạy dọc thân quả, tổng khoảng 30% bề mặt — vượt ngưỡng 1/4 bề mặt tối đa của hạng II theo TCVN 9766:2013. Quan trọng hơn, bề mặt các vết đã LÕM XUỐNG so với vỏ xung quanh, là dấu hiệu nấm đã ăn xuyên qua vỏ vào thịt quả. Khuyết tật ăn vào thịt quả thì không còn xét hạng — quả không đạt.",
+        "advice": "Không nên bán tươi. Nếu phần thịt bên trong còn tốt thì cắt bỏ chỗ hỏng để chế biến (sấy, làm mứt, sinh tố) nhằm gỡ vốn; nếu thịt đã thâm thì bỏ."
+      }
+    }
+  ]
+}

@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    // Gemini Vision — module AI danh gia chat luong nong san.
+    // Lay key tai https://aistudio.google.com/apikey (bat dau bang "AIza...").
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-flash-latest'),
+        'timeout' => (int) env('GEMINI_TIMEOUT', 60),
+    ],
+
 ];

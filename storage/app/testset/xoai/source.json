@@ -1,0 +1,285 @@
+{
+  "_ghi_chu": [
+    "Tap test — KHONG dung lam anh few-shot.",
+    "Chay: php artisan reference:build xoai --set=testset",
+    "Nhan that nam trong ground_truth.json."
+  ],
+  "loai": "xoai",
+  "anh": [
+    {
+      "file": "t01.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/IMG_2415_JPG.rf.iXSobylgk02nBCZSCrOq.JPG",
+      "crop": [
+        0,
+        314,
+        2736
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 3
+    },
+    {
+      "file": "t02.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/IMG_2771_JPG.rf.Ce6uSA95N3QsefXJhRyo.JPG",
+      "crop": [
+        0,
+        387,
+        2489
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 12
+    },
+    {
+      "file": "t03.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/IMG_2786_JPG.rf.YEkZfiBXR7LcGCclNU5j.JPG",
+      "crop": [
+        0,
+        626,
+        3024
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 13
+    },
+    {
+      "file": "t04.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7200234124472_fb8ab8cb6bc078d5c73280aff9d203e6_jpg.rf.OjNVrLocrQ9dYnBBurmd.jpg",
+      "crop": [
+        0,
+        229,
+        1874
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 16
+    },
+    {
+      "file": "t05.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7200234128061_28d13411dd808fa03129f601fdc889c6_jpg.rf.9UBzaXU8L2z35BsNrB1f.jpg",
+      "crop": [
+        0,
+        289,
+        1734
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 17
+    },
+    {
+      "file": "t06.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7200234168291_8c0bd2c17ad22bd525611c4cfad4a848_jpg.rf.85cparJm3fKDamDrRZ0h.jpg",
+      "crop": [
+        0,
+        266,
+        1920
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 21
+    },
+    {
+      "file": "t07.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7220771406030_772d21336cbabc4a8f84f4a502ecb0e9_jpg.rf.XpCI41AwdWeTVKlMAvfp.jpg",
+      "crop": [
+        0,
+        197,
+        1784
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 23
+    },
+    {
+      "file": "t08.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7220771484323_425afa66716448b4eed4b67bfe73bc73_jpg.rf.Dq8U5bas8fw306hxlOgo.jpg",
+      "crop": [
+        0,
+        487,
+        1920
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 25
+    },
+    {
+      "file": "t09.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7247192643614_01ed97c093e4d6f05c29df48738ee0b2_jpg.rf.EVJunc9SFxuimXFU7yCk.jpg",
+      "crop": [
+        0,
+        395,
+        1920
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 26
+    },
+    {
+      "file": "t10.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7247193330103_9c34807dc446b48ba9b0670a5a257894_jpg.rf.bnXX6g0yUbAWCHtnUHVo.jpg",
+      "crop": [
+        0,
+        344,
+        1920
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 29
+    },
+    {
+      "file": "t11.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7247193449006_5e00fb5796558dc666ff737ee941176e_jpg.rf.mHJBEH0CrVcTfkr072T4.jpg",
+      "crop": [
+        0,
+        284,
+        1844
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 30
+    },
+    {
+      "file": "t12.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7247193827889_1e7375941f24dc587dbb9fbd44e8b3d0_jpg.rf.f0RMWww3I2T0GQsoBZxO.jpg",
+      "crop": [
+        0,
+        318,
+        1834
+      ],
+      "do_chin_goc": "xanh",
+      "index_dataset": 34
+    },
+    {
+      "file": "t13.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7247194431953_bb4a66f95e8a1a404a77385b135997b9_jpg.rf.JYfj5n4O2pGmy9aQ6Ndq.jpg",
+      "crop": [
+        0,
+        226,
+        1863
+      ],
+      "do_chin_goc": "xanh",
+      "index_dataset": 36
+    },
+    {
+      "file": "t14.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7247194981745_269f2420db0956571ceb6f34dcb1419e_jpg.rf.FbDpwoIaHbdukhe5rhNd.jpg",
+      "crop": [
+        0,
+        447,
+        1920
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 38
+    },
+    {
+      "file": "t15.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7247195070164_f0389368b484622f1caea67f1d45c5bd_jpg.rf.BFNMjVmNyu9oSlVfGcWS.jpg",
+      "crop": [
+        0,
+        540,
+        1920
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 41
+    },
+    {
+      "file": "t16.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7247195177129_7ca9319247069ab345aa8312a4cce541_jpg.rf.YGBDD8Y3yKwWIYy5CKqd.jpg",
+      "crop": [
+        0,
+        226,
+        1532
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 42
+    },
+    {
+      "file": "t17.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7247195262681_4cc37cc64d8554e2e1f51d271fe593dc_jpg.rf.Q7qMzOB9k12Vy68cLlQh.jpg",
+      "crop": [
+        0,
+        499,
+        1920
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 43
+    },
+    {
+      "file": "t18.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7247222525979_f49ce913c9e53249553c6a8107317d63_jpg.rf.squQpdUIl4OpMqfgCWR5.jpg",
+      "crop": [
+        0,
+        554,
+        1838
+      ],
+      "do_chin_goc": "xanh",
+      "index_dataset": 44
+    },
+    {
+      "file": "t19.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/train/images/z7247222557027_d782ab8e3e7764e11905ed1cf03e79be_jpg.rf.ktFK1fIQg0kCs30ZJOYa.jpg",
+      "crop": [
+        0,
+        662,
+        1690
+      ],
+      "do_chin_goc": "xanh",
+      "index_dataset": 46
+    },
+    {
+      "file": "t20.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/valid/images/IMG_2618_JPG.rf.SINkzvUcYjRcEfoUmAIG.JPG",
+      "crop": [
+        0,
+        537,
+        3024
+      ],
+      "do_chin_goc": "xanh",
+      "index_dataset": 49
+    },
+    {
+      "file": "t21.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/valid/images/IMG_2738_JPG.rf.9370K1u61ZlwWApW2Hay.JPG",
+      "crop": [
+        0,
+        392,
+        2752
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 50
+    },
+    {
+      "file": "t22.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/valid/images/z7220771458854_248ba4d5bfbbd74f1621faa3fb9d18d5_jpg.rf.8MhgvfNlISIyUBm0YD5m.jpg",
+      "crop": [
+        0,
+        273,
+        1864
+      ],
+      "do_chin_goc": "xanh",
+      "index_dataset": 53
+    },
+    {
+      "file": "t23.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/valid/images/z7247192887001_f6b36e4b7089d86434b2883ed591ce92_jpg.rf.8N3hL35IauAa5VeDMzsO.jpg",
+      "crop": [
+        0,
+        640,
+        1920
+      ],
+      "do_chin_goc": "xanh",
+      "index_dataset": 57
+    },
+    {
+      "file": "t24.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/valid/images/z7247193119220_5b34ab57fb4d36a76e4f7d888e7c3ef4_jpg.rf.89e2q7DshXR31W288mQR.jpg",
+      "crop": [
+        0,
+        213,
+        1677
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 58
+    },
+    {
+      "file": "t25.jpg",
+      "goc": "dataset/thu-thap/Phan Loai Xoai.yolo26/test/images/z7247195027861_6db34eec6e766158bc7c8ef983502383_jpg.rf.qxZOhYs8waXNjrKxjhub.jpg",
+      "crop": [
+        0,
+        306,
+        1916
+      ],
+      "do_chin_goc": "chin_vang",
+      "index_dataset": 67
+    }
+  ]
+}

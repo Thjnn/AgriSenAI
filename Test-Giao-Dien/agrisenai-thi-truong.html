@@ -754,6 +754,7 @@
             }
 
             .pcard {
+                display: block;
                 background: var(--white);
                 border-radius: var(--r);
                 overflow: hidden;
@@ -2645,7 +2646,7 @@
                 </div>
             </div>
 
-            `<!-- Market price board -->
+            <!-- Market price board -->
             <div class="sec-head">
                 <h2 class="sec-title">Bảng giá hôm nay</h2>
                 <a class="sec-link" id="marketCount">20 mặt hàng</a>
@@ -3138,6 +3139,7 @@
             </div>
         </aside>
 
+        <script src="assets/agrisen-data.js"></script>
         <script>
             // Category tap
             document.querySelectorAll(".cat").forEach((c) => {
@@ -3206,40 +3208,10 @@
                 if (e.key === "Escape") closeDrawer();
             });
 
-            // ===== Market price board (20 sản phẩm, 8/trang, phân trang) =====
-            const IMG = "../public/images/products/";
-            const IMGBY = {
-                xoai: IMG + "anh-xoai-cat-hoa-loc.jpg",
-                quyt: IMG + "quyt-hong-lai-vung.jpg",
-                nhan: IMG + "nhan-chau-thanh.jpg",
-                buoi: IMG + "buoi-phong-hoa.jpg",
-                sau: IMG + "anh-xoai-cat-hoa-loc.jpg",
-                sen: IMG + "anh-xoai-cat-hoa-loc.jpg",
-                gao: IMG + "anh-xoai-cat-hoa-loc.jpg",
-            };
-            // prettier-ignore
-            const MARKET = [
-                { name: "Xoài cát Hòa Lộc", cat: "xoai", origin: "Cao Lãnh", price: 45000, unit: "kg", change: 5.2 },
-                { name: "Xoài Đài Loan", cat: "xoai", origin: "Cao Lãnh", price: 38000, unit: "kg", change: 2.1 },
-                { name: "Xoài keo", cat: "xoai", origin: "Thanh Bình", price: 32000, unit: "kg", change: -1.5 },
-                { name: "Xoài tượng da xanh", cat: "xoai", origin: "Cao Lãnh", price: 28000, unit: "kg", change: 0 },
-                { name: "Quýt hồng Lai Vung", cat: "quyt", origin: "Lai Vung", price: 35000, unit: "kg", change: 8.0 },
-                { name: "Quýt đường", cat: "quyt", origin: "Lai Vung", price: 28000, unit: "kg", change: -2.3 },
-                { name: "Quýt tiều", cat: "quyt", origin: "Lai Vung", price: 33000, unit: "kg", change: 1.2 },
-                { name: "Nhãn xuồng cơm vàng", cat: "nhan", origin: "Châu Thành", price: 55000, unit: "kg", change: 3.4 },
-                { name: "Nhãn Ido", cat: "nhan", origin: "Châu Thành", price: 62000, unit: "kg", change: 4.1 },
-                { name: "Nhãn tiêu da bò", cat: "nhan", origin: "Châu Thành", price: 48000, unit: "kg", change: -0.8 },
-                { name: "Bưởi da xanh", cat: "buoi", origin: "Lấp Vò", price: 30000, unit: "trái", change: 2.7 },
-                { name: "Bưởi năm roi", cat: "buoi", origin: "Lấp Vò", price: 26000, unit: "trái", change: -1.1 },
-                { name: "Bưởi Phong Hòa", cat: "buoi", origin: "Lai Vung", price: 32000, unit: "trái", change: 0 },
-                { name: "Sầu riêng Ri6", cat: "sau", origin: "Cù lao", price: 85000, unit: "kg", change: 6.5 },
-                { name: "Sầu riêng Musang King", cat: "sau", origin: "Cù lao", price: 120000, unit: "kg", change: 9.2 },
-                { name: "Sen Tháp Mười", cat: "sen", origin: "Tháp Mười", price: 60000, unit: "kg", change: 1.9 },
-                { name: "Gạo ST25", cat: "gao", origin: "Tháp Mười", price: 22000, unit: "kg", change: 0.5 },
-                { name: "Gạo Nàng Hoa", cat: "gao", origin: "Tháp Mười", price: 18000, unit: "kg", change: -0.6 },
-                { name: "Xoài cát chu", cat: "xoai", origin: "Cao Lãnh", price: 40000, unit: "kg", change: 3.0 },
-                { name: "Quýt đường loại 1", cat: "quyt", origin: "Lai Vung", price: 42000, unit: "kg", change: 5.5 },
-            ];
+            // ===== Bảng giá thị trường (20 sản phẩm, 8/trang, phân trang) =====
+            // Dữ liệu lấy từ assets/agrisen-data.js để trang sàn và trang chi tiết
+            // luôn khớp nhau (giá, mã lô, điểm AI...).
+            const MARKET = AgriData.products;
 
             const PER_PAGE = 8;
             let curCat = "all";
@@ -3264,21 +3236,13 @@
                 return `<span class="market-change flat">– 0.0%</span>`;
             }
 
-            const BGBY = {
-                xoai: "bg-1",
-                quyt: "bg-2",
-                nhan: "bg-3",
-                buoi: "bg-5",
-                sau: "bg-4",
-                sen: "bg-6",
-                gao: "bg-4",
-            };
 
             function rowHTML(p) {
                 return `
-                <div class="pcard">
-                    <div class="pcard-img ${BGBY[p.cat]}">
-                        <img src="${IMGBY[p.cat]}" alt="${p.name}" />
+                <a class="pcard" href="${AgriData.detailUrl(p)}">
+                    <div class="pcard-img ${p.bg}">
+                        <span class="pcard-tag">⭐ ${p.ai.quality_score.toFixed(1)}</span>
+                        <img src="${p.image}" alt="${p.name}" />
                     </div>
                     <div class="pcard-body">
                         <div class="pcard-name">${p.name}</div>
@@ -3287,7 +3251,7 @@
                             <div class="pcard-price">${fmt(p.price)}đ<span>/${p.unit}</span></div>
                         </div>
                     </div>
-                </div>`;
+                </a>`;
             }
 
             function renderPagination(pages) {

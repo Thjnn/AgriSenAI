@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+        />
+        <meta name="theme-color" content="#2E7D32" />
+        <title>AgriSenAi — Truy xuất nguồn gốc</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            :root {
+                --green: #2e7d32;
+                --green-medium: #43a047;
+                --green-light: #e8f5e9;
+                --green-bg: #eff8f0;
+                --white: #ffffff;
+                --bg: #f4f7f4;
+                --gray-100: #eeeeee;
+                --gray-200: #e0e0e0;
+                --text: #212121;
+                --text-sec: #757575;
+                --text-light: #9e9e9e;
+                --amber: #b26a00;
+                --shadow-sm:
+                    0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+                --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.08);
+                --r: 16px;
+                --r-sm: 10px;
+            }
+
+            body {
+                font-family: "Nunito", -apple-system, system-ui, sans-serif;
+                background: var(--bg);
+                color: var(--text);
+                -webkit-font-smoothing: antialiased;
+                padding-bottom: 40px;
+            }
+
+            a {
+                text-decoration: none;
+                color: inherit;
+            }
+
+            /* ===== Header ===== */
+            .tx-head {
+                background: linear-gradient(160deg, #2e7d32, #1b5e20);
+                color: #fff;
+                padding: 18px 20px 56px;
+            }
+            .tx-head-inner,
+            .wrap {
+                max-width: 640px;
+                margin: 0 auto;
+            }
+            .tx-brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 18px;
+            }
+            .tx-brand-logo {
+                width: 38px;
+                height: 38px;
+                border-radius: 10px;
+                background: #fff;
+                padding: 3px;
+                flex-shrink: 0;
+            }
+            .tx-brand-logo img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                display: block;
+            }
+            .tx-brand-name {
+                font-size: 17px;
+                font-weight: 800;
+            }
+            .tx-brand-sub {
+                font-size: 12px;
+                opacity: 0.85;
+            }
+            .tx-title {
+                font-size: 24px;
+                font-weight: 800;
+                line-height: 1.3;
+            }
+            .tx-title-sub {
+                font-size: 13.5px;
+                opacity: 0.9;
+                margin-top: 5px;
+            }
+
+            /* ===== Thẻ lô hàng ===== */
+            .wrap {
+                padding: 0 16px;
+            }
+            .tx-card {
+                background: var(--white);
+                border-radius: var(--r);
+                box-shadow: var(--shadow-md);
+                padding: 18px;
+                margin-top: -40px;
+                margin-bottom: 16px;
+            }
+            .tx-verify {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: var(--green-light);
+                color: var(--green);
+                font-size: 12.5px;
+                font-weight: 800;
+                padding: 6px 11px;
+                border-radius: 999px;
+                margin-bottom: 14px;
+            }
+            .tx-prod {
+                display: flex;
+                gap: 14px;
+                align-items: center;
+            }
+            .tx-prod img {
+                width: 84px;
+                height: 84px;
+                border-radius: 12px;
+                object-fit: cover;
+                flex-shrink: 0;
+            }
+            .tx-prod-name {
+                font-size: 19px;
+                font-weight: 800;
+                line-height: 1.3;
+            }
+            .tx-prod-sub {
+                font-size: 13px;
+                color: var(--text-sec);
+                margin-top: 3px;
+            }
+            .tx-prod-price {
+                font-size: 16px;
+                font-weight: 800;
+                color: var(--green);
+                margin-top: 5px;
+            }
+            .tx-lot {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 10px;
+                margin-top: 16px;
+                padding-top: 14px;
+                border-top: 1px dashed var(--gray-200);
+                font-size: 12.5px;
+                color: var(--text-sec);
+            }
+            .tx-lot b {
+                display: block;
+                font-size: 15px;
+                color: var(--text);
+                letter-spacing: 0.5px;
+                margin-top: 2px;
+            }
+
+            /* ===== Khối chung ===== */
+            .tx-sec {
+                background: var(--white);
+                border-radius: var(--r);
+                box-shadow: var(--shadow-sm);
+                padding: 18px;
+                margin-bottom: 16px;
+            }
+            .tx-sec-title {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 16px;
+                font-weight: 800;
+                margin-bottom: 14px;
+            }
+
+            /* ===== Timeline ===== */
+            .tl {
+                position: relative;
+                padding-left: 34px;
+            }
+            .tl::before {
+                content: "";
+                position: absolute;
+                left: 13px;
+                top: 8px;
+                bottom: 8px;
+                width: 2px;
+                background: var(--gray-100);
+            }
+            .tl-item {
+                position: relative;
+                padding-bottom: 22px;
+            }
+            .tl-item:last-child {
+                padding-bottom: 0;
+            }
+            .tl-dot {
+                position: absolute;
+                left: -34px;
+                top: 0;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                background: var(--green);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 13px;
+                box-shadow: 0 0 0 3px var(--white);
+            }
+            .tl-title {
+                font-size: 15px;
+                font-weight: 800;
+            }
+            .tl-time {
+                font-size: 12.5px;
+                color: var(--text-light);
+                margin-top: 1px;
+            }
+            .tl-desc {
+                font-size: 13.5px;
+                color: var(--text-sec);
+                line-height: 1.65;
+                margin-top: 5px;
+            }
+            .tl-loc {
+                font-size: 12.5px;
+                color: var(--text-light);
+                margin-top: 4px;
+            }
+
+            /* ===== AI ===== */
+            .tx-ai {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+            .tx-score {
+                width: 88px;
+                height: 88px;
+                flex-shrink: 0;
+                border-radius: 50%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                color: var(--green);
+                position: relative;
+            }
+            .tx-score::before {
+                content: "";
+                position: absolute;
+                inset: 8px;
+                border-radius: 50%;
+                background: var(--white);
+            }
+            .tx-score b {
+                position: relative;
+                font-size: 23px;
+                line-height: 1;
+            }
+            .tx-score small {
+                position: relative;
+                font-size: 10px;
+                font-weight: 700;
+                color: var(--text-sec);
+                margin-top: 2px;
+            }
+            .tx-facts {
+                display: grid;
+                gap: 8px;
+                font-size: 13.5px;
+                color: var(--text-sec);
+            }
+            .tx-facts b {
+                color: var(--text);
+            }
+            .tx-facts .warn {
+                color: var(--amber);
+            }
+            .tx-note {
+                margin-top: 14px;
+                padding: 12px 14px;
+                background: var(--green-bg);
+                border-radius: var(--r-sm);
+                font-size: 13px;
+                line-height: 1.65;
+                color: var(--text-sec);
+            }
+
+            /* ===== Nông dân ===== */
+            .tx-farmer {
+                display: flex;
+                gap: 14px;
+                align-items: center;
+            }
+            .tx-farmer img {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                object-fit: cover;
+                flex-shrink: 0;
+            }
+            .tx-farmer-name {
+                font-size: 16px;
+                font-weight: 800;
+            }
+            .tx-farmer-sub {
+                font-size: 13px;
+                color: var(--text-sec);
+                margin-top: 2px;
+            }
+            .tx-ocop {
+                color: #f5a623;
+                font-size: 13px;
+                margin-top: 3px;
+            }
+
+            /* ===== Nút ===== */
+            .tx-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                height: 50px;
+                border-radius: 12px;
+                background: var(--green);
+                color: #fff;
+                font-size: 15px;
+                font-weight: 800;
+                box-shadow: var(--shadow-sm);
+            }
+            .tx-foot {
+                text-align: center;
+                font-size: 12px;
+                color: var(--text-light);
+                margin-top: 18px;
+                line-height: 1.7;
+            }
+
+            /* ===== Không tìm thấy ===== */
+            .tx-empty {
+                text-align: center;
+                padding: 40px 10px;
+            }
+            .tx-empty .emo {
+                font-size: 48px;
+            }
+            .tx-empty h2 {
+                font-size: 20px;
+                margin: 10px 0 6px;
+            }
+            .tx-empty p {
+                font-size: 14px;
+                color: var(--text-sec);
+                margin-bottom: 18px;
+            }
+
+            @media (min-width: 700px) {
+                .tx-head {
+                    padding: 26px 20px 64px;
+                }
+                .tx-title {
+                    font-size: 28px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header class="tx-head">
+            <div class="tx-head-inner">
+                <a class="tx-brand" href="agrisenai-home.html">
+                    <span class="tx-brand-logo">
+                        <img
+                            src="../public/images/logo-agrisenai-mark.png"
+                            alt="AgriSenAi"
+                        />
+                    </span>
+                    <span>
+                        <span class="tx-brand-name">AgriSenAi</span>
+                        <span class="tx-brand-sub" style="display: block"
+                            >Chợ nhà nông Đồng Tháp</span
+                        >
+                    </span>
+                </a>
+                <h1 class="tx-title">Truy xuất nguồn gốc</h1>
+                <div class="tx-title-sub" id="lotSub">
+                    Toàn bộ hành trình của lô hàng, từ vườn tới sàn.
+                </div>
+            </div>
+        </header>
+
+        <div class="wrap" id="content"></div>
+
+        <script src="assets/agrisen-data.js"></script>
+        <script>
+            const params = new URLSearchParams(location.search);
+            const product = AgriData.byQr(params.get("ma"));
+            const box = document.getElementById("content");
+            const stars = (n) => "★".repeat(n) + "☆".repeat(5 - n);
+
+            if (!product) {
+                document.getElementById("lotSub").textContent =
+                    "Không đọc được mã lô trên tem.";
+                box.innerHTML = `
+                    <div class="tx-card">
+                        <div class="tx-empty">
+                            <div class="emo">❓</div>
+                            <h2>Mã truy xuất không hợp lệ</h2>
+                            <p>Không tìm thấy lô hàng nào mang mã <b>${
+                                params.get("ma") || "(trống)"
+                            }</b>. Hãy kiểm tra lại tem trên bao bì.</p>
+                            <a class="tx-btn" href="agrisenai-thi-truong.html">Về sàn thị trường</a>
+                        </div>
+                    </div>`;
+            } else {
+                const p = product;
+                const ai = p.ai;
+                const scoreDeg = Math.round((ai.quality_score / 10) * 360);
+                document.title = `Truy xuất ${p.qr_code} — ${p.name}`;
+                document.getElementById("lotSub").textContent =
+                    `Lô hàng ${p.qr_code} · ${p.name}`;
+
+                box.innerHTML = `
+                <div class="tx-card">
+                    <div class="tx-verify">✅ Đã xác thực bởi AgriSenAi</div>
+                    <div class="tx-prod">
+                        <img src="${p.image}" alt="${p.name}" />
+                        <div>
+                            <div class="tx-prod-name">${p.name}</div>
+                            <div class="tx-prod-sub">📍 ${p.origin}, Đồng Tháp · ${p.farmer.farm_name}</div>
+                            <div class="tx-prod-price">${AgriData.money(p.price)}đ/${p.unit}</div>
+                        </div>
+                    </div>
+                    <div class="tx-lot">
+                        <span>Mã lô<b>${p.qr_code}</b></span>
+                        <span style="text-align:right">Thu hoạch<b>${p.trace[0].happened_at.toLocaleDateString("vi-VN")}</b></span>
+                    </div>
+                </div>
+
+                <div class="tx-sec">
+                    <div class="tx-sec-title">🧾 Hành trình lô hàng</div>
+                    <div class="tl">
+                        ${p.trace
+                            .map(
+                                (t) => `
+                            <div class="tl-item">
+                                <div class="tl-dot">${t.icon}</div>
+                                <div class="tl-title">${t.label}</div>
+                                <div class="tl-time">${AgriData.fmtDateTime(t.happened_at)}</div>
+                                <div class="tl-desc">${t.description}</div>
+                                <div class="tl-loc">📍 ${t.location}</div>
+                            </div>`
+                            )
+                            .join("")}
+                    </div>
+                </div>
+
+                <div class="tx-sec">
+                    <div class="tx-sec-title">🤖 Kết quả AI kiểm định</div>
+                    <div class="tx-ai">
+                        <div class="tx-score" style="background: conic-gradient(var(--green) ${scoreDeg}deg, var(--gray-100) 0);">
+                            <b>${ai.quality_score.toFixed(1)}</b><small>/ 10 điểm</small>
+                        </div>
+                        <div class="tx-facts">
+                            <div>🍈 Độ chín: <b>${ai.ripeness_label}</b></div>
+                            <div class="${ai.defect_detected ? "warn" : ""}">
+                                ${ai.defect_detected ? "⚠️ Có khuyết tật nhẹ" : "✅ Không phát hiện khuyết tật"}
+                            </div>
+                            <div>📅 Kiểm định: <b>${AgriData.fmtDateTime(p.trace[1].happened_at)}</b></div>
+                        </div>
+                    </div>
+                    <div class="tx-note">${ai.defect_note}</div>
+                </div>
+
+                <div class="tx-sec">
+                    <div class="tx-sec-title">👨‍🌾 Đơn vị sản xuất</div>
+                    <div class="tx-farmer">
+                        <img src="${p.farmer.avatar}" alt="${p.farmer.farm_name}" />
+                        <div>
+                            <div class="tx-farmer-name">${p.farmer.farm_name}</div>
+                            <div class="tx-farmer-sub">${p.farmer.name} · ${p.farmer.years} năm kinh nghiệm</div>
+                            <div class="tx-farmer-sub">📍 ${p.farmer.region}</div>
+                            <div class="tx-ocop">${stars(p.farmer.ocop_star_rating)} Chứng nhận OCOP ${p.farmer.ocop_star_rating} sao</div>
+                        </div>
+                    </div>
+                </div>
+
+                <a class="tx-btn" href="${AgriData.detailUrl(p)}">Xem sản phẩm trên sàn →</a>
+
+                <div class="tx-foot">
+                    Thông tin do nông dân khai báo và được AgriSenAi ghi nhận theo từng chặng.<br />
+                    Mã lô ${p.qr_code} · Cập nhật ${AgriData.fmtDateTime(p.trace[p.trace.length - 1].happened_at)}
+                </div>`;
+            }
+        </script>
+    </body>
+</html>

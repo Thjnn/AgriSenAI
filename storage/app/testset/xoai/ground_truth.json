@@ -1,0 +1,52 @@
+{
+  "_huong_dan": [
+    "Nhan that (ground truth) cua tap test. Dung de do do chinh xac:",
+    "  php artisan quality:eval xoai",
+    "",
+    "25 anh nay KHONG duoc dung lam anh few-shot — neu dung se do trung vao",
+    "chinh anh da day cho model, con so accuracy se ao."
+  ],
+
+  "_canh_bao_phai_doc": [
+    "1. Nhan duoi day do AI de xuat, CHUA co chuyen gia nong nghiep duyet.",
+    "   Truoc khi dem con so accuracy di thi, PHAI co nguoi co chuyen mon soat lai.",
+    "",
+    "2. Phan bo hang bi LECH NANG, phan anh dung han che cua dataset:",
+    "     dac_biet  5 qua   hang_1  7 qua",
+    "     hang_2   11 qua   khong_dat  2 qua   <-- chi 2 qua!",
+    "   Voi n=2, con so accuracy tren hang `khong_dat` gan nhu vo nghia.",
+    "   Muon do that thi phai bo sung anh qua hong.",
+    "",
+    "3. TAT CA 5 qua `dac_biet` deu la xoai XANH. Trong 69 anh KHONG co qua CHIN",
+    "   nao sach du de dat hang dac biet. Nghia la tap test nay KHONG do duoc",
+    "   kha nang AI cham hang dac biet cho qua CHIN. Day la lo hong da biet."
+  ],
+
+  "labels": [
+    { "file": "t01.jpg", "grade": "hang_1",    "muc_dich_ban": "an_chin", "ghi_chu": "Đốm đen nhỏ rải rác + một vệt sẫm ở đáy, ~7% bề mặt, chưa ăn vào thịt" },
+    { "file": "t02.jpg", "grade": "hang_1",    "muc_dich_ban": "an_chin", "ghi_chu": "Vài đốm đen và 2 vệt sẫm, ~8% bề mặt" },
+    { "file": "t03.jpg", "grade": "hang_1",    "muc_dich_ban": "an_chin", "ghi_chu": "Vài đốm nhỏ ở vai quả, ~5% bề mặt" },
+    { "file": "t04.jpg", "grade": "hang_2",    "muc_dich_ban": "an_chin", "ghi_chu": "Đốm nhỏ dày đặc khắp quả + mảng nâu, ~15% bề mặt" },
+    { "file": "t05.jpg", "grade": "hang_2",    "muc_dich_ban": "an_chin", "ghi_chu": "Mảng thán thư lớn ở đáy, ~22%, còn dưới ngưỡng 1/4 — sát ranh giới loại" },
+    { "file": "t06.jpg", "grade": "hang_2",    "muc_dich_ban": "an_chin", "ghi_chu": "Đốm nâu đỏ rải rác dày, ~12% bề mặt" },
+    { "file": "t07.jpg", "grade": "khong_dat", "muc_dich_ban": "an_chin", "ghi_chu": "Mảng thán thư nâu đen lõm, liên kết thành vệt lớn, >1/4 bề mặt, đã ăn vào thịt" },
+    { "file": "t08.jpg", "grade": "hang_2",    "muc_dich_ban": "an_chin", "ghi_chu": "Đốm đen + mảng nâu rải rác, ~15% bề mặt" },
+    { "file": "t09.jpg", "grade": "hang_1",    "muc_dich_ban": "an_chin", "ghi_chu": "Đốm đen tập trung ở đáy quả, ~8% bề mặt" },
+    { "file": "t10.jpg", "grade": "hang_2",    "muc_dich_ban": "an_chin", "ghi_chu": "Vỏ nhăn nhẹ + mảng nâu loang, ~13% bề mặt, quả bắt đầu quá chín" },
+    { "file": "t11.jpg", "grade": "hang_2",    "muc_dich_ban": "an_chin", "ghi_chu": "Mảng nâu ở đáy + loang nâu thân quả, ~15% bề mặt" },
+    { "file": "t12.jpg", "grade": "dac_biet",  "muc_dich_ban": "an_xanh", "ghi_chu": "Xoài xanh, vỏ căng bóng, gần như sạch hoàn toàn" },
+    { "file": "t13.jpg", "grade": "dac_biet",  "muc_dich_ban": "an_xanh", "ghi_chu": "Xoài xanh, vỏ bóng, vài chấm rất nhỏ dưới 2%" },
+    { "file": "t14.jpg", "grade": "hang_1",    "muc_dich_ban": "an_chin", "ghi_chu": "Cụm đốm đen ở đáy quả, ~8% bề mặt" },
+    { "file": "t15.jpg", "grade": "hang_2",    "muc_dich_ban": "an_chin", "ghi_chu": "Loang nâu diện rộng trên vỏ, ~20% bề mặt, vỏ hơi nhăn" },
+    { "file": "t16.jpg", "grade": "hang_2",    "muc_dich_ban": "an_chin", "ghi_chu": "Mảng nâu lan rộng + vỏ nhăn, ~24% — sát ranh giới loại bỏ" },
+    { "file": "t17.jpg", "grade": "hang_2",    "muc_dich_ban": "an_chin", "ghi_chu": "Đốm đen tập trung nửa trên quả, ~12% bề mặt" },
+    { "file": "t18.jpg", "grade": "dac_biet",  "muc_dich_ban": "an_xanh", "ghi_chu": "Xoài xanh, vài chấm nhỏ ~2%, vỏ căng đều" },
+    { "file": "t19.jpg", "grade": "dac_biet",  "muc_dich_ban": "an_xanh", "ghi_chu": "Xoài xanh, vỏ sạch, dáng cân đối" },
+    { "file": "t20.jpg", "grade": "hang_2",    "muc_dich_ban": "an_xanh", "ghi_chu": "Vỏ phủ lớp màng xám xỉn (nghi nấm bồ hóng) + 1 vết sẫm. NHÃN NÀY KÉM CHẮC CHẮN — cần chuyên gia xem" },
+    { "file": "t21.jpg", "grade": "hang_1",    "muc_dich_ban": "an_chin", "ghi_chu": "Vỏ vàng bóng, vài đốm sẫm ở đáy, ~5% bề mặt" },
+    { "file": "t22.jpg", "grade": "dac_biet",  "muc_dich_ban": "an_xanh", "ghi_chu": "Xoài xanh đậm, vỏ bóng, sạch" },
+    { "file": "t23.jpg", "grade": "hang_1",    "muc_dich_ban": "an_xanh", "ghi_chu": "Xoài xanh, có vệt xước và chấm sẫm rải rác, ~8% bề mặt" },
+    { "file": "t24.jpg", "grade": "khong_dat", "muc_dich_ban": "an_chin", "ghi_chu": "Loang nâu diện rộng >1/4 bề mặt + vỏ nhăn héo rõ, quả đã quá chín/xuống cấp" },
+    { "file": "t25.jpg", "grade": "hang_2",    "muc_dich_ban": "an_chin", "ghi_chu": "Cụm đốm đen dày ở đáy quả, ~12% bề mặt" }
+  ]
+}
