@@ -81,7 +81,7 @@ Tách 6 mảnh vì mỗi mảnh có breakpoint và trạng thái auth riêng; g�
 Trả về mảng gồm:
 
 - `top_links` — 5 mục: Trang chủ, Sàn thị trường, AI đánh giá, Khuyến nghị, Về chúng tôi
-- `drawer_links` — điều hướng mobile
+- `drawer_groups` — điều hướng mobile, chia 2 nhóm ngăn bởi đường kẻ (đối chiếu `<nav class="drawer-nav">` trong `agrisenai-home.html`: 5 link, divider, 3 link). Lưu ý `agrisen-chrome.js` có thêm link "Thông báo" mà `agrisenai-home.html` không có — bám theo `home.html`.
 - `bottom_nav` — hai bộ (xem dưới)
 - `footer_columns` — 3 cột link: Khám phá / Hỗ trợ / Liên hệ
 

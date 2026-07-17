@@ -190,7 +190,7 @@ git commit -m "Doi bang mau sang tong demo va nap font Nunito"
 - Test: `tests/Feature/NavigationConfigTest.php`
 
 **Interfaces:**
-- Produces: `config('navigation.top_links')`, `config('navigation.drawer_links')`, `config('navigation.bottom_nav')`, `config('navigation.footer_columns')`, `config('navigation.contact')`.
+- Produces: `config('navigation.top_links')`, `config('navigation.drawer_groups')`, `config('navigation.bottom_nav')`, `config('navigation.footer_columns')`, `config('navigation.contact')`.
 - Mỗi link là mảng `['key' => string, 'label' => string, 'href' => string, 'icon' => string]`. `key` khớp giá trị `$page`; `icon` khớp tên trong `<x-icon name="...">` ở Task 3.
 
 - [ ] **Step 1: Viết test thất bại**
