@@ -2,7 +2,8 @@
 
 {{--
     Kho SVG dùng chung cho khung giao diện.
-    Path copy nguyên văn từ Test-Giao-Dien/assets/agrisen-chrome.js (biến I).
+    Path copy nguyên văn từ Test-Giao-Dien/assets/agrisen-chrome.js (biến I),
+    riêng 'zalo' lấy từ footer của Test-Giao-Dien/agrisenai-home.html (chrome.js không có).
     Kích thước do class truyền từ ngoài quyết định, không hardcode.
 
     stroke-width phải là prop chứ không nằm trong chuỗi $stroke: nếu hardcode
@@ -25,8 +26,13 @@
         @break
 
     @case('ai')
-    @case('scan')
         <svg {!! $stroke !!} stroke-width="{{ $strokeWidth }}" {{ $attributes }}><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>
+        @break
+
+    {{-- Cùng path với 'ai' nhưng nét dày 2 — I.scan trong chrome.js hardcode như vậy,
+         vì nó dùng cho nút AI Scan tròn nổi ở bottom-nav, nền xanh chữ trắng. --}}
+    @case('scan')
+        <svg {!! $stroke !!} stroke-width="2" {{ $attributes }}><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>
         @break
 
     @case('chart')
@@ -78,7 +84,7 @@
         @break
 
     @case('zalo')
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" {{ $attributes }}><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+        <svg {!! $stroke !!} stroke-width="{{ $strokeWidth }}" {{ $attributes }}><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
         @break
 
     @case('pin')

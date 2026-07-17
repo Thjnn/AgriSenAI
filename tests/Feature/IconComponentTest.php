@@ -46,6 +46,30 @@ class IconComponentTest extends TestCase
         $this->assertSame(1, substr_count($html, 'stroke-width='));
     }
 
+    public function test_khong_icon_nao_render_stroke_width_hai_lan(): void
+    {
+        $names = ['home', 'market', 'ai', 'scan', 'chart', 'cart', 'user', 'bell',
+                  'settings', 'search', 'close', 'send', 'zalo', 'pin', 'mail', 'phone'];
+
+        foreach ($names as $name) {
+            $html = Blade::render('<x-icon :name="$name" stroke-width="2.5" />', ['name' => $name]);
+
+            $this->assertSame(
+                1,
+                substr_count($html, 'stroke-width='),
+                "Icon '{$name}' render stroke-width nhiều hơn một lần"
+            );
+        }
+    }
+
+    public function test_scan_mang_net_day_2_theo_demo(): void
+    {
+        // I.scan trong agrisen-chrome.js hardcode stroke-width="2" (khác I.ai dùng 1.8)
+        // vì nó là nút AI Scan tròn nổi ở bottom-nav. Giữ đúng như vậy.
+        $this->assertStringContainsString('stroke-width="2"', Blade::render('<x-icon name="scan" />'));
+        $this->assertStringContainsString('stroke-width="1.8"', Blade::render('<x-icon name="ai" />'));
+    }
+
     public function test_moi_icon_duoc_config_nhac_den_deu_ton_tai(): void
     {
         $groups = [
