@@ -5,18 +5,35 @@ Trạng thái: đã duyệt, chờ lập kế hoạch triển khai
 
 ## Mục tiêu
 
-Dựng layout Blade dùng chung cho các trang public của AgriSenAi, tái hiện **chính xác** khung giao diện của prototype `Test-Giao-Dien/agrisenai-home.html`, viết bằng Tailwind v4 utility classes trên bộ token đã khai sẵn trong `resources/css/app.css`.
+Dựng layout Blade dùng chung cho các trang public của AgriSenAi, tái hiện **chính xác** khung giao diện của prototype `Test-Giao-Dien/agrisenai-home.html`, viết bằng Tailwind v4 utility classes trên bộ token `@theme` trong `resources/css/app.css` (token này sẽ được thay sang bảng màu demo — xem "Xung đột bảng màu").
 
 ## Bối cảnh
 
 - Prototype `Test-Giao-Dien/` đã có khung hoàn chỉnh: `assets/agrisen-chrome.js` sinh nav/drawer/mob-header/footer/bottom-nav/chat, `assets/agrisen-ui.css` (59KB CSS thuần) là nguồn thông số giao diện.
 - Laravel mới ở giai đoạn đầu: chỉ có `home.blade.php` (2.579 dòng CSS inline) và `quality/layout.blade.php` (layout tối giản, không liên quan khung này). Chưa có `layouts/app.blade.php`.
-- `resources/css/app.css` đã cài Tailwind v4 + khai báo `@theme` với token khớp bảng màu prototype (`--color-brand: #58CC02`, `--font-sans: Nunito`, `--radius-card`...) nhưng chưa view nào dùng.
+- `resources/css/app.css` đã cài Tailwind v4 + khai báo `@theme`, nhưng token trong đó (`--color-brand: #58CC02`) lấy từ `resources/views/home.blade.php` — **không phải** bảng màu của prototype. Xem "Xung đột bảng màu" bên dưới.
+- `vite.config.js` đang nạp font `Instrument Sans` qua bunny, trong khi cả `app.css` lẫn prototype đều dùng **Nunito** — Nunito hiện chưa được nạp.
 - Chưa có auth package (không Breeze/Jetstream/Fortify). DB đã có bảng `roles` (`nong_dan` / `nguoi_mua` / `admin`) và `users.role_id`, `users.avatar`.
+
+## Xung đột bảng màu (đã giải quyết)
+
+Project đang tồn tại hai hệ thiết kế khác hẳn nhau:
+
+| | Demo `agrisenai-home.html` | `app.css` + `home.blade.php` |
+|---|---|---|
+| Xanh chính | `#2e7d32` (Material green 800) | `#58CC02` (Duolingo) |
+| Xanh nhạt | `#e8f5e9` | `#E8F8D4` |
+| Chữ | `#212121` / `#757575` | `#3C3C3C` / `#777777` |
+| Viền | `#eeeeee` / `#e0e0e0` | `#E5E5E5` / `#CDCDCD` |
+| Bo góc | 14 / 10 / 18px | 16 / 24px |
+
+**Quyết định: lấy bảng màu demo (`#2e7d32`).** Token trong `app.css` sẽ được thay bằng bảng màu prototype. `home.blade.php` không bị ảnh hưởng vì nó dùng CSS inline riêng, chưa đụng tới token.
 
 ## Quyết định thiết kế
 
 **Tailwind utility, không bê `agrisen-ui.css`.** Khớp hạ tầng Vite + Tailwind v4 đã dựng sẵn, tránh hai hệ CSS song song. `agrisen-ui.css` chỉ dùng làm nguồn tra thông số (màu, kích thước, breakpoint).
+
+**Font Nunito nạp qua Vite.** Sửa `vite.config.js` từ `bunny('Instrument Sans')` sang `bunny('Nunito', { weights: [400,500,600,700,800] })` — khớp weight demo đang dùng.
 
 **Có `@auth` / `@guest` ngay từ đầu.** Auth chắc chắn nằm trong kế hoạch (đã có migration `users`/`roles`, có prototype trang đăng nhập/đăng ký). Làm sẵn nhánh khách rẻ hơn gỡ ra sau. Trạng thái đã-đăng-nhập khớp demo tuyệt đối.
 
@@ -91,7 +108,9 @@ Component tự chọn bộ: `$page` thuộc `['ai', 'khuyennghi']` → `advisory
 
 Vai trò lấy từ `$user->role->name` (`nong_dan` / `nguoi_mua`), quyết định đích của mục Tài khoản và nội dung hồ sơ ở drawer.
 
-Nhánh khách là thiết kế mới (demo không có mẫu), dựng theo ngôn ngữ sẵn có: bo góc 12px, viền dưới 4px, `--color-brand`.
+Nhánh khách là thiết kế mới (demo không có mẫu), dựng theo ngôn ngữ của demo: nút "Đăng ký" nền `--color-brand` chữ trắng bo góc 14px (`--radius-card`), nút "Đăng nhập" dạng ghost chữ `--color-ink-sec` hover sang `--color-brand`.
+
+(Mô tả "viền dưới 4px" ở bản spec trước là của hệ Duolingo `#58CC02` — đã bỏ cùng bảng màu đó.)
 
 Vì auth chưa cài, `@auth` sẽ luôn false lúc này — layout render ra nhánh khách. Đây là hành vi đúng, không phải lỗi.
 
