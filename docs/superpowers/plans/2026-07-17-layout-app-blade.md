@@ -460,6 +460,30 @@ class IconComponentTest extends TestCase
         $this->assertSame(1, substr_count($html, 'stroke-width='));
     }
 
+    public function test_khong_icon_nao_render_stroke_width_hai_lan(): void
+    {
+        $names = ['home', 'market', 'ai', 'scan', 'chart', 'cart', 'user', 'bell',
+                  'settings', 'search', 'close', 'send', 'zalo', 'pin', 'mail', 'phone'];
+
+        foreach ($names as $name) {
+            $html = Blade::render('<x-icon :name="$name" stroke-width="2.5" />', ['name' => $name]);
+
+            $this->assertSame(
+                1,
+                substr_count($html, 'stroke-width='),
+                "Icon '{$name}' render stroke-width nhiều hơn một lần"
+            );
+        }
+    }
+
+    public function test_scan_mang_net_day_2_theo_demo(): void
+    {
+        // I.scan trong agrisen-chrome.js hardcode stroke-width="2" (khác I.ai dùng 1.8)
+        // vì nó là nút AI Scan tròn nổi ở bottom-nav. Giữ đúng như vậy.
+        $this->assertStringContainsString('stroke-width="2"', Blade::render('<x-icon name="scan" />'));
+        $this->assertStringContainsString('stroke-width="1.8"', Blade::render('<x-icon name="ai" />'));
+    }
+
     public function test_moi_icon_duoc_config_nhac_den_deu_ton_tai(): void
     {
         $groups = [
@@ -494,7 +518,8 @@ Expected: FAIL — component `icon` chưa tồn tại.
 
 {{--
     Kho SVG dùng chung cho khung giao diện.
-    Path copy nguyên văn từ Test-Giao-Dien/assets/agrisen-chrome.js (biến I).
+    Path copy nguyên văn từ Test-Giao-Dien/assets/agrisen-chrome.js (biến I),
+    riêng 'zalo' lấy từ footer của Test-Giao-Dien/agrisenai-home.html (chrome.js không có).
     Kích thước do class truyền từ ngoài quyết định, không hardcode.
 
     stroke-width phải là prop chứ không nằm trong chuỗi $stroke: nếu hardcode
@@ -517,8 +542,13 @@ Expected: FAIL — component `icon` chưa tồn tại.
         @break
 
     @case('ai')
-    @case('scan')
         <svg {!! $stroke !!} stroke-width="{{ $strokeWidth }}" {{ $attributes }}><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>
+        @break
+
+    {{-- Cùng path với 'ai' nhưng nét dày 2 — I.scan trong chrome.js hardcode như vậy,
+         vì nó dùng cho nút AI Scan tròn nổi ở bottom-nav, nền xanh chữ trắng. --}}
+    @case('scan')
+        <svg {!! $stroke !!} stroke-width="2" {{ $attributes }}><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>
         @break
 
     @case('chart')
@@ -570,7 +600,7 @@ Expected: FAIL — component `icon` chưa tồn tại.
         @break
 
     @case('zalo')
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" {{ $attributes }}><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+        <svg {!! $stroke !!} stroke-width="{{ $strokeWidth }}" {{ $attributes }}><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
         @break
 
     @case('pin')
@@ -590,7 +620,7 @@ Expected: FAIL — component `icon` chưa tồn tại.
 - [ ] **Step 4: Chạy test để xác nhận pass**
 
 Run: `php artisan test --filter=IconComponentTest`
-Expected: PASS — 4 test, 0 lỗi.
+Expected: PASS — 8 test, 0 lỗi.
 
 - [ ] **Step 5: Commit**
 
@@ -738,7 +768,7 @@ Rồi thêm vào trong class `User`, sau method `casts()`:
 - [ ] **Step 5: Chạy test để xác nhận pass**
 
 Run: `php artisan test --filter=UserRoleTest`
-Expected: PASS — 4 test, 0 lỗi.
+Expected: PASS — 8 test, 0 lỗi.
 
 - [ ] **Step 6: Commit**
 
@@ -1012,7 +1042,8 @@ Expected: FAIL — component đang rỗng, không có `data-bnav` nào.
                @if ($isActive) data-bnav-active="1" @endif
                class="relative flex flex-1 flex-col items-center justify-end overflow-visible pb-[7px]">
                 <span class="absolute -top-6 left-1/2 flex h-[54px] w-[54px] -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-brand shadow-[0_4px_14px_rgba(46,125,50,0.35)] transition-transform active:scale-[0.92]">
-                    <x-icon name="scan" class="h-6 w-6 text-white" stroke-width="2" />
+                    {{-- icon 'scan' tự mang nét dày 2 theo demo, không cần truyền stroke-width. --}}
+                    <x-icon name="scan" class="h-6 w-6 text-white" />
                 </span>
                 <span class="mt-auto block text-[10px] font-bold leading-none text-brand">{{ $item['label'] }}</span>
             </a>
@@ -1189,7 +1220,7 @@ Expected: FAIL — component đang rỗng.
 - [ ] **Step 4: Chạy test để xác nhận pass**
 
 Run: `php artisan test --filter=TopNavTest`
-Expected: PASS — 4 test, 0 lỗi.
+Expected: PASS — 8 test, 0 lỗi.
 
 - [ ] **Step 5: Commit**
 
@@ -1573,7 +1604,7 @@ Expected: FAIL — component đang rỗng.
 - [ ] **Step 4: Chạy test để xác nhận pass**
 
 Run: `php artisan test --filter=FooterTest`
-Expected: PASS — 4 test, 0 lỗi.
+Expected: PASS — 8 test, 0 lỗi.
 
 Nếu test `test_co_dong_ban_quyen` fail vì năm hệ thống không phải 2026, đó là test sai chứ không phải code sai — sửa test thành `assertStringContainsString('AgriSenAi · Sàn nông sản Đồng Tháp', $html)`.
 
