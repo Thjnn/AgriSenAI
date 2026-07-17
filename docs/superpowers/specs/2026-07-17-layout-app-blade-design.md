@@ -66,7 +66,9 @@ Trả về mảng gồm:
 - `top_links` — 5 mục: Trang chủ, Sàn thị trường, AI đánh giá, Khuyến nghị, Về chúng tôi
 - `drawer_links` — điều hướng mobile
 - `bottom_nav` — hai bộ (xem dưới)
-- `footer_columns` — Khám phá / Hỗ trợ / Liên hệ
+- `footer_columns` — 3 cột link: Khám phá / Hỗ trợ / Liên hệ
+
+Footer demo có 4 cột: cột đầu là brand + mô tả + social (render thẳng trong component, không qua config), 3 cột sau lấy từ `footer_columns`.
 
 ## Bottom-nav theo ngữ cảnh
 
