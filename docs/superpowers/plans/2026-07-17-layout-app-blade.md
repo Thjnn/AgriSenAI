@@ -1780,11 +1780,16 @@ git commit -m "Them vo tro ly chat (FAB + panel), chua noi AI"
 Thêm vào cuối file:
 
 ```css
-/* Trạng thái mở của drawer và chat panel — class 'open' do resources/js/app.js gắn. */
+/* Trạng thái mở của drawer và chat panel — class 'open' do resources/js/app.js gắn.
+   Dùng `translate: 0` chứ KHÔNG phải `transform: translateX(0)`:
+   Tailwind v4 dịch `translate-x-full` / `-translate-x-full` thành thuộc tính CSS
+   `translate:` (không phải `transform:`), nên phải ghi đè cùng thuộc tính đó thì
+   panel mới trượt vào. Selector id+class (đặc hiệu hơn class đơn của Tailwind) đảm bảo
+   thắng. `transition-transform` của v4 đã bao gồm `translate` nên vẫn có hiệu ứng mượt. */
 @layer components {
   #drawer.open,
   #chatPanel.open {
-    transform: translateX(0);
+    translate: 0 0;
   }
 
   #drawerOverlay.open,
@@ -1856,12 +1861,29 @@ bindSlidePanel({
 });
 ```
 
-- [ ] **Step 3: Build để xác minh không lỗi cú pháp**
+- [ ] **Step 3: Build và xác minh rule `.open` vào CSS đúng thuộc tính**
 
-Run: `npm run build`
-Expected: build thành công, không lỗi.
+Run:
 
-- [ ] **Step 4: Commit**
+```bash
+npm run build
+grep -oE "#chatPanel\.open\{[^}]*\}" public/build/assets/*.css
+grep -oE "#drawer\.open\{[^}]*\}" public/build/assets/*.css
+```
+
+Expected: build thành công; hai lệnh grep in ra rule chứa `translate:0 0` (KHÔNG phải `transform`). Nếu thấy `transform:translateX(0)` thì panel sẽ không trượt vào được — xem lại Step 1.
+
+- [ ] **Step 4: Xác minh bằng trình duyệt rằng panel thật sự mở/đóng**
+
+Đây là JS + CSS nên phải thấy tận mắt. Chạy `php artisan serve`, mở `http://127.0.0.1:8000/layout-demo` ở khổ mobile (DevTools, ~390px):
+
+- Bấm hamburger (góc trái mob-header) → drawer trượt vào từ trái, nền mờ đi, trang nền không cuộn được.
+- Bấm overlay (vùng tối bên phải) → drawer trượt ra. Bấm nút X trong drawer → cũng đóng. Nhấn Esc khi drawer mở → đóng.
+- Bấm nút chat tròn (góc phải dưới) → panel trượt vào từ phải. Đóng bằng nút X / overlay / Esc.
+
+Nếu drawer/panel không nhúc nhích hoặc bật cái không có hiệu ứng trượt, dừng lại và kiểm rule `.open` (Step 1) trước khi đi tiếp.
+
+- [ ] **Step 5: Commit**
 
 ```bash
 git add resources/js/app.js resources/css/app.css
