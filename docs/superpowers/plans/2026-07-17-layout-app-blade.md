@@ -238,9 +238,9 @@ class NavigationConfigTest extends TestCase
     {
         $groups = [
             config('navigation.top_links'),
-            config('navigation.drawer_links'),
             config('navigation.bottom_nav.default'),
             config('navigation.bottom_nav.advisory'),
+            ...config('navigation.drawer_groups'),
         ];
 
         foreach ($groups as $group) {
@@ -250,6 +250,32 @@ class NavigationConfigTest extends TestCase
                 $this->assertArrayHasKey('href', $link);
             }
         }
+    }
+
+    public function test_drawer_co_hai_nhom_dung_nhu_demo(): void
+    {
+        $groups = config('navigation.drawer_groups');
+
+        // agrisenai-home.html: 5 link điều hướng, divider, rồi 3 link cá nhân.
+        $this->assertCount(2, $groups);
+        $this->assertSame(
+            ['home', 'market', 'ai', 'khuyennghi', 'truyxuat'],
+            array_column($groups[0], 'key')
+        );
+        $this->assertSame(
+            ['cart', 'account', 'settings'],
+            array_column($groups[1], 'key')
+        );
+    }
+
+    public function test_nhan_drawer_copy_nguyen_van_tu_demo(): void
+    {
+        $labels = array_column(array_merge(...config('navigation.drawer_groups')), 'label', 'key');
+
+        // Nhãn drawer dài hơn nhãn top-nav — dễ nhầm, nên chốt bằng test.
+        $this->assertSame('AI đánh giá chất lượng', $labels['ai']);
+        $this->assertSame('Khuyến nghị giá bán', $labels['khuyennghi']);
+        $this->assertSame('Cài đặt', $labels['settings']);
     }
 }
 ```
@@ -281,14 +307,28 @@ return [
         ['key' => 'about',      'label' => 'Về chúng tôi',   'href' => '#'],
     ],
 
-    'drawer_links' => [
-        ['key' => 'home',       'label' => 'Trang chủ',       'href' => '/',          'icon' => 'home'],
-        ['key' => 'market',     'label' => 'Sàn thị trường',  'href' => '#',          'icon' => 'market'],
-        ['key' => 'ai',         'label' => 'AI đánh giá',     'href' => '/danh-gia',  'icon' => 'ai'],
-        ['key' => 'khuyennghi', 'label' => 'Khuyến nghị giá', 'href' => '#',          'icon' => 'chart'],
-        ['key' => 'truyxuat',   'label' => 'Quét QR truy xuất','href' => '#',         'icon' => 'qr'],
-        ['key' => 'cart',       'label' => 'Giỏ hàng',        'href' => '#',          'icon' => 'cart'],
-        ['key' => 'notif',      'label' => 'Thông báo',       'href' => '#',          'icon' => 'bell'],
+    /*
+     * Drawer chia HAI NHÓM, ngăn bởi một đường kẻ (drawer-divider trong demo).
+     * Đối chiếu: <nav class="drawer-nav"> trong agrisenai-home.html — 8 link, 1 divider
+     * đặt sau 'truyxuat'. Nhãn copy nguyên văn ("AI đánh giá chất lượng", không phải
+     * "AI đánh giá" — nhãn ngắn đó là của top-nav).
+     *
+     * Lưu ý: agrisen-chrome.js có thêm link 'notif' (Thông báo) mà agrisenai-home.html
+     * không có. Bám theo home.html vì đó là bản demo được chọn làm chuẩn.
+     */
+    'drawer_groups' => [
+        [
+            ['key' => 'home',       'label' => 'Trang chủ',            'href' => '/',         'icon' => 'home'],
+            ['key' => 'market',     'label' => 'Sàn thị trường',       'href' => '#',         'icon' => 'market'],
+            ['key' => 'ai',         'label' => 'AI đánh giá chất lượng','href' => '/danh-gia','icon' => 'ai'],
+            ['key' => 'khuyennghi', 'label' => 'Khuyến nghị giá bán',  'href' => '#',         'icon' => 'chart'],
+            ['key' => 'truyxuat',   'label' => 'Quét QR truy xuất',    'href' => '#',         'icon' => 'qr'],
+        ],
+        [
+            ['key' => 'cart',     'label' => 'Giỏ hàng',  'href' => '#', 'icon' => 'cart'],
+            ['key' => 'account',  'label' => 'Tài khoản', 'href' => '#', 'icon' => 'user'],
+            ['key' => 'settings', 'label' => 'Cài đặt',   'href' => '#', 'icon' => 'settings'],
+        ],
     ],
 
     'bottom_nav' => [
@@ -362,7 +402,8 @@ git commit -m "Them config/navigation.php cho khung dieu huong"
 
 **Interfaces:**
 - Consumes: tên icon dùng trong `config/navigation.php` (Task 2).
-- Produces: `<x-icon name="home" class="h-5 w-5" />` → thẻ `<svg>`. Tên hợp lệ: `home` `market` `ai` `chart` `qr` `cart` `user` `bell` `search` `chat` `close` `send` `fb` `yt` `zalo` `pin` `mail` `phone` `scan`. Tên lạ → không render gì.
+- Produces: `<x-icon name="home" class="h-5 w-5" />` → thẻ `<svg>`. Tên hợp lệ: `home` `market` `ai` `chart` `qr` `cart` `user` `bell` `settings` `search` `chat` `close` `send` `fb` `yt` `zalo` `pin` `mail` `phone` `scan`. Tên lạ → không render gì.
+- Độ dày nét: `<x-icon name="home" stroke-width="2.5" />` ghi đè mặc định `1.8`.
 
 Gom SVG vào một chỗ vì icon `home`/`cart`/`user` bị lặp ở top-nav, drawer, bottom-nav và footer. Path SVG copy nguyên văn từ `Test-Giao-Dien/assets/agrisen-chrome.js` (biến `I`) — đó là bản đã gom sẵn của demo.
 
@@ -422,10 +463,10 @@ class IconComponentTest extends TestCase
     public function test_moi_icon_duoc_config_nhac_den_deu_ton_tai(): void
     {
         $groups = [
-            config('navigation.drawer_links'),
             config('navigation.bottom_nav.default'),
             config('navigation.bottom_nav.advisory'),
             config('navigation.contact'),
+            ...config('navigation.drawer_groups'),
         ];
 
         foreach ($groups as $group) {
@@ -498,6 +539,10 @@ Expected: FAIL — component `icon` chưa tồn tại.
 
     @case('bell')
         <svg {!! $stroke !!} stroke-width="{{ $strokeWidth }}" {{ $attributes }}><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+        @break
+
+    @case('settings')
+        <svg {!! $stroke !!} stroke-width="{{ $strokeWidth }}" {{ $attributes }}><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         @break
 
     @case('search')
@@ -1163,7 +1208,7 @@ git commit -m "Them top-nav desktop voi nhanh guest va auth"
 - Test: `tests/Feature/DrawerTest.php`
 
 **Interfaces:**
-- Consumes: `config('navigation.drawer_links')` (Task 2), `<x-icon>` (Task 3), `$user->isFarmer()` / `accountHref()` (Task 4).
+- Consumes: `config('navigation.drawer_groups')` (Task 2) — mảng gồm 2 nhóm, giữa hai nhóm phải có một đường kẻ ngăn (`drawer-divider` trong demo); `<x-icon>` (Task 3), `$user->isFarmer()` / `accountHref()` (Task 4).
 - Produces: các id JS bám vào ở Task 10 — `#drawer`, `#drawerOverlay`, `#drawerOpen`, `#drawerClose`. Trạng thái mở = thêm class `open` (xem Task 10).
 
 Gộp hai mảnh vào một task vì nút hamburger ở mob-header không có ý nghĩa nếu thiếu drawer — tách ra thì không task nào test độc lập được.
@@ -1236,6 +1281,18 @@ class DrawerTest extends TestCase
             $html
         );
     }
+
+    public function test_co_du_tam_link_va_mot_duong_ke_ngan_nhom(): void
+    {
+        $html = view('layouts.app', ['page' => 'home'])->render();
+
+        // agrisenai-home.html: 8 link, 1 divider đặt sau 'truyxuat'.
+        $this->assertSame(8, substr_count($html, 'data-drawer="'));
+
+        foreach (['home', 'market', 'ai', 'khuyennghi', 'truyxuat', 'cart', 'account', 'settings'] as $key)  {
+            $this->assertStringContainsString('data-drawer="' . $key . '"', $html);
+        }
+    }
 }
 ```
 
@@ -1302,7 +1359,7 @@ Expected: FAIL — cả hai component đang rỗng.
 ```blade
 @props(['page' => ''])
 
-@php($links = config('navigation.drawer_links'))
+@php($groups = config('navigation.drawer_groups'))
 
 {{-- Overlay + drawer. Class 'open' do resources/js/app.js gắn/gỡ. --}}
 <div id="drawerOverlay"
@@ -1326,15 +1383,23 @@ Expected: FAIL — cả hai component đang rỗng.
     </div>
 
     <nav class="flex-1 overflow-y-auto py-3">
-        @foreach ($links as $link)
-            @php($isActive = $link['key'] === $page)
-            <a href="{{ $link['href'] }}"
-               data-drawer="{{ $link['key'] }}"
-               @if ($isActive) data-drawer-active="1" @endif
-               class="flex items-center gap-3.5 px-5 py-[13px] text-[15px] font-bold transition-colors active:bg-gray-50 {{ $isActive ? 'bg-brand-light text-brand' : 'text-ink' }}">
-                <x-icon :name="$link['icon']" class="h-[21px] w-[21px] shrink-0" />
-                {{ $link['label'] }}
-            </a>
+        @foreach ($groups as $group)
+            {{-- Đường kẻ ngăn giữa các nhóm (drawer-divider trong demo), không kẻ trước nhóm đầu. --}}
+            @unless ($loop->first)
+                <div class="mx-5 my-2.5 h-px bg-gray-100"></div>
+            @endunless
+
+            @foreach ($group as $link)
+                @php($isActive = $link['key'] === $page)
+                @php($href = $link['key'] === 'account' && auth()->check() ? auth()->user()->accountHref() : $link['href'])
+                <a href="{{ $href }}"
+                   data-drawer="{{ $link['key'] }}"
+                   @if ($isActive) data-drawer-active="1" @endif
+                   class="flex items-center gap-3.5 px-5 py-[13px] text-[15px] font-bold transition-colors active:bg-gray-50 {{ $isActive ? 'bg-brand-light text-brand' : 'text-ink' }}">
+                    <x-icon :name="$link['icon']" class="h-[21px] w-[21px] shrink-0" />
+                    {{ $link['label'] }}
+                </a>
+            @endforeach
         @endforeach
     </nav>
 
