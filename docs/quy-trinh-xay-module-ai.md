@@ -464,3 +464,6 @@ nông dân đăng bán trên sàn (*active learning*).
 - [ ] Khung hướng dẫn chụp trên giao diện ("đặt quả vào trong khung") — để ảnh nông
       dân gửi lên có bố cục giống ảnh reference
 - [ ] Cam/quýt: cần ảnh cam sành / quýt hồng thật
+
+
+  http://localhost/AgriSenAI/public/danh-gia
