@@ -17,14 +17,28 @@ return [
         ['key' => 'about',      'label' => 'Về chúng tôi',   'href' => '#'],
     ],
 
-    'drawer_links' => [
-        ['key' => 'home',       'label' => 'Trang chủ',       'href' => '/',          'icon' => 'home'],
-        ['key' => 'market',     'label' => 'Sàn thị trường',  'href' => '#',          'icon' => 'market'],
-        ['key' => 'ai',         'label' => 'AI đánh giá',     'href' => '/danh-gia',  'icon' => 'ai'],
-        ['key' => 'khuyennghi', 'label' => 'Khuyến nghị giá', 'href' => '#',          'icon' => 'chart'],
-        ['key' => 'truyxuat',   'label' => 'Quét QR truy xuất','href' => '#',         'icon' => 'qr'],
-        ['key' => 'cart',       'label' => 'Giỏ hàng',        'href' => '#',          'icon' => 'cart'],
-        ['key' => 'notif',      'label' => 'Thông báo',       'href' => '#',          'icon' => 'bell'],
+    /*
+     * Drawer chia HAI NHÓM, ngăn bởi một đường kẻ (drawer-divider trong demo).
+     * Đối chiếu: <nav class="drawer-nav"> trong agrisenai-home.html — 5 link, 1 divider,
+     * rồi 3 link. Nhãn copy nguyên văn ("AI đánh giá chất lượng", không phải
+     * "AI đánh giá" — nhãn ngắn đó là của top-nav).
+     *
+     * Lưu ý: agrisen-chrome.js có thêm link 'notif' (Thông báo) mà agrisenai-home.html
+     * không có. Bám theo home.html vì đó là bản demo được chọn làm chuẩn.
+     */
+    'drawer_groups' => [
+        [
+            ['key' => 'home',       'label' => 'Trang chủ',             'href' => '/',         'icon' => 'home'],
+            ['key' => 'market',     'label' => 'Sàn thị trường',        'href' => '#',         'icon' => 'market'],
+            ['key' => 'ai',         'label' => 'AI đánh giá chất lượng','href' => '/danh-gia', 'icon' => 'ai'],
+            ['key' => 'khuyennghi', 'label' => 'Khuyến nghị giá bán',   'href' => '#',         'icon' => 'chart'],
+            ['key' => 'truyxuat',   'label' => 'Quét QR truy xuất',     'href' => '#',         'icon' => 'qr'],
+        ],
+        [
+            ['key' => 'cart',     'label' => 'Giỏ hàng',  'href' => '#', 'icon' => 'cart'],
+            ['key' => 'account',  'label' => 'Tài khoản', 'href' => '#', 'icon' => 'user'],
+            ['key' => 'settings', 'label' => 'Cài đặt',   'href' => '#', 'icon' => 'settings'],
+        ],
     ],
 
     'bottom_nav' => [

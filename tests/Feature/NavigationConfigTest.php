@@ -38,9 +38,9 @@ class NavigationConfigTest extends TestCase
     {
         $groups = [
             config('navigation.top_links'),
-            config('navigation.drawer_links'),
             config('navigation.bottom_nav.default'),
             config('navigation.bottom_nav.advisory'),
+            ...config('navigation.drawer_groups'),
         ];
 
         foreach ($groups as $group) {
@@ -50,5 +50,31 @@ class NavigationConfigTest extends TestCase
                 $this->assertArrayHasKey('href', $link);
             }
         }
+    }
+
+    public function test_drawer_co_hai_nhom_dung_nhu_demo(): void
+    {
+        $groups = config('navigation.drawer_groups');
+
+        // agrisenai-home.html: 5 link điều hướng, divider, rồi 3 link cá nhân.
+        $this->assertCount(2, $groups);
+        $this->assertSame(
+            ['home', 'market', 'ai', 'khuyennghi', 'truyxuat'],
+            array_column($groups[0], 'key')
+        );
+        $this->assertSame(
+            ['cart', 'account', 'settings'],
+            array_column($groups[1], 'key')
+        );
+    }
+
+    public function test_nhan_drawer_copy_nguyen_van_tu_demo(): void
+    {
+        $labels = array_column(array_merge(...config('navigation.drawer_groups')), 'label', 'key');
+
+        // Nhãn drawer dài hơn nhãn top-nav — dễ nhầm, nên chốt bằng test.
+        $this->assertSame('AI đánh giá chất lượng', $labels['ai']);
+        $this->assertSame('Khuyến nghị giá bán', $labels['khuyennghi']);
+        $this->assertSame('Cài đặt', $labels['settings']);
     }
 }
