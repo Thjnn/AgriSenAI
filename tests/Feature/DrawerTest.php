@@ -18,6 +18,24 @@ class DrawerTest extends TestCase
         $this->assertStringContainsString('id="drawerClose"', $html);
     }
 
+    public function test_drawer_dong_mac_dinh_an_voi_trinh_doc_man_hinh(): void
+    {
+        // Drawer đóng lúc tải trang → aria-hidden="true"; JS gỡ khi mở.
+        $html = view('layouts.app', ['page' => 'home'])->render();
+
+        $this->assertMatchesRegularExpression('/id="drawer"[^>]*aria-hidden="true"/', $html);
+    }
+
+    public function test_cac_nav_landmark_co_nhan_phan_biet(): void
+    {
+        // Layout có 3 landmark <nav>; trình đọc màn hình cần nhãn để phân biệt.
+        $html = view('layouts.app', ['page' => 'home'])->render();
+
+        $this->assertStringContainsString('aria-label="Điều hướng chính"', $html);
+        $this->assertStringContainsString('aria-label="Điều hướng dưới"', $html);
+        $this->assertStringContainsString('aria-label="Menu điều hướng"', $html);
+    }
+
     public function test_khach_thay_nut_dang_nhap_o_chan_drawer(): void
     {
         $html = view('layouts.app', ['page' => 'home'])->render();

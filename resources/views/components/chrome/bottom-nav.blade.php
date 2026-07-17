@@ -9,7 +9,7 @@
     $activeKey = $page === 'ai' ? 'ai-scan' : $page;
 @endphp
 
-<nav class="fixed inset-x-0 bottom-0 z-[100] flex h-[var(--nav-h)] items-stretch justify-around border-t border-gray-100 bg-white pb-[var(--safe-b)] lg:hidden">
+<nav aria-label="Điều hướng dưới" class="fixed inset-x-0 bottom-0 z-[100] flex h-[var(--nav-h)] items-stretch justify-around border-t border-gray-100 bg-white pb-[var(--safe-b)] lg:hidden">
     @foreach ($items as $item)
         @php
             $isActive = $item['key'] === $activeKey;

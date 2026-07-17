@@ -6,7 +6,7 @@
 <div id="drawerOverlay"
      class="invisible fixed inset-0 z-[998] bg-black/40 opacity-0 transition-[opacity,visibility] duration-[250ms] lg:hidden"></div>
 
-<aside id="drawer"
+<aside id="drawer" aria-hidden="true"
        class="fixed inset-y-0 left-0 z-[999] flex w-[78%] max-w-[300px] -translate-x-full flex-col bg-white shadow-[4px_0_24px_rgba(0,0,0,0.1)] transition-transform duration-[280ms] ease-[cubic-bezier(0.4,0,0.2,1)] lg:hidden">
 
     <div class="flex items-center gap-3 border-b border-gray-100 px-5 pb-5 pt-6">
@@ -23,7 +23,7 @@
         </button>
     </div>
 
-    <nav class="flex-1 overflow-y-auto py-3">
+    <nav aria-label="Menu điều hướng" class="flex-1 overflow-y-auto py-3">
         @foreach ($groups as $group)
             {{-- Đường kẻ ngăn giữa các nhóm (drawer-divider trong demo), không kẻ trước nhóm đầu. --}}
             @unless ($loop->first)

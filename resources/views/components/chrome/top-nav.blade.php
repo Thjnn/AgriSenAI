@@ -2,7 +2,7 @@
 
 @php($links = config('navigation.top_links'))
 
-<nav class="sticky top-0 z-[100] hidden border-b border-gray-100 bg-white lg:block">
+<nav aria-label="Điều hướng chính" class="sticky top-0 z-[100] hidden border-b border-gray-100 bg-white lg:block">
     <div class="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-8 xl:max-w-[1320px] xl:px-12">
 
         <a href="/" class="flex items-center gap-2.5 text-xl font-extrabold text-ink">
