@@ -1,7 +1,7 @@
 {{-- Footer chỉ hiện từ lg trở lên — đúng demo, mobile dùng bottom-nav thay thế. --}}
 <footer class="mt-12 hidden bg-brand-footer text-white/[0.82] lg:block">
 
-    <div class="mx-auto grid max-w-[1200px] grid-cols-[1.7fr_1fr_1fr_1.5fr] gap-10 px-8 pb-9 pt-[52px] xl:max-w-[1320px] xl:px-12">
+    <div class="mx-auto grid max-w-[1200px] grid-cols-[1.7fr_1fr_1fr_1.5fr] gap-10 px-8 pb-9 pt-[52px]">
 
         <div>
             <div class="mb-4 flex items-center gap-[11px]">
