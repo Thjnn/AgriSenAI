@@ -1324,6 +1324,38 @@ class DrawerTest extends TestCase
             $this->assertStringContainsString('data-drawer="' . $key . '"', $html);
         }
     }
+
+    public function test_mob_header_dung_nhan_nhu_demo(): void
+    {
+        // Render riêng component để không lẫn với top-nav (top-nav vẫn nằm trong DOM ở bản đầy đủ).
+        $html = \Illuminate\Support\Facades\Blade::render('<x-chrome.mob-header />');
+
+        // Brand mob-header liền, không tách span; sub là "Nông sản Đồng Tháp" (không "Sàn").
+        $this->assertStringContainsString('>AgriSenAi</div>', $html);
+        $this->assertStringContainsString('Nông sản Đồng Tháp', $html);
+        $this->assertStringNotContainsString('Sàn nông sản Đồng Tháp', $html);
+    }
+
+    public function test_mob_header_khach_khong_co_nut_icon_nao(): void
+    {
+        // Demo .mob-icons chỉ có nút chuông, và chuông là @auth. Khách không thấy nút nào.
+        $html = \Illuminate\Support\Facades\Blade::render('<x-chrome.mob-header />');
+
+        $this->assertStringNotContainsString('aria-label="Thông báo"', $html);
+    }
+
+    public function test_mob_header_dang_nhap_chi_co_dung_mot_nut_chuong(): void
+    {
+        $user = new User(['name' => 'Trần Thu Hà']);
+        $user->setRelation('role', new Role(['name' => 'nguoi_mua']));
+        $this->actingAs($user);
+
+        $html = \Illuminate\Support\Facades\Blade::render('<x-chrome.mob-header />');
+
+        // Đúng một nút chuông; không có nút giỏ/AI-scan trong mob-header như bản sai trước.
+        $this->assertSame(1, substr_count($html, 'aria-label="Thông báo"'));
+        $this->assertStringNotContainsString('aria-label="Giỏ hàng"', $html);
+    }
 }
 ```
 
@@ -1347,16 +1379,20 @@ Expected: FAIL — cả hai component đang rỗng.
                 <span class="block h-0.5 w-5 rounded-sm bg-ink"></span>
             </button>
 
-            <a href="/" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px]">
+            {{-- Logo demo là <div>, không phải link — giữ đúng vậy. --}}
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px]">
                 <img src="{{ asset('images/logo-agrisenai-mark.png') }}" alt="AgriSenAi" class="block h-full w-full object-contain">
-            </a>
+            </div>
 
+            {{-- Brand mob-header liền, KHÔNG tách span (khác drawer/footer). Sub là "Nông sản Đồng Tháp". --}}
             <div>
-                <div class="text-lg font-extrabold leading-[1.15]">Agri<span class="text-brand">SenAi</span></div>
-                <div class="text-xs font-medium text-ink-sec">Sàn nông sản Đồng Tháp</div>
+                <div class="text-lg font-extrabold leading-[1.15]">AgriSenAi</div>
+                <div class="text-xs font-medium text-ink-sec">Nông sản Đồng Tháp</div>
             </div>
         </div>
 
+        {{-- Demo chỉ có ĐÚNG MỘT nút chuông trong .mob-icons (không giỏ, không AI-scan —
+             giỏ/AI-scan/tài khoản đã nằm ở bottom-nav). Chuông là @auth vì khách chưa có thông báo. --}}
         <div class="flex gap-1.5">
             @auth
                 <a href="#" aria-label="Thông báo"
@@ -1364,20 +1400,12 @@ Expected: FAIL — cả hai component đang rỗng.
                     <x-icon name="bell" class="h-5 w-5 text-ink" />
                     <span class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full border-2 border-white bg-danger"></span>
                 </a>
-                <a href="#" aria-label="Giỏ hàng"
-                   class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 active:bg-gray-100">
-                    <x-icon name="cart" class="h-5 w-5 text-ink" />
-                </a>
             @endauth
-
-            <a href="/danh-gia" aria-label="AI đánh giá"
-               class="flex h-10 w-10 items-center justify-center rounded-full bg-brand">
-                <x-icon name="scan" class="h-5 w-5 text-white" />
-            </a>
         </div>
     </div>
 
-    <div class="flex items-center gap-2.5 rounded-card border-[1.5px] border-gray-100 bg-gray-50 px-4 py-[11px] focus-within:border-brand">
+    {{-- Demo .mob-search không có :focus-within (chỉ .top-nav-search có) — bám đúng demo. --}}
+    <div class="flex items-center gap-2.5 rounded-card border-[1.5px] border-gray-100 bg-gray-50 px-4 py-[11px]">
         <x-icon name="search" class="h-[18px] w-[18px] shrink-0 text-gray-400" />
         <input type="text" placeholder="Tìm nông sản..."
                class="w-full border-none bg-transparent text-sm font-medium text-ink outline-none placeholder:text-gray-300">
@@ -1465,7 +1493,7 @@ Ghi chú so với demo: demo không có nút X đóng drawer (chỉ đóng bằn
 - [ ] **Step 5: Chạy test để xác nhận pass**
 
 Run: `php artisan test --filter=DrawerTest`
-Expected: PASS — 6 test, 0 lỗi.
+Expected: PASS — 9 test, 0 lỗi.
 
 - [ ] **Step 6: Commit**
 
