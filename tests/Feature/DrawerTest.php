@@ -73,4 +73,36 @@ class DrawerTest extends TestCase
             $this->assertStringContainsString('data-drawer="' . $key . '"', $html);
         }
     }
+
+    public function test_mob_header_dung_nhan_nhu_demo(): void
+    {
+        // Render riêng component để không lẫn với top-nav (top-nav vẫn nằm trong DOM ở bản đầy đủ).
+        $html = \Illuminate\Support\Facades\Blade::render('<x-chrome.mob-header />');
+
+        // Brand mob-header liền, không tách span; sub là "Nông sản Đồng Tháp" (không "Sàn").
+        $this->assertStringContainsString('>AgriSenAi</div>', $html);
+        $this->assertStringContainsString('Nông sản Đồng Tháp', $html);
+        $this->assertStringNotContainsString('Sàn nông sản Đồng Tháp', $html);
+    }
+
+    public function test_mob_header_khach_khong_co_nut_icon_nao(): void
+    {
+        // Demo .mob-icons chỉ có nút chuông, và chuông là @auth. Khách không thấy nút nào.
+        $html = \Illuminate\Support\Facades\Blade::render('<x-chrome.mob-header />');
+
+        $this->assertStringNotContainsString('aria-label="Thông báo"', $html);
+    }
+
+    public function test_mob_header_dang_nhap_chi_co_dung_mot_nut_chuong(): void
+    {
+        $user = new User(['name' => 'Trần Thu Hà']);
+        $user->setRelation('role', new Role(['name' => 'nguoi_mua']));
+        $this->actingAs($user);
+
+        $html = \Illuminate\Support\Facades\Blade::render('<x-chrome.mob-header />');
+
+        // Đúng một nút chuông; không có nút giỏ/AI-scan trong mob-header như bản sai trước.
+        $this->assertSame(1, substr_count($html, 'aria-label="Thông báo"'));
+        $this->assertStringNotContainsString('aria-label="Giỏ hàng"', $html);
+    }
 }
