@@ -383,7 +383,7 @@ return [
 - [ ] **Step 4: Chạy test để xác nhận pass**
 
 Run: `php artisan test --filter=NavigationConfigTest`
-Expected: PASS — 5 test, 0 lỗi.
+Expected: PASS — 7 test, 0 lỗi.
 
 - [ ] **Step 5: Commit**
 
@@ -768,7 +768,7 @@ Rồi thêm vào trong class `User`, sau method `casts()`:
 - [ ] **Step 5: Chạy test để xác nhận pass**
 
 Run: `php artisan test --filter=UserRoleTest`
-Expected: PASS — 8 test, 0 lỗi.
+Expected: PASS — 4 test, 0 lỗi.
 
 - [ ] **Step 6: Commit**
 
@@ -1220,7 +1220,7 @@ Expected: FAIL — component đang rỗng.
 - [ ] **Step 4: Chạy test để xác nhận pass**
 
 Run: `php artisan test --filter=TopNavTest`
-Expected: PASS — 8 test, 0 lỗi.
+Expected: PASS — 4 test, 0 lỗi.
 
 - [ ] **Step 5: Commit**
 
@@ -1465,7 +1465,7 @@ Ghi chú so với demo: demo không có nút X đóng drawer (chỉ đóng bằn
 - [ ] **Step 5: Chạy test để xác nhận pass**
 
 Run: `php artisan test --filter=DrawerTest`
-Expected: PASS — 5 test, 0 lỗi.
+Expected: PASS — 6 test, 0 lỗi.
 
 - [ ] **Step 6: Commit**
 
@@ -1604,7 +1604,7 @@ Expected: FAIL — component đang rỗng.
 - [ ] **Step 4: Chạy test để xác nhận pass**
 
 Run: `php artisan test --filter=FooterTest`
-Expected: PASS — 8 test, 0 lỗi.
+Expected: PASS — 4 test, 0 lỗi.
 
 Nếu test `test_co_dong_ban_quyen` fail vì năm hệ thống không phải 2026, đó là test sai chứ không phải code sai — sửa test thành `assertStringContainsString('AgriSenAi · Sàn nông sản Đồng Tháp', $html)`.
 
