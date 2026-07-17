@@ -121,7 +121,20 @@ class ImageNormalizer
         return $rotated;
     }
 
-    /** @return int[] [left, top, side] */
+    /**
+     * Cat vuong o GIUA anh — dung khi khong biet qua nam o dau (anh nong dan upload).
+     *
+     * HAN CHE DA BIET: qua nam lech ra mep se bi xen mat mot phan. Da kiem chung
+     * bang mot anh that: qua bi cat mat dinh, tuy AI van cham dung.
+     *
+     * Chua sua bang cach do tim qua tu dong, vi da THU va THAT BAI: hue cua vo xoai
+     * vang trung voi hue cua mat ban go, phan vung theo mau khong tach duoc.
+     * Giai phap dang dung la RE HON: huong dan nguoi dung dat qua vao giua khung
+     * (xem resources/views/quality/index.blade.php). Buoc tiep theo: ve khung
+     * huong dan len man hinh chup.
+     *
+     * @return int[] [left, top, side]
+     */
     private function centerSquare(GdImage $img): array
     {
         $w = imagesx($img);

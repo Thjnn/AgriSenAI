@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+        />
+        <meta name="theme-color" content="#FFFFFF" />
+        <title>Thông báo — AgriSenAi</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="assets/agrisen-ui.css" />
+        <link rel="stylesheet" href="assets/agrisen-pages.css" />
+    </head>
+    <body data-page="notif" data-role="nguoi-mua">
+        <main class="main" style="max-width: 760px">
+            <div class="page-head">
+                <div class="crumb">
+                    <a href="agrisenai-home.html">Trang chủ</a> ›
+                    <span>Thông báo</span>
+                </div>
+                <div
+                    style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        gap: 12px;
+                        flex-wrap: wrap;
+                    "
+                >
+                    <h1 class="page-title">
+                        Thông báo
+                        <span class="count" id="unreadCount">0 mới</span>
+                    </h1>
+                    <button class="btn btn-outline btn-sm" id="readAll">
+                        ✓ Đánh dấu đã đọc tất cả
+                    </button>
+                </div>
+            </div>
+
+            <div class="tabs" id="filterTabs">
+                <button class="tab active" data-cat="all">Tất cả</button>
+                <button class="tab" data-cat="order">Đơn hàng</button>
+                <button class="tab" data-cat="price">Giá cả</button>
+                <button class="tab" data-cat="system">Hệ thống</button>
+            </div>
+
+            <!-- Hôm nay -->
+            <div class="notif-day">Hôm nay</div>
+
+            <div class="notif unread" data-cat="order">
+                <div class="notif-ic ic-order">🚚</div>
+                <div class="notif-body">
+                    <div class="notif-title">Đơn #DH-2607-041 đang được giao</div>
+                    <div class="notif-text">
+                        Quýt hồng Lai Vung (5 kg) đã rời kho trung chuyển Cao
+                        Lãnh, dự kiến giao trong hôm nay.
+                        <span class="notif-cta">Theo dõi đơn ›</span>
+                    </div>
+                    <div class="notif-time">10:24 · hôm nay</div>
+                </div>
+            </div>
+
+            <div class="notif unread" data-cat="price">
+                <div class="notif-ic ic-price">📈</div>
+                <div class="notif-body">
+                    <div class="notif-title">
+                        Xoài cát Hòa Lộc tăng giá 5,2%
+                    </div>
+                    <div class="notif-text">
+                        Giá hôm nay ~45.000đ/kg — vùng cao nhất 6 tháng. AI
+                        khuyến nghị thời điểm bán tốt trong 2–3 ngày tới.
+                        <span class="notif-cta">Xem khuyến nghị ›</span>
+                    </div>
+                    <div class="notif-time">08:00 · hôm nay</div>
+                </div>
+            </div>
+
+            <div class="notif unread" data-cat="system">
+                <div class="notif-ic ic-ai">🤖</div>
+                <div class="notif-body">
+                    <div class="notif-title">
+                        AI đã chấm xong ảnh nông sản của bạn
+                    </div>
+                    <div class="notif-text">
+                        Lô xoài vừa tải lên được chấm <b>9,2/10 · Hạng I</b>,
+                        không phát hiện khuyết tật đáng kể.
+                        <span class="notif-cta">Xem kết quả ›</span>
+                    </div>
+                    <div class="notif-time">07:15 · hôm nay</div>
+                </div>
+            </div>
+
+            <!-- Tuần này -->
+            <div class="notif-day">Tuần này</div>
+
+            <div class="notif" data-cat="order">
+                <div class="notif-ic ic-order">✓</div>
+                <div class="notif-body">
+                    <div class="notif-title">
+                        Đơn #DH-2606-902 đã giao thành công
+                    </div>
+                    <div class="notif-text">
+                        Nhãn Ido (2 kg) đã được giao. Hãy đánh giá để giúp nông
+                        dân bán tốt hơn nhé!
+                        <span class="notif-cta">Đánh giá ngay ›</span>
+                    </div>
+                    <div class="notif-time">15:40 · 14/07/2026</div>
+                </div>
+            </div>
+
+            <div class="notif" data-cat="system">
+                <div class="notif-ic ic-review">⭐</div>
+                <div class="notif-body">
+                    <div class="notif-title">Bạn có 1 đánh giá mới về sản phẩm</div>
+                    <div class="notif-text">
+                        Khách hàng “Nguyễn Minh Tuấn” đánh giá 5★ cho Xoài cát
+                        Hòa Lộc: “Hàng tươi, đóng gói kỹ…”.
+                    </div>
+                    <div class="notif-time">09:12 · 13/07/2026</div>
+                </div>
+            </div>
+
+            <div class="notif" data-cat="price">
+                <div class="notif-ic ic-price">📉</div>
+                <div class="notif-body">
+                    <div class="notif-title">Quýt đường giảm nhẹ 2,3%</div>
+                    <div class="notif-text">
+                        Giá quýt đường về ~28.000đ/kg. AI dự báo phục hồi khi vào
+                        cao điểm tiêu thụ cuối tháng.
+                    </div>
+                    <div class="notif-time">11/07/2026</div>
+                </div>
+            </div>
+
+            <!-- Cũ hơn -->
+            <div class="notif-day">Cũ hơn</div>
+
+            <div class="notif" data-cat="system">
+                <div class="notif-ic ic-promo">🎁</div>
+                <div class="notif-body">
+                    <div class="notif-title">
+                        Ưu đãi: miễn phí vận chuyển đơn từ 300.000đ
+                    </div>
+                    <div class="notif-text">
+                        Áp dụng cho nông sản OCOP Đồng Tháp đến hết 31/07/2026.
+                        Nhập mã <b>NONGSAN10</b> để được giảm thêm.
+                    </div>
+                    <div class="notif-time">08/07/2026</div>
+                </div>
+            </div>
+
+            <div class="notif" data-cat="system">
+                <div class="notif-ic ic-sys">🔔</div>
+                <div class="notif-body">
+                    <div class="notif-title">
+                        AgriSenAi cập nhật tính năng truy xuất QR
+                    </div>
+                    <div class="notif-text">
+                        Nay bạn có thể quét mã QR trên tem để xem toàn bộ nhật ký
+                        từ vườn đến sạp của mỗi lô hàng.
+                    </div>
+                    <div class="notif-time">05/07/2026</div>
+                </div>
+            </div>
+
+            <div
+                id="emptyFilter"
+                class="empty"
+                style="display: none"
+            >
+                <div class="ico">🔕</div>
+                <h3>Không có thông báo</h3>
+                <p>Chưa có thông báo nào trong mục này.</p>
+            </div>
+        </main>
+
+        <script src="assets/agrisen-chrome.js"></script>
+        <script src="assets/agrisen-data.js"></script>
+        <script>
+            const notifs = Array.from(document.querySelectorAll(".notif"));
+            const days = Array.from(document.querySelectorAll(".notif-day"));
+            const emptyEl = document.getElementById("emptyFilter");
+            const unreadEl = document.getElementById("unreadCount");
+
+            function refreshUnread() {
+                const n = document.querySelectorAll(".notif.unread").length;
+                unreadEl.textContent = n + " mới";
+                unreadEl.style.display = n ? "" : "none";
+            }
+
+            // Lọc theo nhóm
+            document
+                .getElementById("filterTabs")
+                .addEventListener("click", (e) => {
+                    const tab = e.target.closest(".tab");
+                    if (!tab) return;
+                    document
+                        .querySelectorAll("#filterTabs .tab")
+                        .forEach((x) => x.classList.remove("active"));
+                    tab.classList.add("active");
+                    const cat = tab.dataset.cat;
+
+                    notifs.forEach((n) => {
+                        n.style.display =
+                            cat === "all" || n.dataset.cat === cat ? "" : "none";
+                    });
+                    // Ẩn tiêu đề ngày nếu nhóm đó không còn thông báo nào hiện
+                    days.forEach((d) => {
+                        let el = d.nextElementSibling;
+                        let any = false;
+                        while (el && el.classList.contains("notif")) {
+                            if (el.style.display !== "none") any = true;
+                            el = el.nextElementSibling;
+                        }
+                        d.style.display = any ? "" : "none";
+                    });
+                    const visible = notifs.some(
+                        (n) => n.style.display !== "none",
+                    );
+                    emptyEl.style.display = visible ? "none" : "block";
+                });
+
+            // Bấm vào 1 thông báo -> đánh dấu đã đọc
+            notifs.forEach((n) =>
+                n.addEventListener("click", () => {
+                    n.classList.remove("unread");
+                    refreshUnread();
+                }),
+            );
+
+            // Đọc tất cả
+            document.getElementById("readAll").addEventListener("click", () => {
+                notifs.forEach((n) => n.classList.remove("unread"));
+                refreshUnread();
+            });
+
+            refreshUnread();
+        </script>
+    </body>
+</html>

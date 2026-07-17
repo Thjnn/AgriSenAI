@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+        />
+        <meta name="theme-color" content="#FFFFFF" />
+        <title>Giỏ hàng — AgriSenAi</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="assets/agrisen-ui.css" />
+        <link rel="stylesheet" href="assets/agrisen-pages.css" />
+    </head>
+    <body data-page="cart" data-role="nguoi-mua">
+        <main class="main">
+            <div class="page-head">
+                <div class="crumb">
+                    <a href="agrisenai-home.html">Trang chủ</a> ›
+                    <span>Giỏ hàng</span>
+                </div>
+                <h1 class="page-title">
+                    Giỏ hàng
+                    <span class="count" id="cartCount">0 sản phẩm</span>
+                </h1>
+                <p class="page-sub">
+                    Nông sản có gắn ⭐ điểm AI và mã QR truy xuất — mua là biết rõ
+                    vườn trồng, ngày thu hoạch.
+                </p>
+            </div>
+
+            <div class="two-col">
+                <!-- Danh sách sản phẩm -->
+                <div class="col-main">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div class="panel-title">
+                                <span class="ico">🛒</span> Sản phẩm đã chọn
+                            </div>
+                            <span class="panel-link" id="clearAll"
+                                >Xoá tất cả</span
+                            >
+                        </div>
+                        <div id="cartList"></div>
+                    </div>
+
+                    <!-- Gợi ý mua kèm -->
+                    <div class="sec-head">
+                        <h2 class="sec-title">Có thể bạn cũng thích</h2>
+                        <a class="sec-link" href="agrisenai-thi-truong.html"
+                            >Xem sàn →</a
+                        >
+                    </div>
+                    <div class="hscroll" id="suggestList"></div>
+                </div>
+
+                <!-- Tóm tắt -->
+                <aside class="col-aside">
+                    <div class="panel">
+                        <div class="panel-title" style="margin-bottom: 14px">
+                            Tóm tắt đơn hàng
+                        </div>
+
+                        <div class="coupon">
+                            <input
+                                type="text"
+                                placeholder="Nhập mã giảm giá"
+                                value="NONGSAN10"
+                            />
+                            <button class="btn btn-outline btn-sm">Áp dụng</button>
+                        </div>
+
+                        <div class="sum-row">
+                            <span>Tạm tính</span>
+                            <span id="sumSub">0đ</span>
+                        </div>
+                        <div class="sum-row">
+                            <span>Giảm giá (NONGSAN10)</span>
+                            <span id="sumDisc" style="color: #2e7d32">-0đ</span>
+                        </div>
+                        <div class="sum-row">
+                            <span>Phí vận chuyển</span>
+                            <span id="sumShip">25.000đ</span>
+                        </div>
+                        <div class="sum-row total">
+                            <span>Tổng cộng</span>
+                            <b id="sumTotal">0đ</b>
+                        </div>
+
+                        <button
+                            class="btn btn-primary btn-block"
+                            style="margin-top: 14px"
+                        >
+                            <svg
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272"
+                                />
+                            </svg>
+                            Tiến hành đặt hàng
+                        </button>
+
+                        <div
+                            style="
+                                display: flex;
+                                gap: 8px;
+                                align-items: center;
+                                margin-top: 14px;
+                                font-size: 12px;
+                                font-weight: 600;
+                                color: #5b8c5e;
+                                background: var(--green-light);
+                                border-radius: 10px;
+                                padding: 10px 12px;
+                            "
+                        >
+                            🛡️ Thanh toán khi nhận hàng · Đổi trả nếu sai mô tả
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </main>
+
+        <script src="assets/agrisen-chrome.js"></script>
+        <script src="assets/agrisen-data.js"></script>
+        <script>
+            // Giỏ hàng demo: tham chiếu sản phẩm trong agrisen-data.js theo slug.
+            const money = AgriData.money;
+            const CART = [
+                { slug: "xoai-cat-hoa-loc", qty: 3 },
+                { slug: "quyt-hong-lai-vung", qty: 2 },
+                { slug: "nhan-ido", qty: 1 },
+                { slug: "buoi-da-xanh", qty: 4 },
+            ]
+                .map((c) => ({ p: AgriData.bySlug(c.slug), qty: c.qty }))
+                .filter((c) => c.p);
+
+            const SHIP = 25000;
+            const DISCOUNT_RATE = 0.1; // NONGSAN10 = giảm 10% tạm tính
+
+            const listEl = document.getElementById("cartList");
+            const countEl = document.getElementById("cartCount");
+
+            function itemHTML(c, i) {
+                const p = c.p;
+                const star = p.ai.quality_score.toFixed(1);
+                return `
+                <div class="cart-item" data-i="${i}">
+                    <img class="cart-thumb" src="${p.image}" alt="${p.name}" />
+                    <div class="cart-info">
+                        <div class="cart-name">${p.name}</div>
+                        <div class="cart-seller">🏡 ${p.farmer.farm_name} · 📍 ${p.origin}</div>
+                        <div class="cart-badges">
+                            <span class="chip-mini">⭐ AI ${star}/10</span>
+                            <span class="chip-mini qr">🔎 ${p.qr_code}</span>
+                        </div>
+                        <div class="cart-row2">
+                            <div class="stepper">
+                                <button data-act="dec">−</button>
+                                <span class="qty">${c.qty}</span>
+                                <button data-act="inc">+</button>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px">
+                                <div class="cart-price">${money(p.price * c.qty)}đ<span> /${p.unit}</span></div>
+                                <button class="cart-remove" data-act="rm" aria-label="Xoá">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            function render() {
+                if (CART.length === 0) {
+                    listEl.innerHTML = `
+                    <div class="empty">
+                        <div class="ico">🛒</div>
+                        <h3>Giỏ hàng đang trống</h3>
+                        <p>Khám phá nông sản Đồng Tháp tươi ngon trên sàn.</p>
+                        <a class="btn btn-primary" href="agrisenai-thi-truong.html">Đi chợ ngay</a>
+                    </div>`;
+                    updateSummary();
+                    return;
+                }
+                listEl.innerHTML = CART.map(itemHTML).join("");
+                updateSummary();
+            }
+
+            function updateSummary() {
+                const sub = CART.reduce((s, c) => s + c.p.price * c.qty, 0);
+                const totalQty = CART.reduce((s, c) => s + c.qty, 0);
+                const disc = Math.round(sub * DISCOUNT_RATE);
+                const ship = CART.length ? SHIP : 0;
+                const total = sub - disc + ship;
+
+                countEl.textContent = totalQty + " sản phẩm";
+                document.getElementById("sumSub").textContent = money(sub) + "đ";
+                document.getElementById("sumDisc").textContent =
+                    "-" + money(disc) + "đ";
+                document.getElementById("sumShip").textContent = ship
+                    ? money(ship) + "đ"
+                    : "Miễn phí";
+                document.getElementById("sumTotal").textContent =
+                    money(total) + "đ";
+            }
+
+            listEl.addEventListener("click", (e) => {
+                const btn = e.target.closest("button[data-act]");
+                if (!btn) return;
+                const row = btn.closest(".cart-item");
+                const i = +row.dataset.i;
+                const act = btn.dataset.act;
+                if (act === "inc") CART[i].qty++;
+                else if (act === "dec")
+                    CART[i].qty = Math.max(1, CART[i].qty - 1);
+                else if (act === "rm") CART.splice(i, 1);
+                render();
+            });
+
+            document.getElementById("clearAll").addEventListener("click", () => {
+                CART.length = 0;
+                render();
+            });
+
+            // Gợi ý mua kèm — vài sản phẩm khác
+            const suggest = AgriData.products
+                .filter(
+                    (p) => !CART.some((c) => c.p.id === p.id),
+                )
+                .slice(0, 6);
+            document.getElementById("suggestList").innerHTML = suggest
+                .map(
+                    (p) => `
+                <a class="hcard" href="${AgriData.detailUrl(p)}">
+                    <div class="hcard-img ${p.bg}"><img src="${p.image}" alt="${p.name}" /></div>
+                    <div class="hcard-body">
+                        <div class="hcard-name">${p.name}</div>
+                        <div class="hcard-meta">
+                            <span class="signal signal--g">⭐ ${p.ai.quality_score.toFixed(1)}</span>
+                        </div>
+                        <div class="hcard-price">${money(p.price)}đ/${p.unit}</div>
+                    </div>
+                </a>`,
+                )
+                .join("");
+
+            render();
+        </script>
+    </body>
+</html>
