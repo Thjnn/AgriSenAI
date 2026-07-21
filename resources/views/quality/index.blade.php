@@ -2,19 +2,6 @@
 
 @section('title', 'AI đánh giá chất lượng nông sản')
 
-@php
-    // Map key backend (thu muc reference) -> emoji + nhan hien thi cho chip.
-    // Chi hien loai co bo anh mau ($loaiCoSan); loai them sau se tu xuat hien.
-    $chipMeta = [
-        'xoai' => ['emoji' => '🥭', 'label' => 'Xoài'],
-        'cam' => ['emoji' => '🍊', 'label' => 'Cam'],
-        'quyt' => ['emoji' => '🍊', 'label' => 'Quýt hồng'],
-        'nhan' => ['emoji' => '🫐', 'label' => 'Nhãn'],
-        'sau_rieng' => ['emoji' => '🍈', 'label' => 'Sầu riêng'],
-        'sen' => ['emoji' => '🪷', 'label' => 'Sen'],
-    ];
-@endphp
-
 @push('head')
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
@@ -84,6 +71,7 @@
         .ai-page .product-row { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
         .ai-page .product-row::-webkit-scrollbar { display: none; }
         .ai-page .product-chip {
+            position: relative;
             flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 6px;
             width: 82px; padding: 12px 6px; border: 1.5px solid var(--gray-200);
             border-radius: var(--r); background: var(--white); cursor: pointer;
@@ -94,6 +82,22 @@
         .ai-page .product-chip .pc-emoji { font-size: 30px; line-height: 1; }
         .ai-page .product-chip .pc-name { font-size: 11.5px; font-weight: 700; color: var(--text-sec); text-align: center; line-height: 1.2; }
         .ai-page .product-chip.active .pc-name { color: var(--green); }
+        /* Badge "chuan": loai co bo anh mau (few-shot) */
+        .ai-page .product-chip .pc-badge {
+            position: absolute; top: 5px; right: 5px;
+            width: 15px; height: 15px; border-radius: 50%;
+            background: var(--green); color: #fff; font-size: 9px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center; line-height: 1;
+        }
+        .ai-page .chip-legend {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 11.5px; font-weight: 600; color: var(--text-light); margin-top: 11px;
+        }
+        .ai-page .chip-legend .lg-dot {
+            width: 15px; height: 15px; border-radius: 50%; background: var(--green);
+            color: #fff; font-size: 9px; font-weight: 800;
+            display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
 
         /* Upload slots */
         .ai-page .upload-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
@@ -304,14 +308,7 @@
 
         <div class="ai-alert" id="aiAlert"></div>
 
-        @if (empty($loaiCoSan))
-            <div class="card">
-                <p style="font-weight:700;color:#8a1f1f">
-                    Chưa có bộ ảnh mẫu nào. Chạy <code>php artisan reference:build xoai</code> trước khi dùng.
-                </p>
-            </div>
-        @else
-            <form id="assessForm">
+        <form id="assessForm">
                 {{-- STEP 1: chon loai --}}
                 <div class="card">
                     <div class="step-head">
@@ -322,13 +319,19 @@
                         </div>
                     </div>
                     <div class="product-row" id="productRow">
-                        @foreach ($loaiCoSan as $i => $l)
-                            @php($meta = $chipMeta[$l] ?? ['emoji' => '🌿', 'label' => ucfirst(str_replace('_', ' ', $l))])
-                            <div class="product-chip @if ($i === 0) active @endif" data-loai="{{ $l }}">
+                        @foreach ($sanPham as $key => $meta)
+                            <div class="product-chip @if ($loop->first) active @endif" data-loai="{{ $key }}">
+                                @if ($meta['co_dataset'])
+                                    <span class="pc-badge" title="Có bộ ảnh mẫu — AI chấm chuẩn nhất">✓</span>
+                                @endif
                                 <span class="pc-emoji">{{ $meta['emoji'] }}</span>
-                                <span class="pc-name">{{ $meta['label'] }}</span>
+                                <span class="pc-name">{{ $meta['nhan'] }}</span>
                             </div>
                         @endforeach
+                    </div>
+                    <div class="chip-legend">
+                        <span class="lg-dot">✓</span>
+                        <span>Có bộ ảnh mẫu chuẩn — AI chấm chính xác nhất. Loại chưa có dấu này vẫn chấm được (AI tự nhận diện) nhưng độ chuẩn thấp hơn.</span>
                     </div>
                 </div>
 
@@ -498,7 +501,6 @@
                     </div>
                 </div>
             </div>
-        @endif
     </div>
 @endsection
 
@@ -592,18 +594,27 @@
                     ov.style.display = 'none';
                 }
 
-                // Diem thanh phan
+                // Diem thanh phan — mau theo nguong: <4 do, 4..<7 cam, >=7 xanh
+                const barColor = (v) => v < 4
+                    ? { grad: 'linear-gradient(90deg,#ef5350,#d32f2f)', text: '#d32f2f' }
+                    : v < 7
+                        ? { grad: 'linear-gradient(90deg,#ffb74d,#f9a825)', text: '#b37700' }
+                        : { grad: 'linear-gradient(90deg,#66bb6a,#2e7d32)', text: '#2e7d32' };
                 const sl = document.getElementById('scoresList');
                 sl.innerHTML = '';
                 Object.entries(r.scores || {}).forEach(([k, v]) => {
+                    const c = barColor(Number(v));
                     const item = document.createElement('div');
                     item.className = 'score-item';
                     item.innerHTML =
-                        '<div class="score-row"><span>' + k + '</span><span>' + Number(v).toFixed(1) +
+                        '<div class="score-row"><span>' + k + '</span><span style="color:' + c.text + '">' +
+                        Number(v).toFixed(1) +
                         '</span></div><div class="score-track"><div class="score-fill"></div></div>';
                     sl.appendChild(item);
+                    const fill = item.querySelector('.score-fill');
+                    fill.style.background = c.grad;
                     requestAnimationFrame(() => {
-                        item.querySelector('.score-fill').style.width = Math.min(100, v * 10) + '%';
+                        fill.style.width = Math.min(100, v * 10) + '%';
                     });
                 });
 

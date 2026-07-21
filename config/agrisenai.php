@@ -100,6 +100,32 @@ return [
 
     /*
     |----------------------------------------------------------------------
+    | Danh muc san pham — chip chon loai o trang AI danh gia
+    |----------------------------------------------------------------------
+    |
+    | key = ten thu muc reference (storage/app/reference/<key>) neu co bo anh mau.
+    | Loai CO labels.json  -> cham few-shot (chuan hon).
+    | Loai CHUA co          -> cham zero-shot (Gemini tu nhan dien qua anh).
+    | Them loai moi: chi can them 1 dong o day; muon chinh xac hon thi bo sung
+    | bo anh mau roi chay `php artisan reference:build <key>`.
+    |
+    */
+    'san_pham' => [
+        'xoai' => ['nhan' => 'Xoài', 'emoji' => '🥭'],
+        'cam' => ['nhan' => 'Cam', 'emoji' => '🍊'],
+        'quyt' => ['nhan' => 'Quýt hồng', 'emoji' => '🍊'],
+        'thanh_long' => ['nhan' => 'Thanh long', 'emoji' => '🐉'],
+        'oi' => ['nhan' => 'Ổi', 'emoji' => '🍐'],
+        'man' => ['nhan' => 'Mận', 'emoji' => '🍎'],
+        'hong_xiem' => ['nhan' => 'Sa-bô-chê', 'emoji' => '🟤'],
+        'nhan' => ['nhan' => 'Nhãn', 'emoji' => '🫐'],
+        'chom_chom' => ['nhan' => 'Chôm chôm', 'emoji' => '🔴'],
+        'sau_rieng' => ['nhan' => 'Sầu riêng', 'emoji' => '🥥'],
+        'sen' => ['nhan' => 'Sen', 'emoji' => '🪷'],
+    ],
+
+    /*
+    |----------------------------------------------------------------------
     | Chuan hoa anh
     |----------------------------------------------------------------------
     |

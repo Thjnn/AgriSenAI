@@ -46,9 +46,17 @@ class QualityController extends Controller
 
     public function index()
     {
-        return view('quality.index', [
-            'loaiCoSan' => $this->loaiCoSan(),
-        ]);
+        // Danh dau loai nao co bo anh mau (labels.json) -> cham few-shot (chuan);
+        // con lai cham zero-shot.
+        $sanPham = collect(config('agrisenai.san_pham'))
+            ->map(function (array $meta, string $key) {
+                $meta['co_dataset'] = is_file(storage_path("app/reference/{$key}/labels.json"));
+
+                return $meta;
+            })
+            ->all();
+
+        return view('quality.index', ['sanPham' => $sanPham]);
     }
 
     /**
@@ -61,7 +69,7 @@ class QualityController extends Controller
         // khong dua vao expectsJson() (Accept cu the != */* co the lam Laravel redirect).
         $validator = Validator::make($request->all(), [
             'anh' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
-            'loai' => ['required', Rule::in($this->loaiCoSan())],
+            'loai' => ['required', Rule::in(array_keys(config('agrisenai.san_pham')))],
         ], [
             'anh.required' => 'Vui lòng chọn ảnh nông sản.',
             'anh.image' => 'File tải lên phải là ảnh.',
@@ -157,18 +165,5 @@ class QualityController extends Controller
             'advice' => $kq['advice'] ?? '',
             'override_note' => $override,
         ];
-    }
-
-    /** Loai nong san co bo anh few-shot day du (anh + labels.json). */
-    private function loaiCoSan(): array
-    {
-        $loai = [];
-        foreach (glob(storage_path('app/reference/*'), GLOB_ONLYDIR) as $dir) {
-            if (is_file("{$dir}/labels.json")) {
-                $loai[] = basename($dir);
-            }
-        }
-
-        return $loai;
     }
 }

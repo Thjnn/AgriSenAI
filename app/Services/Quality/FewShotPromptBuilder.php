@@ -100,8 +100,11 @@ class FewShotPromptBuilder
         $dir = storage_path("app/reference/{$loai}");
         $labelsFile = "{$dir}/labels.json";
 
+        // Loai chua co bo anh mau -> cham ZERO-SHOT: khong co cap vi du,
+        // Gemini van cham dua tren systemInstruction + anh that. Kem chinh xac
+        // hon few-shot nhung khong loi. Bo sung dataset sau de cai thien.
         if (! is_file($labelsFile)) {
-            throw new RuntimeException("Khong thay {$labelsFile}");
+            return [];
         }
 
         $data = json_decode(file_get_contents($labelsFile), true, 512, JSON_THROW_ON_ERROR);
@@ -130,10 +133,7 @@ class FewShotPromptBuilder
             ];
         }
 
-        if ($turns === []) {
-            throw new RuntimeException("labels.json cua '{$loai}' rong — khong co anh mau nao.");
-        }
-
+        // labels.json rong cung coi nhu zero-shot (khong ep loi).
         return $turns;
     }
 
