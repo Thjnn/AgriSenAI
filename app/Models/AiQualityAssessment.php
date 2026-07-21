@@ -8,8 +8,8 @@ class AiQualityAssessment extends Model
 {
     public $timestamps = false;   // bang chi co assessed_at
     protected $fillable = [
-        'product_id', 'image_url', 'ripeness_level', 'quality_score',
-        'defect_detected', 'defect_note', 'raw_ai_response', 'assessed_at',
+        'product_id', 'image_url', 'image_sha256', 'ripeness_level', 'quality_score',
+        'defect_detected', 'defect_note', 'raw_ai_response', 'integrity_hash', 'assessed_at',
     ];
     protected $casts = [
         'raw_ai_response' => 'array',
