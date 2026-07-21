@@ -11,7 +11,7 @@ return [
 
     'top_links' => [
         ['key' => 'home',       'label' => 'Trang chủ',      'href' => '/'],
-        ['key' => 'market',     'label' => 'Sàn thị trường', 'href' => '#'],
+        ['key' => 'market',     'label' => 'Sàn thị trường', 'href' => '/thi-truong'],
         ['key' => 'ai',         'label' => 'AI đánh giá',    'href' => '/danh-gia'],
         ['key' => 'khuyennghi', 'label' => 'Khuyến nghị',    'href' => '#'],
         ['key' => 'about',      'label' => 'Về chúng tôi',   'href' => '#'],
@@ -29,7 +29,7 @@ return [
     'drawer_groups' => [
         [
             ['key' => 'home',       'label' => 'Trang chủ',             'href' => '/',         'icon' => 'home'],
-            ['key' => 'market',     'label' => 'Sàn thị trường',        'href' => '#',         'icon' => 'market'],
+            ['key' => 'market',     'label' => 'Sàn thị trường',        'href' => '/thi-truong', 'icon' => 'market'],
             ['key' => 'ai',         'label' => 'AI đánh giá chất lượng','href' => '/danh-gia', 'icon' => 'ai'],
             ['key' => 'khuyennghi', 'label' => 'Khuyến nghị giá bán',   'href' => '#',         'icon' => 'chart'],
             ['key' => 'truyxuat',   'label' => 'Quét QR truy xuất',     'href' => '#',         'icon' => 'qr'],
@@ -44,14 +44,14 @@ return [
     'bottom_nav' => [
         'default' => [
             ['key' => 'home',    'label' => 'Trang chủ',  'href' => '/',         'icon' => 'home'],
-            ['key' => 'market',  'label' => 'Thị trường', 'href' => '#',         'icon' => 'market'],
+            ['key' => 'market',  'label' => 'Thị trường', 'href' => '/thi-truong', 'icon' => 'market'],
             ['key' => 'ai-scan', 'label' => 'AI Scan',    'href' => '/danh-gia', 'icon' => 'scan'],
             ['key' => 'cart',    'label' => 'Giỏ hàng',   'href' => '#',         'icon' => 'cart'],
             ['key' => 'account', 'label' => 'Tài khoản',  'href' => '#',         'icon' => 'user'],
         ],
         'advisory' => [
             ['key' => 'home',       'label' => 'Trang chủ',  'href' => '/',         'icon' => 'home'],
-            ['key' => 'market',     'label' => 'Thị trường', 'href' => '#',         'icon' => 'market'],
+            ['key' => 'market',     'label' => 'Thị trường', 'href' => '/thi-truong', 'icon' => 'market'],
             ['key' => 'ai-scan',    'label' => 'AI Scan',    'href' => '/danh-gia', 'icon' => 'scan'],
             ['key' => 'khuyennghi', 'label' => 'Khuyến nghị','href' => '#',         'icon' => 'chart'],
             ['key' => 'account',    'label' => 'Tài khoản',  'href' => '#',         'icon' => 'user'],
@@ -63,7 +63,7 @@ return [
             'title' => 'Khám phá',
             'links' => [
                 ['label' => 'Trang chủ',        'href' => '/'],
-                ['label' => 'Nông sản',         'href' => '#'],
+                ['label' => 'Nông sản',         'href' => '/thi-truong'],
                 ['label' => 'AI đánh giá',      'href' => '/danh-gia'],
                 ['label' => 'Khuyến nghị giá',  'href' => '#'],
                 ['label' => 'Quét QR truy xuất','href' => '#'],
