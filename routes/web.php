@@ -40,3 +40,5 @@ Route::get('/trace/{product:qr_code}/qr', [TraceController::class, 'qr'])
 Route::get('/layout-demo', function (Illuminate\Http\Request $request) {
     return view('layout-demo', ['page' => $request->query('page', 'home')]);
 });
+
+Route::view('/offline', 'offline')->name('offline');

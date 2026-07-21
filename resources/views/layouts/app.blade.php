@@ -22,11 +22,14 @@
     <title>@hasSection('title')@yield('title') — AgriSenAi @else AgriSenAi — Sàn nông sản Đồng Tháp @endif</title>
     <meta name="description" content="@yield('description', 'Sàn nông sản Đồng Tháp ứng dụng AI đánh giá chất lượng và khuyến nghị thời điểm bán tối ưu, kết nối nông dân với người mua.')">
     <link rel="icon" href="{{ asset('favicon.ico') }}">
+
+    @include('partials.pwa-head')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
 </head>
 
 {{-- pb chừa chỗ cho bottom-nav; từ lg trở lên bottom-nav ẩn nên bỏ pb --}}
+
 <body class="bg-surface font-sans text-ink antialiased pb-[calc(var(--nav-h)+var(--safe-b)+8px)] lg:pb-0">
 
     <x-chrome.top-nav :page="$page" />
@@ -42,6 +45,7 @@
     <x-chrome.chat />
 
     @stack('scripts')
+    @include('partials.pwa-register')
 </body>
 
 </html>

@@ -1,0 +1,57 @@
+{
+    "name": "AgriSenAi — Sàn nông sản Đồng Tháp",
+    "short_name": "AgriSenAi",
+    "description": "Sàn nông sản Đồng Tháp ứng dụng AI đánh giá chất lượng và khuyến nghị thời điểm bán tối ưu.",
+    "lang": "vi",
+    "dir": "ltr",
+    "start_url": "/?source=pwa",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#ffffff",
+    "theme_color": "#2E7D32",
+    "categories": ["shopping", "food", "business"],
+    "icons": [
+        {
+            "src": "/icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "AI đánh giá chất lượng",
+            "short_name": "Chấm điểm",
+            "description": "Chụp ảnh nông sản để AI phân loại",
+            "url": "/danh-gia?source=pwa-shortcut",
+            "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+        },
+        {
+            "name": "Sàn thị trường",
+            "short_name": "Chợ",
+            "description": "Xem nông sản đã được AI chứng nhận",
+            "url": "/thi-truong?source=pwa-shortcut",
+            "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+        },
+        {
+            "name": "Giỏ hàng",
+            "short_name": "Giỏ",
+            "description": "Xem giỏ hàng của bạn",
+            "url": "/gio-hang?source=pwa-shortcut",
+            "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+        }
+    ]
+}

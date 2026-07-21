@@ -1792,6 +1792,7 @@
       transform: translateY(30px);
     }
   </style>
+  @include('partials.pwa-head')
 </head>
 
 <body>
@@ -2575,6 +2576,7 @@
       if (e.target.id === 'overlay') closeModal();
     });
   </script>
+  @include('partials.pwa-register')
 </body>
 
 </html>
