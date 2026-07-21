@@ -10,8 +10,10 @@ use App\Models\Review;
 use App\Models\Role;
 use App\Models\TraceabilityLog;
 use App\Models\User;
+use App\Services\TraceabilityService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class MarketplaceDemoSeeder extends Seeder
@@ -49,6 +51,11 @@ class MarketplaceDemoSeeder extends Seeder
 
         // ~10 product active + qr + anh + assessment + traceLogs + reviews
         $buyerId = User::where('email', 'muademo@demo.test')->value('id');
+
+        // Anh mau that de assessment co the verify duoc (demo integrity).
+        $anhMauPath = storage_path('app/reference/xoai/03_hang_1.jpg');
+        $anhMauBytes = is_file($anhMauPath) ? file_get_contents($anhMauPath) : 'anh-demo';
+        $svc = app(TraceabilityService::class);
         $data = [
             ['Xoài Cát Hòa Lộc loại 1', 'xoai', 32000, 'kg', 94, 'chin'],
             ['Xoài Cát Chu', 'xoai', 26000, 'kg', 88, 'vua_chin'],
@@ -77,13 +84,23 @@ class MarketplaceDemoSeeder extends Seeder
                 'is_primary' => true,
             ]);
 
-            AiQualityAssessment::create([
-                'product_id' => $p->id, 'image_url' => 'products/'.$slug.'-'.$p->id.'.jpg',
-                'ripeness_level' => $chin, 'quality_score' => $diem, 'defect_detected' => $diem < 80,
-                'defect_note' => $diem < 80 ? 'Vài vết xước nhẹ ở vỏ.' : null,
-                'raw_ai_response' => ['grade' => $diem >= 90 ? 'dac_biet' : 'hang_1', 'overall_score' => $diem / 10],
-                'assessed_at' => now()->subDays(rand(0, 10)),
-            ]);
+            $relImg = 'products/'.$p->id.'.jpg';
+            Storage::disk('public')->put($relImg, $anhMauBytes);
+
+            $a = new AiQualityAssessment();
+            $a->product_id = $p->id;
+            $a->image_url = $relImg;                       // duong dan tren public disk
+            $a->image_sha256 = hash('sha256', $anhMauBytes);
+            $a->ripeness_level = $chin;
+            $a->quality_score = $diem;
+            $a->defect_detected = $diem < 80;
+            $a->defect_note = $diem < 80 ? 'Vài vết xước nhẹ ở vỏ.' : null;
+            $a->raw_ai_response = ['grade' => $diem >= 90 ? 'dac_biet' : 'hang_1', 'overall_score' => $diem / 10];
+            $a->assessed_at = now()->subDays(rand(0, 10));
+            $a->save();                                     // save lan 1 de co assessed_at
+
+            $a->integrity_hash = $svc->computeHash($a);
+            $a->save();                                     // save lan 2 voi hash
 
             foreach (['thu_hoach' => 'Thu hoạch tại vườn', 'dong_goi' => 'Đóng gói',
                       'dang_ban' => 'Đưa lên sàn'] as $stage => $mota) {
