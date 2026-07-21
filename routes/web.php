@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\QualityController;
@@ -21,6 +22,11 @@ Route::post('/gio-hang/them/{product}', [CartController::class, 'add'])->name('c
 Route::get('/gio-hang', [CartController::class, 'index'])->name('cart.index');
 Route::patch('/gio-hang/{product}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/gio-hang/{product}', [CartController::class, 'remove'])->name('cart.remove');
+
+// Checkout mockup — tao order + order_items tu gio session (chua thanh toan/giao van that)
+Route::get('/thanh-toan', [CheckoutController::class, 'form'])->name('checkout.form');
+Route::post('/thanh-toan', [CheckoutController::class, 'placeOrder'])->name('checkout.place');
+Route::get('/don-hang/{order:order_code}', [CheckoutController::class, 'show'])->name('order.show');
 
 // Trang thử khung giao diện — đối chiếu với Test-Giao-Dien/agrisenai-home.html
 Route::get('/layout-demo', function (Illuminate\Http\Request $request) {

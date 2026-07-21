@@ -184,9 +184,7 @@
                             <b>{{ number_format($total, 0, ',', '.') }}đ</b>
                         </div>
 
-                        {{-- Dung url() (khong route('checkout.form')) vi route do khai bao o Task 7;
-                             doi sang route('checkout.form') sau khi Task 7 xong neu muon. --}}
-                        <a href="{{ url('/thanh-toan') }}" class="btn-checkout">Tiến hành đặt hàng</a>
+                        <a href="{{ route('checkout.form') }}" class="btn-checkout">Tiến hành đặt hàng</a>
                     </div>
                 </aside>
             </div>
