@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\QualityController;
@@ -14,6 +15,12 @@ Route::post('/danh-gia', [QualityController::class, 'assess'])->name('quality.as
 // San thi truong — danh sach san pham da duoc AI chung nhan
 Route::get('/thi-truong', [MarketplaceController::class, 'index'])->name('marketplace.index');
 Route::get('/thi-truong/{product}', [MarketplaceController::class, 'show'])->name('products.show');
+
+// Gio hang — luu trong session, khong bang cart
+Route::post('/gio-hang/them/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::get('/gio-hang', [CartController::class, 'index'])->name('cart.index');
+Route::patch('/gio-hang/{product}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/gio-hang/{product}', [CartController::class, 'remove'])->name('cart.remove');
 
 // Trang thử khung giao diện — đối chiếu với Test-Giao-Dien/agrisenai-home.html
 Route::get('/layout-demo', function (Illuminate\Http\Request $request) {

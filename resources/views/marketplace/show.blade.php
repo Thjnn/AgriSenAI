@@ -251,7 +251,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ url('/gio-hang/them/'.$product->id) }}">
+                <form method="POST" action="{{ route('cart.add', $product) }}">
                     @csrf
                     <div class="dp-qty">
                         <label for="quantity">Số lượng</label>

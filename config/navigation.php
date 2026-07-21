@@ -35,7 +35,7 @@ return [
             ['key' => 'truyxuat',   'label' => 'Quét QR truy xuất',     'href' => '#',         'icon' => 'qr'],
         ],
         [
-            ['key' => 'cart',     'label' => 'Giỏ hàng',  'href' => '#', 'icon' => 'cart'],
+            ['key' => 'cart',     'label' => 'Giỏ hàng',  'href' => '/gio-hang', 'icon' => 'cart'],
             ['key' => 'account',  'label' => 'Tài khoản', 'href' => '#', 'icon' => 'user'],
             ['key' => 'settings', 'label' => 'Cài đặt',   'href' => '#', 'icon' => 'settings'],
         ],
@@ -46,7 +46,7 @@ return [
             ['key' => 'home',    'label' => 'Trang chủ',  'href' => '/',         'icon' => 'home'],
             ['key' => 'market',  'label' => 'Thị trường', 'href' => '/thi-truong', 'icon' => 'market'],
             ['key' => 'ai-scan', 'label' => 'AI Scan',    'href' => '/danh-gia', 'icon' => 'scan'],
-            ['key' => 'cart',    'label' => 'Giỏ hàng',   'href' => '#',         'icon' => 'cart'],
+            ['key' => 'cart',    'label' => 'Giỏ hàng',   'href' => '/gio-hang', 'icon' => 'cart'],
             ['key' => 'account', 'label' => 'Tài khoản',  'href' => '#',         'icon' => 'user'],
         ],
         'advisory' => [
