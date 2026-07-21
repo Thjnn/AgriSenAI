@@ -1,0 +1,115 @@
+<?php
+namespace Database\Seeders;
+
+use App\Models\AiQualityAssessment;
+use App\Models\Category;
+use App\Models\FarmerProfile;
+use App\Models\Product;
+use App\Models\ProductImage;
+use App\Models\Review;
+use App\Models\Role;
+use App\Models\TraceabilityLog;
+use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
+class MarketplaceDemoSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $nongDan = Role::firstOrCreate(['name' => Role::NONG_DAN])->id;
+        $nguoiMua = Role::firstOrCreate(['name' => Role::NGUOI_MUA])->id;
+
+        // 1 nguoi mua demo (fallback buyer_id cho checkout)
+        $this->makeUser('Người Mua Demo', 'muademo@demo.test', $nguoiMua);
+
+        // 3 nong dan + farmer_profiles
+        $farmers = [];
+        foreach ([
+            ['Sáu Tâm', 'Vườn ông Sáu Tâm', 5, 'Cao Lãnh'],
+            ['Bảy Hoa', 'Vườn cô Bảy Hoa', 4, 'Lai Vung'],
+            ['HTX Lai Vung', 'HTX Quýt hồng Lai Vung', 5, 'Lai Vung'],
+        ] as $i => [$ten, $farm, $sao, $vung]) {
+            $u = $this->makeUser($ten, 'farmer'.$i.'@demo.test', $nongDan);
+            FarmerProfile::create([
+                'user_id' => $u->id, 'farm_name' => $farm,
+                'ocop_star_rating' => $sao, 'region' => $vung.', Đồng Tháp',
+                'description' => 'Nhà vườn tại '.$vung.', canh tác theo hướng an toàn.',
+            ]);
+            $farmers[] = $u->id;
+        }
+
+        // categories
+        $cats = [];
+        foreach (['Xoài' => 'xoai', 'Quýt hồng' => 'quyt-hong', 'Sen' => 'sen',
+                  'Nhãn' => 'nhan', 'Sầu riêng' => 'sau-rieng', 'Bưởi' => 'buoi'] as $ten => $slug) {
+            $cats[$slug] = Category::create(['name' => $ten, 'slug' => $slug])->id;
+        }
+
+        // ~10 product active + qr + anh + assessment + traceLogs + reviews
+        $buyerId = User::where('email', 'muademo@demo.test')->value('id');
+        $data = [
+            ['Xoài Cát Hòa Lộc loại 1', 'xoai', 32000, 'kg', 94, 'chin'],
+            ['Xoài Cát Chu', 'xoai', 26000, 'kg', 88, 'vua_chin'],
+            ['Quýt hồng Lai Vung', 'quyt-hong', 45000, 'kg', 91, 'chin'],
+            ['Quýt hồng loại xuất khẩu', 'quyt-hong', 58000, 'kg', 97, 'chin'],
+            ['Nhãn tiêu da bò', 'nhan', 28000, 'kg', 90, 'chin'],
+            ['Sầu riêng Ri6', 'sau-rieng', 95000, 'kg', 96, 'chin'],
+            ['Bưởi da xanh', 'buoi', 40000, 'kg', 93, 'chin'],
+            ['Hạt sen tươi Tháp Mười', 'sen', 60000, 'kg', 89, 'chin'],
+            ['Xoài tượng da xanh', 'xoai', 22000, 'kg', 78, 'xanh'],
+            ['Quýt đường', 'quyt-hong', 35000, 'kg', 85, 'vua_chin'],
+        ];
+
+        foreach ($data as $i => [$ten, $slug, $gia, $dvi, $diem, $chin]) {
+            $farmerId = $farmers[$i % count($farmers)];
+            $p = Product::create([
+                'farmer_id' => $farmerId, 'category_id' => $cats[$slug],
+                'name' => $ten, 'description' => $ten.' — nông sản Đồng Tháp, chất lượng tuyển chọn.',
+                'price' => $gia, 'unit' => $dvi, 'quantity_available' => rand(50, 300),
+                'qr_code' => (string) Str::ulid(), 'status' => 'active',
+            ]);
+
+            ProductImage::create([
+                'product_id' => $p->id,
+                'image_url' => 'images/products/'.$slug.'.jpg',   // dat anh that sau; view co fallback
+                'is_primary' => true,
+            ]);
+
+            AiQualityAssessment::create([
+                'product_id' => $p->id, 'image_url' => 'products/'.$slug.'-'.$p->id.'.jpg',
+                'ripeness_level' => $chin, 'quality_score' => $diem, 'defect_detected' => $diem < 80,
+                'defect_note' => $diem < 80 ? 'Vài vết xước nhẹ ở vỏ.' : null,
+                'raw_ai_response' => ['grade' => $diem >= 90 ? 'dac_biet' : 'hang_1', 'overall_score' => $diem / 10],
+                'assessed_at' => now()->subDays(rand(0, 10)),
+            ]);
+
+            foreach (['thu_hoach' => 'Thu hoạch tại vườn', 'dong_goi' => 'Đóng gói',
+                      'dang_ban' => 'Đưa lên sàn'] as $stage => $mota) {
+                TraceabilityLog::create([
+                    'product_id' => $p->id, 'stage' => $stage, 'description' => $mota,
+                    'location' => 'Đồng Tháp', 'happened_at' => now()->subDays(rand(0, 12)),
+                ]);
+            }
+
+            if ($i % 2 === 0) {
+                Review::create([
+                    'product_id' => $p->id, 'buyer_id' => $buyerId,
+                    'rating' => rand(4, 5), 'comment' => 'Hàng tươi, đóng gói kỹ, sẽ mua lại.',
+                ]);
+            }
+        }
+    }
+
+    private function makeUser(string $ten, string $email, int $roleId): User
+    {
+        $u = User::firstOrNew(['email' => $email]);
+        $u->name = $ten;
+        $u->password = Hash::make('password');
+        $u->role_id = $roleId;   // role_id khong fillable
+        $u->save();
+
+        return $u;
+    }
+}
