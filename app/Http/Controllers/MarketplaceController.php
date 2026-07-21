@@ -34,4 +34,21 @@ class MarketplaceController extends Controller
             'categories' => Category::orderBy('name')->get(),
         ]);
     }
+
+    public function show(Product $product)
+    {
+        abort_unless($product->status === 'active', 404);
+
+        $product->load([
+            'images', 'category', 'farmer.farmerProfile',
+            'assessments' => fn ($q) => $q->latest('assessed_at'),
+            'traceLogs',
+            'reviews.buyer',
+        ]);
+
+        return view('marketplace.show', [
+            'product' => $product,
+            'assessment' => $product->assessments->first(),
+        ]);
+    }
 }
