@@ -167,6 +167,22 @@
         .detail-page .dp-rv-text { font-size: 14px; color: var(--text-sec); line-height: 1.65; }
         .detail-page .dp-empty-note { font-size: 13.5px; color: var(--text-sec); }
 
+        /* Khoi QR truy xuat */
+        .detail-page .qr-block {
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            gap: 8px; padding-top: 6px;
+        }
+        .detail-page .qr-title { font-size: 14.5px; font-weight: 800; margin-bottom: 2px; }
+        .detail-page .qr-img {
+            width: 140px; height: 140px; background: var(--white); padding: 8px;
+            border: 1px solid var(--gray-100); border-radius: var(--r-sm); box-shadow: var(--shadow-sm);
+        }
+        .detail-page .qr-link {
+            font-size: 13.5px; font-weight: 700; color: var(--green); text-decoration: none;
+        }
+        .detail-page .qr-link:hover { text-decoration: underline; }
+        .detail-page .qr-hint { font-size: 12.5px; color: var(--text-sec); max-width: 320px; line-height: 1.6; }
+
         @media (min-width: 900px) {
             .detail-page .dp-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; }
             .detail-page .dp-two { grid-template-columns: 1fr 1fr; }
@@ -309,6 +325,14 @@
 
         <div class="dp-card">
             <div class="dp-card-title">🔗 Truy xuất nguồn gốc</div>
+            @if ($product->qr_code)
+                <div class="qr-block">
+                    <div class="qr-title">Quét mã để xem nhật ký chất lượng</div>
+                    <img class="qr-img" src="{{ route('trace.qr', $product->qr_code) }}" alt="Mã QR truy xuất {{ $product->name }}" width="140" height="140">
+                    <a class="qr-link" href="{{ route('trace.show', $product->qr_code) }}">Xem nhật ký chất lượng →</a>
+                    <p class="qr-hint">Quét mã để xem ảnh AI đã chấm, điểm chất lượng và xác minh dữ liệu chưa bị sửa.</p>
+                </div>
+            @endif
             @if ($product->traceLogs->isEmpty())
                 <p class="dp-empty-note">Chưa có dữ liệu truy xuất cho sản phẩm này.</p>
             @else
