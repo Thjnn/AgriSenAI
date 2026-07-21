@@ -36,4 +36,17 @@ class TracePageTest extends TestCase
 
         $this->get('/trace/'.$p->qr_code)->assertNotFound();
     }
+
+    public function test_trace_page_public_hien_diem_va_nha_vuon(): void
+    {
+        $this->seed();
+        $p = \App\Models\Product::certified()->with('latestAssessment')->first();
+
+        $res = $this->get('/trace/'.$p->qr_code);
+
+        $res->assertOk();
+        $res->assertViewIs('trace.show');
+        $res->assertSee($p->name);
+        $res->assertSee((string) (int) $p->latestAssessment->quality_score);
+    }
 }
