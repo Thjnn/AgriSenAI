@@ -34,6 +34,7 @@ class CheckoutController extends Controller
         $products = Product::whereIn('id', array_keys($cart))->get()->keyBy('id');
         // buyer_id NOT NULL: chua login -> fallback ve user nguoi mua demo
         $buyerId = auth()->id() ?? User::where('email', 'muademo@demo.test')->value('id');
+        abort_unless($buyerId, 503, 'Chưa có tài khoản người mua — hãy chạy seeder trước.');
 
         $order = DB::transaction(function () use ($cart, $products, $data, $buyerId) {
             $total = 0;

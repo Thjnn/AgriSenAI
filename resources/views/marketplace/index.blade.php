@@ -166,10 +166,8 @@
             <div class="empty-state">Chưa có sản phẩm nào.</div>
         @else
             <div class="pgrid">
-                {{-- Dung url() (khong route('products.show')) vi route do khai bao o Task 5;
-                     doi sang route('products.show', $p) sau khi Task 5 xong neu muon. --}}
                 @foreach ($products as $p)
-                    <a href="{{ url('/thi-truong/'.$p->id) }}" class="pcard">
+                    <a href="{{ route('products.show', $p) }}" class="pcard">
                         <div class="pcard-img">
                             <img src="{{ $p->primaryImage ? asset($p->primaryImage->image_url) : asset('images/logo-agrisenai-mark.png') }}"
                                  alt="{{ $p->name }}" onerror="this.src='{{ asset('images/logo-agrisenai-mark.png') }}'">

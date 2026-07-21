@@ -26,9 +26,8 @@ class MarketplaceFilterTest extends TestCase
         // Neo vao dung vi tri render ten san pham (<div class="pcard-name">{{ $p->name }}</div>)
         // bang cach doi hoi ky tu ngay truoc/sau la '>' va '<'.
         $other = Product::certified()->where('category_id', '!=', $p->category_id)->first();
-        if ($other) {
-            $res->assertDontSee('>'.$other->name.'<', false);
-        }
+        $this->assertNotNull($other, 'Fixture phai co san pham thuoc category khac de kiem tra loc');
+        $res->assertDontSee('>'.$other->name.'<', false);
     }
 
     public function test_sort_price_asc_dung_thu_tu(): void
@@ -37,7 +36,9 @@ class MarketplaceFilterTest extends TestCase
         $re = Product::certified()->orderBy('price')->first();
         $dat = Product::certified()->orderByDesc('price')->first();
 
-        $html = $this->get('/thi-truong?sort=price_asc')->getContent();
+        $response = $this->get('/thi-truong?sort=price_asc');
+        $response->assertOk();
+        $html = $response->getContent();
 
         $this->assertLessThan(
             strpos($html, $dat->name),
@@ -53,8 +54,7 @@ class MarketplaceFilterTest extends TestCase
         $res->assertOk();
         // chi con product diem >=95
         $low = Product::certified()->whereHas('latestAssessment', fn ($a) => $a->where('quality_score', '<', 95))->first();
-        if ($low) {
-            $res->assertDontSee('>'.$low->name.'<', false);
-        }
+        $this->assertNotNull($low, 'Fixture phai co san pham diem < 95 de kiem tra loc min_score');
+        $res->assertDontSee('>'.$low->name.'<', false);
     }
 }
