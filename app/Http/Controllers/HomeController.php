@@ -6,7 +6,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return view('home', ['products' => $this->generateProducts(), 'categories' => $this->getCategories()]);
+        return view('layout-demo', ['page' => 'home']);
     }
 
     private function getCategories(): array

@@ -111,17 +111,17 @@ return [
     |
     */
     'san_pham' => [
-        'xoai' => ['nhan' => 'Xoài', 'emoji' => '🥭'],
-        'cam' => ['nhan' => 'Cam', 'emoji' => '🍊'],
-        'quyt' => ['nhan' => 'Quýt hồng', 'emoji' => '🍊'],
-        'thanh_long' => ['nhan' => 'Thanh long', 'emoji' => '🐉'],
-        'oi' => ['nhan' => 'Ổi', 'emoji' => '🍐'],
-        'man' => ['nhan' => 'Mận', 'emoji' => '🍎'],
-        'hong_xiem' => ['nhan' => 'Sa-bô-chê', 'emoji' => '🟤'],
-        'nhan' => ['nhan' => 'Nhãn', 'emoji' => '🫐'],
-        'chom_chom' => ['nhan' => 'Chôm chôm', 'emoji' => '🔴'],
-        'sau_rieng' => ['nhan' => 'Sầu riêng', 'emoji' => '🥥'],
-        'sen' => ['nhan' => 'Sen', 'emoji' => '🪷'],
+        'xoai' => ['nhan' => 'Xoài', 'emoji' => '🥭']
+        // 'cam' => ['nhan' => 'Cam', 'emoji' => '🍊'],
+        // 'quyt' => ['nhan' => 'Quýt hồng', 'emoji' => '🍊'],
+        // 'thanh_long' => ['nhan' => 'Thanh long', 'emoji' => '🐉'],
+        // 'oi' => ['nhan' => 'Ổi', 'emoji' => '🍐'],
+        // 'man' => ['nhan' => 'Mận', 'emoji' => '🍎'],
+        // 'hong_xiem' => ['nhan' => 'Sa-bô-chê', 'emoji' => '🟤'],
+        // 'nhan' => ['nhan' => 'Nhãn', 'emoji' => '🫐'],
+        // 'chom_chom' => ['nhan' => 'Chôm chôm', 'emoji' => '🔴'],
+        // 'sau_rieng' => ['nhan' => 'Sầu riêng', 'emoji' => '🥥'],
+        // 'sen' => ['nhan' => 'Sen', 'emoji' => '🪷'],
     ],
 
     /*
