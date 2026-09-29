@@ -2006,11 +2006,11 @@
               <div class="marketplace-item-qr">📱</div>
             </div>
             <div class="marketplace-item">
-              <div class="marketplace-item-img marketplace-item-img--quyt">🍊</div>
+              <div class="marketplace-item-img marketplace-item-img--mango">🥭</div>
               <div class="marketplace-item-info">
-                <div class="marketplace-item-name">Quýt hồng Lai Vung</div>
+                <div class="marketplace-item-name">Xoài Cát Chu Mỹ Xương</div>
                 <div class="marketplace-item-meta">
-                  <span>📍 Lai Vung</span>
+                  <span>📍 Cao Lãnh</span>
                   <span>·</span>
                   <span>⭐ 8.8 AI Score</span>
                 </div>
@@ -2019,11 +2019,11 @@
               <div class="marketplace-item-qr">📱</div>
             </div>
             <div class="marketplace-item">
-              <div class="marketplace-item-img marketplace-item-img--nhan">🫐</div>
+              <div class="marketplace-item-img marketplace-item-img--mango">🥭</div>
               <div class="marketplace-item-info">
-                <div class="marketplace-item-name">Nhãn xuồng Châu Thành</div>
+                <div class="marketplace-item-name">Xoài Keo ăn xanh</div>
                 <div class="marketplace-item-meta">
-                  <span>📍 Châu Thành</span>
+                  <span>📍 Tháp Mười</span>
                   <span>·</span>
                   <span>⭐ 9.0 AI Score</span>
                 </div>

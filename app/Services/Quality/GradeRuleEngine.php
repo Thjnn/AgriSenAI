@@ -15,7 +15,7 @@ namespace App\Services\Quality;
  * Day cung la cho bu dap cho han che cua dataset: trong 71 qua xoai KHONG co
  * qua nao thoi/moc/nut, nen khong co anh mau de day Gemini nhan dien qua hong.
  * Thay vi bia mot anh "neo san" gia, ta chan bang LUAT o day.
- * Xem docs/quy-trinh-xay-module-ai.md muc 5.
+ * Xem docs/files-ke-hoach/quy-trinh-xay-module-ai.md muc 5.
  */
 class GradeRuleEngine
 {

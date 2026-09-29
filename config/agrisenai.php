@@ -22,7 +22,7 @@ return [
     |
     | CANH BAO: hai nguong `dien_tich_toi_da` duoi day (10% va 25%) lay theo
     | thong le tieu chuan qua tuoi. CAN doi chieu ban TCVN goc de xac nhan
-    | truoc khi dem di thi. Xem docs/danh-gia-dataset.md muc 1.
+    | truoc khi dem di thi. Xem docs/files-ke-hoach/danh-gia-dataset.md muc 1.
     |
     */
     'grades' => [
@@ -76,7 +76,7 @@ return [
     | Khuyet tat AN VAO THIT QUA -> rule engine ep xuong `khong_dat`,
     | bat ke Gemini cham bao nhieu diem. Day la "neo san bang LUAT", bu cho
     | viec dataset chua co anh qua thoi/moc that.
-    | Xem docs/danh-gia-dataset.md muc 4.
+    | Xem docs/files-ke-hoach/danh-gia-dataset.md muc 4.
     */
     'defects_loai_bo' => ['thoi', 'moc', 'nut'],
 
@@ -86,7 +86,7 @@ return [
     |----------------------------------------------------------------------
     |
     | Xoai xanh la MOT SAN PHAM (an voi muoi ot), khong phai xoai chua chin.
-    | Cam sanh chin VAN co vo XANH.
+    | Xoai Keo / Tu Quy chin VAN con vo XANH.
     |
     | Nong dan khai muc dich khi dang ban; AI cham do chin SO VOI muc dich do,
     | khong so voi mot thang tuyet doi. Thieu tham so nay, AI se tru diem oan
@@ -94,7 +94,7 @@ return [
     |
     */
     'muc_dich_ban' => [
-        'an_xanh' => 'Bán để ăn xanh (xoài xanh chấm muối ớt, cam/quýt vỏ xanh)',
+        'an_xanh' => 'Bán để ăn xanh (xoài xanh chấm muối ớt)',
         'an_chin' => 'Bán để ăn chín',
     ],
 

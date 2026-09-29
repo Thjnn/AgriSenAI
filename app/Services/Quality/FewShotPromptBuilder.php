@@ -54,7 +54,7 @@ class FewShotPromptBuilder
         //   - Sinh them loi MOI: mot qua xoai xanh SACH bi cham `hang_2` (lech 2 bac)
         //   - Ti le khop 56% -> 60%, nhung n=25 co sai so ~±10pp nen khong co y nghia
         // Ket luan: CHU KHONG THAY DUOC ANH. Van de that la thieu anh qua hong lam
-        // neo san. Xem docs/quy-trinh-xay-module-ai.md muc 5 va 12.
+        // neo san. Xem docs/files-ke-hoach/quy-trinh-xay-module-ai.md muc 5 va 12.
 
         ## Chỉ chấm những gì NHÌN THẤY ĐƯỢC
         Bạn CHỈ được chấm: màu sắc, bề mặt, hình dạng, độ đồng đều, độ chín.
@@ -63,13 +63,14 @@ class FewShotPromptBuilder
 
         ## LUẬT QUAN TRỌNG: vỏ xanh KHÔNG phải là lỗi
         Nông dân khai `muc_dich_ban` khi đăng bán. Bạn chấm `ripeness` SO VỚI mục đích đó:
-        - `an_xanh`: quả bán để ăn sống (xoài xanh chấm muối ớt, cam/quýt vỏ xanh).
+        - `an_xanh`: quả bán để ăn sống (xoài xanh chấm muối ớt, xoài keo ăn sống).
           Vỏ xanh, thịt chắc là ĐÚNG YÊU CẦU → `ripeness` phải CAO. Không được trừ điểm
           vì "chưa chín".
         - `an_chin`: quả bán để ăn chín. Lúc này mới xét độ chín theo nghĩa thông thường.
 
-        Đặc biệt: CAM SÀNH Việt Nam khi chín tới VẪN CÓ VỎ XANH SẦN. Đó là đặc trưng
-        của giống, không phải dấu hiệu chưa chín hay nhiễm bệnh.
+        Đặc biệt: một số giống xoài (Keo, Tứ Quý, Đài Loan...) khi chín tới VẪN CÒN
+        VỎ XANH hoặc xanh-vàng. Ảnh có thể là bất kỳ giống nào — đừng dùng màu vỏ
+        một mình để kết luận quả chưa chín.
 
         ## Khuyết tật
         - `type` chỉ được chọn trong: {$defects}

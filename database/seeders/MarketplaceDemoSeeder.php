@@ -29,9 +29,9 @@ class MarketplaceDemoSeeder extends Seeder
         // 3 nong dan + farmer_profiles
         $farmers = [];
         foreach ([
-            ['Sáu Tâm', 'Vườn ông Sáu Tâm', 5, 'Cao Lãnh'],
-            ['Bảy Hoa', 'Vườn cô Bảy Hoa', 4, 'Lai Vung'],
-            ['HTX Lai Vung', 'HTX Quýt hồng Lai Vung', 5, 'Lai Vung'],
+            ['Sáu Tâm', 'Vườn xoài ông Sáu Tâm', 5, 'Cao Lãnh'],
+            ['Bảy Hoa', 'Vườn xoài cô Bảy Hoa', 4, 'Tháp Mười'],
+            ['HTX Mỹ Xương', 'HTX Xoài Mỹ Xương', 5, 'Mỹ Xương'],
         ] as $i => [$ten, $farm, $sao, $vung]) {
             $u = $this->makeUser($ten, 'farmer'.$i.'@demo.test', $nongDan);
             FarmerProfile::create([
@@ -44,8 +44,8 @@ class MarketplaceDemoSeeder extends Seeder
 
         // categories
         $cats = [];
-        foreach (['Xoài' => 'xoai', 'Quýt hồng' => 'quyt-hong', 'Sen' => 'sen',
-                  'Nhãn' => 'nhan', 'Sầu riêng' => 'sau-rieng', 'Bưởi' => 'buoi'] as $ten => $slug) {
+        // Du an tap trung vao xoai: chia theo muc dich ban (khop agrisenai.muc_dich_ban).
+        foreach (['Xoài ăn chín' => 'xoai', 'Xoài ăn xanh' => 'xoai-xanh'] as $ten => $slug) {
             $cats[$slug] = Category::create(['name' => $ten, 'slug' => $slug])->id;
         }
 
@@ -57,16 +57,16 @@ class MarketplaceDemoSeeder extends Seeder
         $anhMauBytes = is_file($anhMauPath) ? file_get_contents($anhMauPath) : 'anh-demo';
         $svc = app(TraceabilityService::class);
         $data = [
-            ['Xoài Cát Hòa Lộc loại 1', 'xoai', 32000, 'kg', 94, 'chin'],
-            ['Xoài Cát Chu', 'xoai', 26000, 'kg', 88, 'vua_chin'],
-            ['Quýt hồng Lai Vung', 'quyt-hong', 45000, 'kg', 91, 'chin'],
-            ['Quýt hồng loại xuất khẩu', 'quyt-hong', 58000, 'kg', 97, 'chin'],
-            ['Nhãn tiêu da bò', 'nhan', 28000, 'kg', 90, 'chin'],
-            ['Sầu riêng Ri6', 'sau-rieng', 95000, 'kg', 96, 'chin'],
-            ['Bưởi da xanh', 'buoi', 40000, 'kg', 93, 'chin'],
-            ['Hạt sen tươi Tháp Mười', 'sen', 60000, 'kg', 89, 'chin'],
-            ['Xoài tượng da xanh', 'xoai', 22000, 'kg', 78, 'xanh'],
-            ['Quýt đường', 'quyt-hong', 35000, 'kg', 85, 'vua_chin'],
+            ['Xoài Cát Hòa Lộc loại 1', 'xoai', 45000, 'kg', 96, 'chin'],
+            ['Xoài Cát Chu Mỹ Xương', 'xoai', 30000, 'kg', 90, 'chin'],
+            ['Xoài Cát Hòa Lộc xuất khẩu', 'xoai', 60000, 'kg', 97, 'chin'],
+            ['Xoài Tứ Quý', 'xoai', 28000, 'kg', 88, 'vua_chin'],
+            ['Xoài Đài Loan', 'xoai', 25000, 'kg', 86, 'chin'],
+            ['Xoài Keo ăn xanh', 'xoai-xanh', 18000, 'kg', 85, 'xanh'],
+            ['Xoài tượng da xanh', 'xoai-xanh', 22000, 'kg', 78, 'xanh'],
+            ['Xoài Thanh Ca', 'xoai-xanh', 20000, 'kg', 84, 'xanh'],
+            ['Xoài Cát Chu loại 2', 'xoai', 21000, 'kg', 79, 'vua_chin'],
+            ['Xoài Úc Đồng Tháp', 'xoai', 35000, 'kg', 92, 'chin'],
         ];
 
         foreach ($data as $i => [$ten, $slug, $gia, $dvi, $diem, $chin]) {

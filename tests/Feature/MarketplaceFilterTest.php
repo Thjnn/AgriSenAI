@@ -20,8 +20,8 @@ class MarketplaceFilterTest extends TestCase
         $res->assertOk();
         $res->assertSee($p->name);
         // San pham khac category khong duoc hien thi nhu MOT THE SAN PHAM.
-        // Luu y: khong dung assertDontSee($other->name) tho — ten san pham "Quýt hồng Lai Vung"
-        // la substring cua ten nong trai "HTX Quýt hồng Lai Vung" (xem MarketplaceDemoSeeder),
+        // Luu y: khong dung assertDontSee($other->name) tho — ten san pham co the
+        // la substring cua ten nong trai (vd "Xoài ..." trong "HTX Xoài Mỹ Xương") (xem MarketplaceDemoSeeder),
         // nen co the "trung" voi phan farm-name cua mot the khac cung trang -> false fail/pass.
         // Neo vao dung vi tri render ten san pham (<div class="pcard-name">{{ $p->name }}</div>)
         // bang cach doi hoi ky tu ngay truoc/sau la '>' va '<'.

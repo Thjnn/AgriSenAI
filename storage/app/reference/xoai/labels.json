@@ -15,9 +15,9 @@
   ],
 
   "_can_xac_nhan": [
-    "GIONG XOAI: cac nhan duoi dang ghi 'Xoài Cát Chu' — day la PHONG DOAN theo",
-    "hinh dang qua. Ban la nguoi chup anh, hay xac nhan dung giong. Neu sai giong,",
-    "sua o day truoc khi chay that, vi AI se hoc theo."
+    "GIONG XOAI: anh goc chup LAN NHIEU GIONG, khong xac dinh duoc tung qua.",
+    "Nhan chi ghi 'Xoài', KHONG khang dinh giong — de AI khong hoc sai giong.",
+    "AI cham theo khuyet tat + do chin (nhin thay duoc), khong phu thuoc giong."
   ],
 
   "labels": [
@@ -25,7 +25,7 @@
       "file": "01_dac_biet_chin.jpg",
       "label": {
         "usable": true,
-        "detected_product": "Xoài Cát Chu",
+        "detected_product": "Xoài",
         "muc_dich_ban": "an_chin",
         "grade": "dac_biet",
         "overall_score": 9.3,
@@ -53,7 +53,7 @@
       "file": "02_dac_biet_xanh.jpg",
       "label": {
         "usable": true,
-        "detected_product": "Xoài Cát Chu",
+        "detected_product": "Xoài",
         "muc_dich_ban": "an_xanh",
         "grade": "dac_biet",
         "overall_score": 9.3,
@@ -81,7 +81,7 @@
       "file": "03_hang_1.jpg",
       "label": {
         "usable": true,
-        "detected_product": "Xoài Cát Chu",
+        "detected_product": "Xoài",
         "muc_dich_ban": "an_chin",
         "grade": "hang_1",
         "overall_score": 8.2,
@@ -109,7 +109,7 @@
       "file": "04_hang_2.jpg",
       "label": {
         "usable": true,
-        "detected_product": "Xoài Cát Chu",
+        "detected_product": "Xoài",
         "muc_dich_ban": "an_chin",
         "grade": "hang_2",
         "overall_score": 6.5,
@@ -137,7 +137,7 @@
       "file": "05_hang_2_nang.jpg",
       "label": {
         "usable": true,
-        "detected_product": "Xoài Cát Chu",
+        "detected_product": "Xoài",
         "muc_dich_ban": "an_chin",
         "grade": "hang_2",
         "overall_score": 5.6,
@@ -171,7 +171,7 @@
       "file": "06_khong_dat.jpg",
       "label": {
         "usable": true,
-        "detected_product": "Xoài Cát Chu",
+        "detected_product": "Xoài",
         "muc_dich_ban": "an_chin",
         "grade": "khong_dat",
         "overall_score": 3.4,

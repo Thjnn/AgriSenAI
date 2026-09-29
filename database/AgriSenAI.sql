@@ -50,7 +50,7 @@ CREATE TABLE farmer_profiles (
 
 CREATE TABLE categories (
     id          INT AUTO_INCREMENT PRIMARY KEY,
-    name        VARCHAR(100) NOT NULL COMMENT 'Xoài, Quýt hồng, Sen, Nem...',
+    name        VARCHAR(100) NOT NULL COMMENT 'Xoài ăn chín, Xoài ăn xanh, Xoài chế biến',
     description TEXT
 );
 
