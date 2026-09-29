@@ -52,24 +52,27 @@ class MarketplaceDemoSeeder extends Seeder
         // ~10 product active + qr + anh + assessment + traceLogs + reviews
         $buyerId = User::where('email', 'muademo@demo.test')->value('id');
 
-        // Anh mau that de assessment co the verify duoc (demo integrity).
-        $anhMauPath = storage_path('app/reference/xoai/03_hang_1.jpg');
-        $anhMauBytes = is_file($anhMauPath) ? file_get_contents($anhMauPath) : 'anh-demo';
+        // Anh du phong khi thieu anh xoai-mauN (vd may khac chua co anh) — van verify duoc.
+        $anhDuPhong = storage_path('app/reference/xoai/03_hang_1.jpg');
         $svc = app(TraceabilityService::class);
+
+        // Cot cuoi = so thu tu anh public/images/products/xoai-mau{N}.jpg; anh dau la anh chinh.
+        // Anh khong gan co dinh voi nha vuon nao — lo nao dung anh nao cung duoc.
+        // Chia theo mau: lo an xanh -> anh xoai xanh (3, 5, 6), lo an chin -> anh xoai chin.
         $data = [
-            ['Xoài Cát Hòa Lộc loại 1', 'xoai', 45000, 'kg', 96, 'chin'],
-            ['Xoài Cát Chu Mỹ Xương', 'xoai', 30000, 'kg', 90, 'chin'],
-            ['Xoài Cát Hòa Lộc xuất khẩu', 'xoai', 60000, 'kg', 97, 'chin'],
-            ['Xoài Tứ Quý', 'xoai', 28000, 'kg', 88, 'vua_chin'],
-            ['Xoài Đài Loan', 'xoai', 25000, 'kg', 86, 'chin'],
-            ['Xoài Keo ăn xanh', 'xoai-xanh', 18000, 'kg', 85, 'xanh'],
-            ['Xoài tượng da xanh', 'xoai-xanh', 22000, 'kg', 78, 'xanh'],
-            ['Xoài Thanh Ca', 'xoai-xanh', 20000, 'kg', 84, 'xanh'],
-            ['Xoài Cát Chu loại 2', 'xoai', 21000, 'kg', 79, 'vua_chin'],
-            ['Xoài Úc Đồng Tháp', 'xoai', 35000, 'kg', 92, 'chin'],
+            ['Xoài Cát Hòa Lộc loại 1', 'xoai', 45000, 'kg', 96, 'chin', [2, 12]],
+            ['Xoài Cát Chu Mỹ Xương', 'xoai', 30000, 'kg', 90, 'chin', [8]],
+            ['Xoài Cát Hòa Lộc xuất khẩu', 'xoai', 60000, 'kg', 97, 'chin', [10]],
+            ['Xoài Tứ Quý', 'xoai', 28000, 'kg', 88, 'vua_chin', [6]],
+            ['Xoài Đài Loan', 'xoai', 25000, 'kg', 86, 'chin', [7]],
+            ['Xoài Keo ăn xanh', 'xoai-xanh', 18000, 'kg', 85, 'xanh', [3]],
+            ['Xoài tượng da xanh', 'xoai-xanh', 22000, 'kg', 78, 'xanh', [5]],
+            ['Xoài Thanh Ca', 'xoai-xanh', 20000, 'kg', 84, 'xanh', [9]],
+            ['Xoài Cát Chu loại 2', 'xoai', 21000, 'kg', 79, 'vua_chin', [1]],
+            ['Xoài Úc Đồng Tháp', 'xoai', 35000, 'kg', 92, 'chin', [4, 11]],
         ];
 
-        foreach ($data as $i => [$ten, $slug, $gia, $dvi, $diem, $chin]) {
+        foreach ($data as $i => [$ten, $slug, $gia, $dvi, $diem, $chin, $anh]) {
             $farmerId = $farmers[$i % count($farmers)];
             $p = Product::create([
                 'farmer_id' => $farmerId, 'category_id' => $cats[$slug],
@@ -78,12 +81,18 @@ class MarketplaceDemoSeeder extends Seeder
                 'qr_code' => (string) Str::ulid(), 'status' => 'active',
             ]);
 
-            ProductImage::create([
-                'product_id' => $p->id,
-                'image_url' => 'images/products/'.$slug.'.jpg',   // dat anh that sau; view co fallback
-                'is_primary' => true,
-            ]);
+            foreach ($anh as $k => $so) {
+                ProductImage::create([
+                    'product_id' => $p->id,
+                    'image_url' => "images/products/xoai-mau{$so}.jpg",
+                    'is_primary' => $k === 0,
+                ]);
+            }
 
+            // Anh AI "da cham" = chinh anh chinh cua lo -> trang QR hien dung qua do,
+            // va image_sha256 tinh tu dung bytes nay nen verify() van khop.
+            $anhChinh = public_path("images/products/xoai-mau{$anh[0]}.jpg");
+            $anhMauBytes = file_get_contents(is_file($anhChinh) ? $anhChinh : $anhDuPhong);
             $relImg = 'products/'.$p->id.'.jpg';
             Storage::disk('public')->put($relImg, $anhMauBytes);
 

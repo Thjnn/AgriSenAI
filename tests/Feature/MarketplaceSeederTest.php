@@ -27,4 +27,17 @@ class MarketplaceSeederTest extends TestCase
         $this->assertNotNull($p->primaryImage);
         $this->assertNotNull($p->latestAssessment);
     }
+
+    public function test_moi_lo_co_anh_xoai_that_va_van_verify_duoc(): void
+    {
+        $this->seed();
+        $svc = app(\App\Services\TraceabilityService::class);
+
+        foreach (Product::certified()->with(['primaryImage', 'latestAssessment'])->get() as $p) {
+            $url = $p->primaryImage->image_url;
+            $this->assertStringStartsWith('images/products/xoai-mau', $url, $p->name);
+            $this->assertFileExists(public_path($url), "Thieu anh cua lo {$p->name}");
+            $this->assertSame('verified', $svc->verify($p->latestAssessment)['status'], $p->name);
+        }
+    }
 }

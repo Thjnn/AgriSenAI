@@ -77,46 +77,49 @@ INSERT INTO products (id, farmer_id, category_id, name, description, price, unit
 -- 5. PRODUCT_IMAGES
 -- =====================================================
 INSERT INTO product_images (id, product_id, image_url, is_primary) VALUES
-(1,  1, 'products/xoai-catchu-01.jpg',    TRUE),
-(2,  1, 'products/xoai-catchu-02.jpg',    FALSE),
-(3,  2, 'products/xoai-hoaloc-01.jpg',    TRUE),
-(4,  3, 'products/xoai-keo-01.jpg',       TRUE),
-(5,  3, 'products/xoai-keo-02.jpg',       FALSE),
-(6,  4, 'products/xoai-keo-loai2-01.jpg', TRUE),
-(7,  5, 'products/xoai-tuquy-01.jpg',     TRUE),
-(8,  6, 'products/xoai-tuquy-02.jpg',     TRUE),
-(9,  7, 'products/xoai-say-deo-01.jpg',   TRUE),
-(10, 8, 'products/mut-xoai-01.jpg',       TRUE),
-(11, 9, 'products/xoai-hoaloc-xk-01.jpg', TRUE),
-(12, 9, 'products/xoai-hoaloc-xk-02.jpg', FALSE),
-(13, 10,'products/xoai-dailoan-01.jpg',   TRUE),
-(14, 11,'products/xoai-tuong-01.jpg',     TRUE),
-(15, 12,'products/xoai-thanhca-01.jpg',   TRUE);
+(1,  1, 'images/products/xoai-mau8.jpg',  TRUE),
+(2,  1, 'images/products/xoai-mau1.jpg',  FALSE),
+(3,  2, 'images/products/xoai-mau2.jpg',  TRUE),
+(4,  3, 'images/products/xoai-mau3.jpg',  TRUE),
+(5,  3, 'images/products/xoai-mau6.jpg',  FALSE),
+(6,  4, 'images/products/xoai-mau5.jpg',  TRUE),
+(7,  5, 'images/products/xoai-mau7.jpg',  TRUE),
+(8,  6, 'images/products/xoai-mau9.jpg',  TRUE),
+(9,  7, 'images/products/xoai-mau12.jpg', TRUE),
+(10, 8, 'images/products/xoai-mau11.jpg', TRUE),
+(11, 9, 'images/products/xoai-mau10.jpg', TRUE),
+(12, 9, 'images/products/xoai-mau2.jpg',  FALSE),
+(13, 10,'images/products/xoai-mau4.jpg',  TRUE),
+(14, 11,'images/products/xoai-mau5.jpg',  TRUE),
+(15, 12,'images/products/xoai-mau3.jpg',  TRUE);
 
 -- =====================================================
 -- 6. AI_QUALITY_ASSESSMENTS  (kết quả Gemini Vision)
 -- ripeness_level: xanh / vua_chin / chin / qua_chin
 -- =====================================================
--- image_url trỏ tới ảnh thật trên public disk (storage/app/public/products/N.jpg)
--- image_sha256 = SHA-256 nội dung ảnh đó -> verify() trả "verified" (không phải mismatch)
+-- image_url trỏ tới ảnh trên public disk (storage/app/public/products/N.jpg) — file này do
+-- MarketplaceDemoSeeder ghi ra (N.jpg = bản sao public/images/products/xoai-mauX.jpg).
+-- => Chạy `php artisan db:seed` ÍT NHẤT 1 LẦN trước khi import file SQL này.
+-- image_sha256 = SHA-256 nội dung ảnh đó -> verify() trả "verified" (không phải mismatch).
+-- Đổi ảnh xoai-mauX hoặc thứ tự ảnh trong seeder -> phải tính lại các SHA-256 bên dưới.
 -- raw_ai_response theo đúng shape QualityAssessor trả về (grade = key trong config agrisenai.grades).
 -- raw_ai_response KHÔNG nằm trong integrity_hash -> đổi nội dung ở đây không làm hỏng verify().
 INSERT INTO ai_quality_assessments (id, product_id, image_url, image_sha256, ripeness_level, quality_score, defect_detected, defect_note, raw_ai_response, assessed_at) VALUES
-(1, 1, 'products/1.jpg', '61ae917b4310d94114cce773a42a687bf1078f287496072a72cf230dab7eeb6f', 'chin', 92.50, FALSE, NULL,
+(1, 1, 'products/1.jpg', 'd51da79cda77a6ee1d79ff2154ef77912aacb5cc5e890540e19b5788897eda37', 'chin', 92.50, FALSE, NULL,
  '{"usable":true,"detected_product":"Xoài","grade":"dac_biet","overall_score":9.25,"confidence":0.94,"muc_dich_ban":"an_chin","defects":[],"reasoning":"Vỏ vàng đều, không đốm đen, dáng cân đối — đạt hạng đặc biệt theo TCVN 9766:2013."}', '2026-07-15 08:12:00'),
-(2, 1, 'products/1.jpg', '61ae917b4310d94114cce773a42a687bf1078f287496072a72cf230dab7eeb6f', 'vua_chin', 85.00, FALSE, NULL,
+(2, 1, 'products/1.jpg', 'd51da79cda77a6ee1d79ff2154ef77912aacb5cc5e890540e19b5788897eda37', 'vua_chin', 85.00, FALSE, NULL,
  '{"usable":true,"detected_product":"Xoài","grade":"hang_1","overall_score":8.5,"confidence":0.88,"muc_dich_ban":"an_chin","defects":[],"reasoning":"Vừa chín tới, vỏ sạch — hạng I, phù hợp vận chuyển xa."}', '2026-07-16 09:30:00'),
-(3, 2, 'products/2.jpg', '61ae917b4310d94114cce773a42a687bf1078f287496072a72cf230dab7eeb6f', 'chin', 96.00, FALSE, NULL,
+(3, 2, 'products/2.jpg', '37855ab1cf520d672e401cf23ca83b995c6076e69b931797efdef33d63dc214f', 'chin', 96.00, FALSE, NULL,
  '{"usable":true,"detected_product":"Xoài","grade":"dac_biet","overall_score":9.6,"confidence":0.97,"muc_dich_ban":"an_chin","defects":[],"reasoning":"Size lớn, vỏ vàng sáng, không khuyết tật — hàng tuyển."}', '2026-07-16 10:05:00'),
-(4, 3, 'products/3.jpg', '61ae917b4310d94114cce773a42a687bf1078f287496072a72cf230dab7eeb6f', 'xanh', 88.75, TRUE, N'nam_nang ~4%',
+(4, 3, 'products/3.jpg', 'b2ee2e0e12c5dfa6c81e133bfea43b921874b443a1cac415119437bafa1cbbd3', 'xanh', 88.75, TRUE, N'nam_nang ~4%',
  '{"usable":true,"detected_product":"Xoài","grade":"hang_1","overall_score":8.875,"confidence":0.85,"muc_dich_ban":"an_xanh","defects":[{"type":"nam_nang","severity":"nhe","area_percent":4,"note":"Vài đốm nám nắng nhỏ trên vai trái"}],"reasoning":"Bán ăn xanh: vỏ xanh đậm, căng, thịt chắc là đúng yêu cầu. Nám nắng ~4% bề mặt, chỉ ở vỏ — hạng I."}', '2026-07-17 07:45:00'),
-(5, 5, 'products/5.jpg', '61ae917b4310d94114cce773a42a687bf1078f287496072a72cf230dab7eeb6f', 'vua_chin', 90.20, FALSE, NULL,
+(5, 5, 'products/5.jpg', 'f4af9582bc8d48ec7c6aa0a707ffef015dfa32ec39f60b5fc3abd2775acf60f5', 'vua_chin', 90.20, FALSE, NULL,
  '{"usable":true,"detected_product":"Xoài","grade":"dac_biet","overall_score":9.02,"confidence":0.91,"muc_dich_ban":"an_chin","defects":[],"reasoning":"Tứ Quý chín tới vẫn còn vỏ xanh-vàng — đặc trưng giống, không trừ điểm độ chín. Vỏ sạch, trái đều."}', '2026-07-18 08:00:00'),
-(6, 6, 'products/6.jpg', '61ae917b4310d94114cce773a42a687bf1078f287496072a72cf230dab7eeb6f', 'qua_chin', 68.00, TRUE, N'nut ~3%; tham ~8%',
+(6, 6, 'products/6.jpg', 'fa7b03366af70af726a94075c9f437f07cf1c2e3b4dc15199b160a41d09c9c6a', 'qua_chin', 68.00, TRUE, N'nut ~3%; tham ~8%',
  '{"usable":true,"detected_product":"Xoài","grade":"hang_2","overall_score":6.8,"confidence":0.82,"muc_dich_ban":"an_chin","defects":[{"type":"nut","severity":"nhe","area_percent":3,"note":"Nứt nhỏ ở cuống do quá chín"},{"type":"tham","severity":"trung_binh","area_percent":8,"note":"Vết thâm do va chạm khi thu hoạch"}],"reasoning":"Quá chín, có thâm ~8% và nứt nhỏ ở cuống — hạng II, cần tiêu thụ trong 1-2 ngày."}', '2026-07-19 14:20:00'),
-(7, 9, 'products/9.jpg', '61ae917b4310d94114cce773a42a687bf1078f287496072a72cf230dab7eeb6f', 'chin', 94.00, FALSE, NULL,
+(7, 9, 'products/9.jpg', 'c22db793366e38820166e1f5b6c48f8741e3ecdb868a5753183edac8d9f7095e', 'chin', 94.00, FALSE, NULL,
  '{"usable":true,"detected_product":"Xoài","grade":"dac_biet","overall_score":9.4,"confidence":0.93,"muc_dich_ban":"an_chin","defects":[],"reasoning":"Bao trái nên vỏ sạch, vàng đều, dáng chuẩn — đạt hạng đặc biệt, phù hợp xuất khẩu."}', '2026-07-20 09:10:00'),
-(8, 2, 'products/2.jpg', '61ae917b4310d94114cce773a42a687bf1078f287496072a72cf230dab7eeb6f', 'xanh', 45.00, FALSE, N'Còn xanh, chưa đạt độ chín thu hoạch tối ưu',
+(8, 2, 'products/2.jpg', '37855ab1cf520d672e401cf23ca83b995c6076e69b931797efdef33d63dc214f', 'xanh', 45.00, FALSE, N'Còn xanh, chưa đạt độ chín thu hoạch tối ưu',
  '{"usable":true,"detected_product":"Xoài","grade":"khong_dat","overall_score":4.5,"confidence":0.89,"muc_dich_ban":"an_chin","defects":[],"reasoning":"Lô đăng bán để ăn chín nhưng trái còn xanh non — chưa đạt, nên chờ thêm 4-6 ngày trước khi thu hoạch."}', '2026-07-21 11:00:00');
 
 -- Tính integrity_hash = SHA-256 chuỗi canonical (khớp App\Services\TraceabilityService::computeHash)
