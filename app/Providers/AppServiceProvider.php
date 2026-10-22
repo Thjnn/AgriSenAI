@@ -21,4 +21,13 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     }
+
+    /** Loc link nav theo co 'auth' / 'admin' trong config/navigation.php. */
+    public static function visibleLinks(array $links): array
+    {
+        $user = auth()->user();
+
+        return array_values(array_filter($links, fn ($l) => ! (($l['auth'] ?? false) && ! $user)
+            && ! (($l['admin'] ?? false) && ! $user?->isAdmin())));
+    }
 }

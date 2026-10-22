@@ -1,6 +1,6 @@
 @props(['page' => ''])
 
-@php($links = array_filter(config('navigation.top_links'), fn ($l) => ! ($l['auth'] ?? false) || auth()->check()))
+@php($links = \App\Providers\AppServiceProvider::visibleLinks(config('navigation.top_links')))
 
 <nav aria-label="Điều hướng chính" class="sticky top-0 z-[100] hidden border-b border-gray-100 bg-white lg:block print:hidden">
     <div class="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-8 xl:max-w-[1320px] xl:px-12">

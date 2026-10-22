@@ -25,7 +25,7 @@
 
     <nav aria-label="Menu điều hướng" class="flex-1 overflow-y-auto py-3">
         @foreach ($groups as $group)
-            @php($group = array_filter($group, fn ($l) => ! ($l['auth'] ?? false) || auth()->check()))
+            @php($group = \App\Providers\AppServiceProvider::visibleLinks($group))
             @continue(! $group)
 
             @unless ($loop->first)

@@ -83,14 +83,14 @@
    Tailwind v4 dịch `translate-x-full` / `-translate-x-full` thành thuộc tính CSS
    `translate:` (không phải `transform:`), nên phải ghi đè cùng thuộc tính đó thì
    panel mới trượt vào. Selector id+class (đặc hiệu hơn class đơn của Tailwind) đảm bảo
-   thắng. `transition-transform` của v4 đã bao gồm `translate` nên vẫn có hiệu ứng mượt. */
-@layer components {
-  #drawer.open {
-    translate: 0 0;
-  }
+   thắng. `transition-transform` của v4 đã bao gồm `translate` nên vẫn có hiệu ứng mượt.
+   KHÔNG bọc trong @layer: ở Tailwind v4 layer `utilities` luôn thắng layer `components`
+   bất kể độ đặc hiệu, nên `-translate-x-full` từng đè mất rule này (menu không mở được). */
+#drawer.open {
+  translate: 0 0;
+}
 
-  #drawerOverlay.open {
-    opacity: 1;
-    visibility: visible;
-  }
+#drawerOverlay.open {
+  opacity: 1;
+  visibility: visible;
 }

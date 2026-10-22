@@ -41,6 +41,26 @@ class ChromeNavTest extends TestCase
         $this->assertStringContainsString('Đăng xuất', $html);
     }
 
+    public function test_thong_ke_chi_hien_cho_admin(): void
+    {
+        $this->actingAs($this->staff());
+        $html = view('layouts.app', ['page' => 'lots'])->render();
+        $this->assertStringNotContainsString('/thong-ke', $html);
+
+        $admin = new User(['name' => 'Quản trị', 'org_name' => 'AgriSenAi']);
+        $admin->setRelation('role', new Role(['name' => Role::ADMIN]));
+        $this->actingAs($admin);
+        $this->assertStringContainsString('data-bnav="stats"', view('layouts.app', ['page' => 'stats'])->render());
+    }
+
+    public function test_css_mo_drawer_nam_ngoai_layer_de_thang_utility(): void
+    {
+        // Trong @layer components, -translate-x-full (layer utilities) luon thang -> menu khong mo.
+        $css = file_get_contents(resource_path('css/app.css'));
+        $this->assertDoesNotMatchRegularExpression('/@layer[^{]*\{[^@]*#drawer\.open/s', $css);
+        $this->assertStringContainsString('#drawer.open', $css);
+    }
+
     public function test_khong_con_san_gio_hang_khuyen_nghi_chatbot(): void
     {
         $html = view('layouts.app', ['page' => 'home'])->render();
@@ -53,6 +73,7 @@ class ChromeNavTest extends TestCase
     public function test_bottom_nav_nut_giua_la_tao_lo(): void
     {
         $this->assertSame(['home', 'lots', 'new', 'lookup', 'stats'], array_column(config('navigation.bottom_nav'), 'key'));
+        $this->actingAs($this->staff());
 
         $html = view('layouts.app', ['page' => 'new'])->render();
         $this->assertMatchesRegularExpression('/data-bnav="new"[^>]*data-bnav-active="1"/', $html);
