@@ -2,6 +2,12 @@
 
 Dùng Cloudflare Tunnel (`cloudflared`) để tạo một link `https://....trycloudflare.com` trỏ về web đang chạy trên máy mình. Không cần tài khoản, không cần deploy.
 
+## Cách nhanh: chạy `chia-se-link.bat`
+
+Bấm đúp file `chia-se-link.bat` ở thư mục gốc dự án. File tự làm các bước bên dưới: tìm `cloudflared`, kiểm tra Laragon, xoá `public/hot`, `npm run build`, `php artisan config:cache`, rồi mở tunnel và in link. Đóng cửa sổ là tắt link.
+
+Các bước tay dưới đây chỉ cần khi file `.bat` báo lỗi.
+
 ## Điều kiện
 
 - Laragon đang bật (Apache chạy cổng 80), vào được `http://agrisenai.test` trên máy mình.
