@@ -49,7 +49,7 @@ class IconComponentTest extends TestCase
     public function test_khong_icon_nao_render_stroke_width_hai_lan(): void
     {
         $names = ['home', 'market', 'ai', 'scan', 'chart', 'cart', 'user', 'bell',
-                  'settings', 'search', 'close', 'send', 'zalo', 'pin', 'mail', 'phone'];
+            'settings', 'search', 'close', 'send', 'zalo', 'pin', 'mail', 'phone'];
 
         foreach ($names as $name) {
             $html = Blade::render('<x-icon :name="$name" stroke-width="2.5" />', ['name' => $name]);
@@ -73,8 +73,7 @@ class IconComponentTest extends TestCase
     public function test_moi_icon_duoc_config_nhac_den_deu_ton_tai(): void
     {
         $groups = [
-            config('navigation.bottom_nav.default'),
-            config('navigation.bottom_nav.advisory'),
+            config('navigation.bottom_nav'),
             config('navigation.contact'),
             ...config('navigation.drawer_groups'),
         ];

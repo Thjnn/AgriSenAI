@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50)->unique()->comment('nong_dan / nguoi_mua / admin');
+            $table->string('name', 50)->unique()->comment('nhan_vien / admin');
             $table->timestamp('created_at')->useCurrent();
         });
 
@@ -21,8 +21,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('role_id')->constrained('roles');
             $table->string('name', 150);
-            $table->string('email', 150)->unique();
-            $table->string('phone', 15)->nullable();
+            $table->string('phone', 15)->unique()->comment('dang nhap bang SDT');
+            $table->string('email', 150)->nullable()->unique();
+            $table->string('org_name', 150)->comment('diem thu gom / HTX');
             $table->string('password');
             $table->string('avatar')->nullable();
             $table->string('address')->nullable();

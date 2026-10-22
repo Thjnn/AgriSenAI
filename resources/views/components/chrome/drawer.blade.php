@@ -15,7 +15,7 @@
         </span>
         <div class="flex-1">
             <div class="text-[19px] font-extrabold">Agri<span class="text-brand">SenAi</span></div>
-            <div class="text-[11px] font-semibold text-ink-sec">Sàn nông sản Đồng Tháp</div>
+            <div class="text-[11px] font-semibold text-ink-sec">Hồ sơ lô xoài đáng tin</div>
         </div>
         <button type="button" id="drawerClose" aria-label="Đóng menu"
                 class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-50 active:bg-gray-100">
@@ -25,15 +25,16 @@
 
     <nav aria-label="Menu điều hướng" class="flex-1 overflow-y-auto py-3">
         @foreach ($groups as $group)
-            {{-- Đường kẻ ngăn giữa các nhóm (drawer-divider trong demo), không kẻ trước nhóm đầu. --}}
+            @php($group = array_filter($group, fn ($l) => ! ($l['auth'] ?? false) || auth()->check()))
+            @continue(! $group)
+
             @unless ($loop->first)
                 <div class="mx-5 my-2.5 h-px bg-gray-100"></div>
             @endunless
 
             @foreach ($group as $link)
                 @php($isActive = $link['key'] === $page)
-                @php($href = $link['key'] === 'account' && auth()->check() ? auth()->user()->accountHref() : $link['href'])
-                <a href="{{ $href }}"
+                <a href="{{ $link['href'] }}"
                    data-drawer="{{ $link['key'] }}"
                    @if ($isActive) data-drawer-active="1" @endif
                    class="flex items-center gap-3.5 px-5 py-[13px] text-[15px] font-bold transition-colors active:bg-gray-50 {{ $isActive ? 'bg-brand-light text-brand' : 'text-ink' }}">
@@ -46,22 +47,25 @@
 
     <div class="border-t border-gray-100 px-5 pb-[22px] pt-4">
         @auth
-            <a href="{{ auth()->user()->accountHref() }}" data-drawer-user
-               class="flex items-center gap-3 rounded-card bg-gray-50 p-2.5">
+            <div data-drawer-user class="mb-3 flex items-center gap-3 rounded-card bg-gray-50 p-2.5">
                 <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-light">
                     <x-icon name="user" class="h-5 w-5 text-brand" />
                 </span>
                 <span>
                     <span class="block text-sm font-bold">{{ auth()->user()->name }}</span>
                     <span class="block text-[11px] font-semibold text-ink-sec">
-                        {{ auth()->user()->isFarmer() ? 'Nông dân' : 'Người mua' }}
+                        {{ auth()->user()->isAdmin() ? 'Quản trị' : 'Nhân viên' }} · {{ auth()->user()->org_name }}
                     </span>
                 </span>
-            </a>
+            </div>
+            <form method="post" action="{{ route('logout') }}">
+                @csrf
+                <button class="w-full rounded-card border border-gray-200 px-4 py-2.5 text-sm font-bold text-ink-sec">Đăng xuất</button>
+            </form>
         @endauth
 
         @guest
-            <a href="#" data-drawer-guest
+            <a href="{{ route('login') }}" data-drawer-guest
                class="flex items-center justify-center rounded-card bg-brand px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-medium">
                 Đăng nhập
             </a>

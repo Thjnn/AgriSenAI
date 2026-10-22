@@ -1,6 +1,6 @@
 /**
- * Khung giao diện: đóng/mở drawer (menu mobile) và panel trợ lý chat.
- * Cả hai đều khoá scroll nền khi mở và đóng được bằng phím Esc.
+ * Khung giao diện: đóng/mở drawer (menu mobile).
+ * Khoá scroll nền khi mở và đóng được bằng phím Esc.
  */
 
 /**
@@ -44,11 +44,4 @@ bindSlidePanel({
     overlay: 'drawerOverlay',
     open: 'drawerOpen',
     close: 'drawerClose',
-});
-
-bindSlidePanel({
-    panel: 'chatPanel',
-    overlay: 'chatOverlay',
-    open: 'chatFab',
-    close: 'chatClose',
 });

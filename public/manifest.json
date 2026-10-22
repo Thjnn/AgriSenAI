@@ -1,7 +1,7 @@
 {
-    "name": "AgriSenAi — Sàn nông sản Đồng Tháp",
+    "name": "AgriSenAi — Hồ sơ lô xoài đáng tin",
     "short_name": "AgriSenAi",
-    "description": "Sàn nông sản Đồng Tháp ứng dụng AI đánh giá chất lượng và khuyến nghị thời điểm bán tối ưu.",
+    "description": "Chuẩn hóa hồ sơ lô xoài: chụp ảnh chuẩn, AI gợi ý ngoại quan, người phụ trách xác nhận, QR kiểm chứng.",
     "lang": "vi",
     "dir": "ltr",
     "start_url": "/?source=pwa",
@@ -10,7 +10,11 @@
     "orientation": "portrait",
     "background_color": "#ffffff",
     "theme_color": "#2E7D32",
-    "categories": ["shopping", "food", "business"],
+    "categories": [
+        "business",
+        "food",
+        "productivity"
+    ],
     "icons": [
         {
             "src": "/icons/icon-192.png",
@@ -33,25 +37,40 @@
     ],
     "shortcuts": [
         {
-            "name": "AI đánh giá chất lượng",
-            "short_name": "Chấm điểm",
-            "description": "Chụp ảnh nông sản để AI phân loại",
-            "url": "/danh-gia?source=pwa-shortcut",
-            "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+            "name": "Tạo lô mới",
+            "short_name": "Tạo lô",
+            "description": "Tạo lô hàng và chụp ảnh chuẩn",
+            "url": "/lo/tao?source=pwa-shortcut",
+            "icons": [
+                {
+                    "src": "/icons/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
         },
         {
-            "name": "Sàn thị trường",
-            "short_name": "Chợ",
-            "description": "Xem nông sản đã được AI chứng nhận",
-            "url": "/thi-truong?source=pwa-shortcut",
-            "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+            "name": "Danh sách lô",
+            "short_name": "Lô hàng",
+            "description": "Các lô đang xử lý",
+            "url": "/lo?source=pwa-shortcut",
+            "icons": [
+                {
+                    "src": "/icons/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
         },
         {
-            "name": "Giỏ hàng",
-            "short_name": "Giỏ",
-            "description": "Xem giỏ hàng của bạn",
-            "url": "/gio-hang?source=pwa-shortcut",
-            "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+            "name": "Tra cứu hồ sơ",
+            "short_name": "Tra cứu",
+            "description": "Tra cứu hồ sơ theo mã lô",
+            "url": "/tra-cuu?source=pwa-shortcut",
+            "icons": [
+                {
+                    "src": "/icons/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
         }
     ]
 }

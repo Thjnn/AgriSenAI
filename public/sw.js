@@ -1,6 +1,6 @@
 /* AgriSenAi Service Worker */
 
-const VERSION = "v1.0.2";
+const VERSION = "v2.0.0";
 const SHELL_CACHE = `agrisenai-shell-${VERSION}`;
 const ASSET_CACHE = `agrisenai-assets-${VERSION}`;
 const PAGE_CACHE = `agrisenai-pages-${VERSION}`;
@@ -97,8 +97,12 @@ function isBypass(url) {
         p.startsWith("/api/") ||
         p.startsWith("/livewire/") ||
         p.startsWith("/broadcasting/") ||
+        // Màn hình nhân viên (đăng nhập, trạng thái lô thay đổi liên tục) không cache
+        p.startsWith("/lo") ||
+        p.startsWith("/thong-ke") ||
+        p.startsWith("/dang-nhap") ||
         // Không cache endpoint sinh mã QR (SVG động) để luôn khớp dữ liệu mới
-        /^\/trace\/[^/]+\/qr$/.test(p)
+        /^\/ho-so\/[^/]+\/qr$/.test(p)
     );
 }
 

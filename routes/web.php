@@ -1,44 +1,42 @@
 <?php
 
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\MarketplaceController;
-use App\Http\Controllers\QualityController;
-use App\Http\Controllers\TraceController;
+use App\Http\Controllers\LotController;
+use App\Http\Controllers\PublicLotController;
+use App\Http\Controllers\StatsController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// AI danh gia chat luong nong san qua anh
-Route::get('/danh-gia', [QualityController::class, 'index'])->name('quality.index');
-Route::post('/danh-gia', [QualityController::class, 'assess'])->name('quality.assess');
+Route::middleware('guest')->group(function () {
+    Route::get('/dang-nhap', [AuthController::class, 'show'])->name('login');
+    Route::post('/dang-nhap', [AuthController::class, 'login'])->middleware('throttle:10,1');
+});
+Route::post('/dang-xuat', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-// San thi truong — danh sach san pham da duoc AI chung nhan
-Route::get('/thi-truong', [MarketplaceController::class, 'index'])->name('marketplace.index');
-Route::get('/thi-truong/{product}', [MarketplaceController::class, 'show'])->name('products.show');
+// Ho so lo — nhan vien diem thu gom
+Route::middleware('auth')->group(function () {
+    Route::get('/lo', [LotController::class, 'index'])->name('lots.index');
+    Route::get('/lo/tao', [LotController::class, 'create'])->name('lots.create');
+    Route::post('/lo', [LotController::class, 'store'])->name('lots.store');
+    Route::get('/lo/{lot}', [LotController::class, 'show'])->name('lots.show');
+    Route::post('/lo/{lot}/anh', [LotController::class, 'storePhoto'])->name('lots.photos.store');
+    Route::post('/lo/{lot}/phan-tich', [LotController::class, 'analyze'])->name('lots.analyze');
+    Route::get('/lo/{lot}/phan-tich', [LotController::class, 'analysisStatus'])->name('lots.analysis');
+    Route::post('/lo/{lot}/xac-nhan', [LotController::class, 'confirm'])->name('lots.confirm');
+    Route::post('/lo/{lot}/cong-bo', [LotController::class, 'publish'])->name('lots.publish');
+    Route::get('/lo/{lot}/tem', [LotController::class, 'label'])->name('lots.label');
 
-// Gio hang — luu trong session, khong bang cart
-Route::post('/gio-hang/them/{product}', [CartController::class, 'add'])->name('cart.add');
-Route::get('/gio-hang', [CartController::class, 'index'])->name('cart.index');
-Route::patch('/gio-hang/{product}', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/gio-hang/{product}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::get('/thong-ke', [StatsController::class, 'index'])->name('stats.index');
+    Route::get('/thong-ke/dataset', [StatsController::class, 'dataset'])->name('stats.dataset');
+});
 
-// Checkout mockup — tao order + order_items tu gio session (chua thanh toan/giao van that)
-Route::get('/thanh-toan', [CheckoutController::class, 'form'])->name('checkout.form');
-Route::post('/thanh-toan', [CheckoutController::class, 'placeOrder'])->name('checkout.place');
-Route::get('/don-hang/{order:order_code}', [CheckoutController::class, 'show'])->name('order.show');
-
-// Truy xuat nguon goc qua QR — cong khai, chi doc (khong co POST/PUT/DELETE)
-Route::get('/trace/{product:qr_code}', [TraceController::class, 'show'])
-    ->name('trace.show')->middleware('throttle:60,1');
-
-Route::get('/trace/{product:qr_code}/qr', [TraceController::class, 'qr'])
-    ->name('trace.qr')->middleware('throttle:60,1');
-
-// Trang thử khung giao diện — đối chiếu với Test-Giao-Dien/agrisenai-home.html
-Route::get('/layout-demo', function (Illuminate\Http\Request $request) {
-    return view('layout-demo', ['page' => $request->query('page', 'home')]);
+// Ho so cong khai qua QR — chi doc, khong can dang nhap
+Route::middleware('throttle:60,1')->group(function () {
+    Route::get('/tra-cuu', [PublicLotController::class, 'lookup'])->name('public.lookup');
+    Route::get('/ho-so/{lot}', [PublicLotController::class, 'show'])->name('public.show');
+    Route::get('/ho-so/{lot}/qr', [PublicLotController::class, 'qr'])->name('public.qr');
 });
 
 Route::view('/offline', 'offline')->name('offline');

@@ -52,22 +52,12 @@ class BuildReferenceSet extends Command
         }
 
         $size = config('agrisenai.image.size');
-        $grades = array_keys(config('agrisenai.grades'));
         $ok = 0;
         $loi = 0;
 
         foreach ($source['anh'] ?? [] as $anh) {
             $goc = base_path($anh['goc']);
             $dst = "{$dir}/{$anh['file']}";
-
-            // Anh reference bat buoc co grade (no di thang vao prompt).
-            // Anh testset thi khong — nhan that nam trong ground_truth.json.
-            if ($set === 'reference' && ! in_array($anh['grade'] ?? null, $grades, true)) {
-                $this->error("  {$anh['file']}: grade khong hop le '".($anh['grade'] ?? 'thieu')."'");
-                $loi++;
-
-                continue;
-            }
 
             try {
                 $normalizer->normalize($goc, $dst, $anh['crop']);
@@ -79,8 +69,7 @@ class BuildReferenceSet extends Command
             }
 
             $kb = round(filesize($dst) / 1024);
-            $this->line(sprintf('  <info>%-22s</info> %-10s %dx%d  %d KB',
-                $anh['file'], $anh['grade'] ?? '-', $size, $size, $kb));
+            $this->line(sprintf('  <info>%-22s</info> %dx%d  %d KB', $anh['file'], $size, $size, $kb));
             $ok++;
         }
 

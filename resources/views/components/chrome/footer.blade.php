@@ -1,5 +1,5 @@
 {{-- Footer chỉ hiện từ lg trở lên — đúng demo, mobile dùng bottom-nav thay thế. --}}
-<footer class="mt-12 hidden bg-brand-footer text-white/[0.82] lg:block">
+<footer class="mt-12 hidden bg-brand-footer text-white/[0.82] lg:block print:hidden">
 
     <div class="mx-auto grid max-w-[1200px] grid-cols-[1.7fr_1fr_1fr_1.5fr] gap-10 px-8 pb-9 pt-[52px]">
 
@@ -12,7 +12,7 @@
             </div>
 
             <p class="mb-5 max-w-[300px] text-[13px] leading-[1.65]">
-                Sàn nông sản Đồng Tháp ứng dụng AI đánh giá chất lượng và khuyến nghị thời điểm bán tối ưu, kết nối nông dân với người mua.
+                Nền tảng chuẩn hóa hồ sơ lô xoài cho điểm thu gom và HTX: AI gợi ý ngoại quan, con người xác nhận, người mua quét QR kiểm chứng.
             </p>
 
             <div class="flex gap-2.5">
@@ -49,6 +49,6 @@
     </div>
 
     <div class="border-t border-white/[0.13] p-5 text-center text-xs text-white/60">
-        © {{ date('Y') }} AgriSenAi · Sàn nông sản Đồng Tháp. Mọi quyền được bảo lưu.
+        © {{ date('Y') }} AgriSenAi · Hồ sơ lô xoài Đồng Tháp. Mọi quyền được bảo lưu.
     </div>
 </footer>

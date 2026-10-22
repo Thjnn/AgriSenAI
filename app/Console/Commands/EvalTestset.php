@@ -7,11 +7,15 @@ use Illuminate\Console\Command;
 use Throwable;
 
 /**
- * Do do chinh xac cua module AI tren tap test.
+ * Do do khop goi y AI tren tap test (goi Gemini that, ton quota).
  *
- *   php artisan quality:eval xoai
+ *   php artisan quality:eval xoai [--limit=5]
  *
- * Anh trong testset DA duoc chuan hoa san (768x768) nen khong chuan hoa lai.
+ * Khong do "hang" nua (da bo). Do:
+ *   - co / khong khuyet tat (sach vs con lai)
+ *   - muc be mat khop dung / lech 1 bac
+ *   - bat duoc khuyet tat an vao thit qua (into_flesh)
+ * Anh testset DA chuan hoa san (768x768).
  */
 class EvalTestset extends Command
 {
@@ -19,7 +23,7 @@ class EvalTestset extends Command
                             {loai : Loai nong san (vd: xoai)}
                             {--limit= : Chi chay N anh dau (de thu nhanh)}';
 
-    protected $description = 'Cham tap test bang Gemini roi so voi ground_truth.json';
+    protected $description = 'Goi y AI tren tap test roi so voi ground_truth.json';
 
     public function handle(QualityAssessor $assessor): int
     {
@@ -33,108 +37,62 @@ class EvalTestset extends Command
             return self::FAILURE;
         }
 
-        $gt = json_decode(file_get_contents($gtFile), true, 512, JSON_THROW_ON_ERROR);
-        $items = $gt['labels'] ?? [];
-
+        $items = json_decode(file_get_contents($gtFile), true, 512, JSON_THROW_ON_ERROR)['labels'] ?? [];
         if ($limit = $this->option('limit')) {
             $items = array_slice($items, 0, (int) $limit);
         }
 
-        $order = array_keys(config('agrisenai.grades'));
-        $dung = 0;
-        $lech1 = 0;      // lech dung 1 bac
-        $loi = 0;
+        $order = array_keys(config('agrisenai.criteria.surface.options'));   // sach -> nang
+        $n = $presence = $exact = $near = $loi = 0;
+        $flesh = ['that' => 0, 'bat_duoc' => 0];
         $rows = [];
-        $confusion = [];
-        $haHang = 0;
 
-        $bar = $this->output->createProgressBar(count($items));
-        $bar->start();
-
-        foreach ($items as $item) {
-            $path = "{$dir}/{$item['file']}";
-
+        foreach ($this->output->progressIterate($items) as $item) {
             try {
-                $kq = $assessor->assess(
-                    imagePath: $path,
-                    loai: $loai,
-                    mucDichBan: $item['muc_dich_ban'] ?? 'an_chin',
-                    daChuanHoa: true,
-                );
+                $kq = $assessor->assess(["{$dir}/{$item['file']}"], $item['muc_dich_ban'] ?? 'an_chin', $loai);
             } catch (Throwable $e) {
                 $loi++;
-                $rows[] = [$item['file'], $item['grade'], 'LOI', '-', substr($e->getMessage(), 0, 40)];
-                $bar->advance();
+                $rows[] = [$item['file'], $item['surface'], 'LOI', substr($e->getMessage(), 0, 40)];
 
                 continue;
             }
 
-            $that = $item['grade'];
-            $duDoan = $kq['grade'] ?? '?';
-            $khoangCach = abs(
-                array_search($that, $order, true) - (array_search($duDoan, $order, true) ?: 0)
-            );
+            $that = $item['surface'];
+            $ai = $kq['surface']['value'] ?? '?';
+            $kc = abs(array_search($that, $order, true) - (int) array_search($ai, $order, true));
+            $aiFlesh = collect($kq['surface']['defects'] ?? [])->contains('into_flesh', true);
 
-            if ($duDoan === $that) {
-                $dung++;
-            } elseif ($khoangCach === 1) {
-                $lech1++;
+            $n++;
+            $presence += ($that === 'sach') === ($ai === 'sach') ? 1 : 0;
+            $exact += $ai === $that ? 1 : 0;
+            $near += $kc <= 1 ? 1 : 0;
+            if ($item['into_flesh'] ?? false) {
+                $flesh['that']++;
+                $flesh['bat_duoc'] += $aiFlesh ? 1 : 0;
             }
 
-            if ($kq['rule_engine']['da_ha_hang'] ?? false) {
-                $haHang++;
-            }
-
-            $confusion[$that][$duDoan] = ($confusion[$that][$duDoan] ?? 0) + 1;
-
-            $rows[] = [
-                $item['file'],
-                $that,
-                $duDoan,
-                number_format((float) ($kq['overall_score'] ?? 0), 1),
-                $duDoan === $that ? 'dung' : ($khoangCach === 1 ? 'lech 1 bac' : 'LECH XA'),
-            ];
-
-            $bar->advance();
+            $rows[] = [$item['file'], $that, $ai, $ai === $that ? 'dung' : ($kc === 1 ? 'lech 1 bac' : 'LECH XA')];
         }
 
-        $bar->finish();
-        $this->newLine(2);
+        $this->table(['Anh', 'Be mat that', 'AI goi y', 'Ket qua'], $rows);
 
-        $this->table(['Anh', 'Hang that', 'AI cham', 'Diem', 'Ket qua'], $rows);
-
-        $n = count($items) - $loi;
-        if ($n <= 0) {
-            $this->error('Khong cham duoc anh nao.');
+        if ($n === 0) {
+            $this->error('Khong goi y duoc anh nao.');
 
             return self::FAILURE;
         }
 
-        $this->newLine();
+        $pct = fn ($x) => sprintf('%d/%d (%.0f%%)', $x, $n, $x / $n * 100);
         $this->info('── KET QUA ─────────────────────────────');
-        $this->line(sprintf('  Khop chinh xac      : %d/%d  (%.1f%%)', $dung, $n, $dung / $n * 100));
-        $this->line(sprintf('  Khop hoac lech 1 bac: %d/%d  (%.1f%%)', $dung + $lech1, $n, ($dung + $lech1) / $n * 100));
-        $this->line(sprintf('  Rule engine ha hang : %d lan', $haHang));
+        $this->line('  Co/khong khuyet tat khop : '.$pct($presence));
+        $this->line('  Muc be mat khop dung     : '.$pct($exact));
+        $this->line('  Khop hoac lech 1 bac     : '.$pct($near));
+        $this->line("  Bat duoc an vao thit qua : {$flesh['bat_duoc']}/{$flesh['that']}");
         if ($loi > 0) {
-            $this->error("  Anh loi             : {$loi}");
+            $this->error("  Anh loi                  : {$loi}");
         }
-
         $this->newLine();
-        $this->line('  Ma tran nham lan (hang that -> AI cham):');
-        foreach ($order as $that) {
-            if (! isset($confusion[$that])) {
-                continue;
-            }
-            $chi = [];
-            foreach ($confusion[$that] as $duDoan => $sl) {
-                $chi[] = "{$duDoan}={$sl}";
-            }
-            $this->line(sprintf('    %-10s -> %s', $that, implode(', ', $chi)));
-        }
-
-        $this->newLine();
-        $this->comment('  Luu y: nhan that do AI de xuat, chua co chuyen gia nong nghiep duyet.');
-        $this->comment('  Hang `khong_dat` chi co 2 qua — con so tren hang do gan nhu vo nghia.');
+        $this->comment('  Luu y: nhan that do AI de xuat, chua co chuyen gia duyet; n=25 sai so ~±10 diem %.');
 
         return self::SUCCESS;
     }

@@ -9,8 +9,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['name'])]
 class Role extends Model
 {
-    public const NONG_DAN = 'nong_dan';
-    public const NGUOI_MUA = 'nguoi_mua';
+    /** Nhan vien diem thu gom / HTX: tao lo, chup anh, xac nhan, cong bo. */
+    public const NHAN_VIEN = 'nhan_vien';
+
+    /** Xem thong ke + xuat dataset cua moi to chuc. */
     public const ADMIN = 'admin';
 
     public $timestamps = false;

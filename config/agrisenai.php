@@ -2,96 +2,94 @@
 
 /*
 |--------------------------------------------------------------------------
-| AgriSenAi — cau hinh module AI danh gia chat luong nong san
+| AgriSen — cau hinh ho so lo xoai
 |--------------------------------------------------------------------------
 |
-| Day la NGUON SU THAT DUY NHAT cho: thang hang, loai khuyet tat, nguong
-| dien tich theo TCVN, va tham so chuan hoa anh.
+| NGUON SU THAT DUY NHAT cho: 5 tieu chi ngoai quan + cac lua chon cua tung
+| tieu chi, loai khuyet tat, muc dich ban, nguong kiem tra anh, chuan hoa anh.
 |
-| Prompt few-shot, rule engine va validate response cua Gemini deu doc tu
-| day. Sua tieu chuan thi sua o mot cho nay.
+| Prompt, responseSchema cua Gemini, form xac nhan (HITL) va trang ho so
+| cong khai deu doc tu day. Sua mot cho nay.
+|
+| KHONG co diem tong hop, KHONG co xep hang (gop y co Hang 05/10/2026):
+| AI chi GOI Y quan sat theo tung tieu chi, nguoi phu trach quyet dinh.
 |
 */
 
 return [
 
+    // Doi prompt / schema -> doi version (luu vao ai_suggestions.prompt_version).
+    'prompt_version' => 'v2-2026-10-22',
+
     /*
-    |----------------------------------------------------------------------
-    | Thang hang chat luong — neo theo TCVN 9766:2013 (qua co mui / qua tuoi)
-    |----------------------------------------------------------------------
-    |
-    | CANH BAO: hai nguong `dien_tich_toi_da` duoi day (10% va 25%) lay theo
-    | thong le tieu chuan qua tuoi. CAN doi chieu ban TCVN goc de xac nhan
-    | truoc khi dem di thi. Xem docs/files-ke-hoach/danh-gia-dataset.md muc 1.
-    |
+    | 5 tieu chi ngoai quan. `options` = cac gia tri hop le cua `value`.
+    | Form "Sua" chi cho chon trong `options` (khong go tu do) de nhan sach.
     */
-    'grades' => [
-        'dac_biet' => [
-            'nhan' => 'Hạng đặc biệt',
-            'diem_toi_thieu' => 9.0,
-            // Tieu chuan qua tuoi CHO PHEP khuyet tat be mat rat nhe o hang dac biet,
-            // mien khong anh huong hinh thuc chung (vd: vet nhua nho o cuong khi cat).
-            'dien_tich_khuyet_tat_toi_da' => 2,   // % be mat
+    'criteria' => [
+        'color' => [
+            'label' => 'Màu sắc',
+            'options' => [
+                'xanh' => 'Xanh',
+                'xanh_vang' => 'Xanh vàng',
+                'vang' => 'Vàng',
+                'vang_cam' => 'Vàng cam',
+            ],
         ],
-        'hang_1' => [
-            'nhan' => 'Hạng I',
-            'diem_toi_thieu' => 7.0,
-            'dien_tich_khuyet_tat_toi_da' => 10,
+        'ripeness' => [
+            'label' => 'Độ chín',
+            'options' => [
+                'xanh_gia' => 'Xanh già',
+                'chin_toi' => 'Chín tới',
+                'chin_ky' => 'Chín kỹ',
+                'qua_chin' => 'Quá chín',
+            ],
         ],
-        'hang_2' => [
-            'nhan' => 'Hạng II',
-            'diem_toi_thieu' => 5.0,
-            'dien_tich_khuyet_tat_toi_da' => 25,
+        'surface' => [
+            'label' => 'Bề mặt / khuyết tật',
+            'options' => [
+                'sach' => 'Sạch, không khuyết tật',
+                'khuyet_tat_nhe' => 'Khuyết tật nhẹ',
+                'khuyet_tat_vua' => 'Khuyết tật vừa',
+                'khuyet_tat_nang' => 'Khuyết tật nặng',
+            ],
         ],
-        'khong_dat' => [
-            'nhan' => 'Không đạt',
-            'diem_toi_thieu' => 0.0,
-            'dien_tich_khuyet_tat_toi_da' => 100,
+        'shape' => [
+            'label' => 'Hình dạng',
+            'options' => [
+                'binh_thuong' => 'Cân đối',
+                'meo_nhe' => 'Méo nhẹ',
+                'meo_nang' => 'Méo nặng',
+            ],
+        ],
+        'uniformity' => [
+            'label' => 'Độ đồng đều',
+            'options' => [
+                'dong_deu' => 'Đồng đều',
+                'khong_deu' => 'Không đều',
+            ],
         ],
     ],
 
-    /*
-    |----------------------------------------------------------------------
-    | Tieu chi cham diem — CHI nhung gi NHIN THAY duoc qua anh
-    |----------------------------------------------------------------------
-    |
-    | Khoi luong (gram) va do Brix do nong dan tu nhap. AI KHONG duoc suy doan.
-    |
-    */
-    'scores' => ['color', 'surface', 'shape', 'uniformity', 'ripeness'],
-
-    /*
-    |----------------------------------------------------------------------
-    | Khuyet tat
-    |----------------------------------------------------------------------
-    */
     'defect_types' => [
-        'xuoc_vo', 'nam_nang', 'vet_nhua', 'tham', 'sau_benh', 'nut', 'thoi',
-        'moc', 'meo_mo', 'greening', 'canker', 'blackspot', 'khac',
+        'xuoc_vo' => 'Xước vỏ',
+        'nam_nang' => 'Nám nắng',
+        'vet_nhua' => 'Vết nhựa',
+        'tham' => 'Thâm',
+        'than_thu' => 'Thán thư',
+        'dom_den' => 'Đốm đen',
+        'sau_benh' => 'Sâu bệnh',
+        'nut' => 'Nứt',
+        'thoi' => 'Thối',
+        'moc' => 'Mốc',
+        'khac' => 'Khác',
     ],
 
     'defect_severities' => ['nhe', 'trung_binh', 'nang'],
 
     /*
-    | Khuyet tat AN VAO THIT QUA -> rule engine ep xuong `khong_dat`,
-    | bat ke Gemini cham bao nhieu diem. Day la "neo san bang LUAT", bu cho
-    | viec dataset chua co anh qua thoi/moc that.
-    | Xem docs/files-ke-hoach/danh-gia-dataset.md muc 4.
-    */
-    'defects_loai_bo' => ['thoi', 'moc', 'nut'],
-
-    /*
-    |----------------------------------------------------------------------
-    | Muc dich ban — quyet dinh cach cham `ripeness`
-    |----------------------------------------------------------------------
-    |
+    | Muc dich ban — quyet dinh cach AI nhin `ripeness`.
     | Xoai xanh la MOT SAN PHAM (an voi muoi ot), khong phai xoai chua chin.
     | Xoai Keo / Tu Quy chin VAN con vo XANH.
-    |
-    | Nong dan khai muc dich khi dang ban; AI cham do chin SO VOI muc dich do,
-    | khong so voi mot thang tuyet doi. Thieu tham so nay, AI se tru diem oan
-    | moi qua vo xanh.
-    |
     */
     'muc_dich_ban' => [
         'an_xanh' => 'Bán để ăn xanh (xoài xanh chấm muối ớt)',
@@ -99,48 +97,34 @@ return [
     ],
 
     /*
-    |----------------------------------------------------------------------
-    | Danh muc san pham — chip chon loai o trang AI danh gia
-    |----------------------------------------------------------------------
-    |
-    | key = ten thu muc reference (storage/app/reference/<key>) neu co bo anh mau.
-    | Loai CO labels.json  -> cham few-shot (chuan hon).
-    | Loai CHUA co          -> cham zero-shot (Gemini tu nhan dien qua anh).
-    | Them loai moi: chi can them 1 dong o day; muon chinh xac hon thi bo sung
-    | bo anh mau roi chay `php artisan reference:build <key>`.
-    |
+    | AI tu tin duoi nguong nay -> UI khong cho "Dong y tat ca", buoc xem tung the.
     */
-    'san_pham' => [
-        'xoai' => ['nhan' => 'Xoài', 'emoji' => '🥭']
-        // 'cam' => ['nhan' => 'Cam', 'emoji' => '🍊'],
-        // 'quyt' => ['nhan' => 'Quýt hồng', 'emoji' => '🍊'],
-        // 'thanh_long' => ['nhan' => 'Thanh long', 'emoji' => '🐉'],
-        // 'oi' => ['nhan' => 'Ổi', 'emoji' => '🍐'],
-        // 'man' => ['nhan' => 'Mận', 'emoji' => '🍎'],
-        // 'hong_xiem' => ['nhan' => 'Sa-bô-chê', 'emoji' => '🟤'],
-        // 'nhan' => ['nhan' => 'Nhãn', 'emoji' => '🫐'],
-        // 'chom_chom' => ['nhan' => 'Chôm chôm', 'emoji' => '🔴'],
-        // 'sau_rieng' => ['nhan' => 'Sầu riêng', 'emoji' => '🥥'],
-        // 'sen' => ['nhan' => 'Sen', 'emoji' => '🪷'],
+    'min_confidence' => 0.6,
+
+    // Gui toi da N anh dat chat luong trong MOT lan goi Gemini.
+    'max_photos_per_analysis' => 4,
+
+    /*
+    | Kiem tra chat luong anh (port tu assess_quality() trong MVP mau cua co Hang).
+    | Chay ca o client (chan som) lan server (khong tin client).
+    | Hieu chinh tren dien thoai that: anh mo that ma van qua -> tang blur_min.
+    */
+    'photo_check' => [
+        'blur_min' => 20,          // phuong sai Laplacian tren anh thu nho
+        'dark_max' => 60,          // do sang trung binh < 60 = qua toi
+        'bright_min' => 220,       // > 220 = chay sang
+        'min_side' => 320,         // canh ngan toi thieu (px)
+        'sample_side' => 320,      // thu nho ve canh nay truoc khi tinh
     ],
 
     /*
-    |----------------------------------------------------------------------
-    | Chuan hoa anh
-    |----------------------------------------------------------------------
-    |
-    | Anh reference VA anh nong dan upload PHAI qua CUNG mot ham chuan hoa
-    | (App\Services\Quality\ImageNormalizer). Neu chi chuan hoa mot ben thi
-    | lech phan phoi -> AI cham sai.
-    |
-    | Khong dung mask tron cho xoai: xoai thuon dai, mask tron cat mat hai dau
-    | qua, ma hinh dang la mot trong 5 tieu chi cham.
-    |
+    | Chuan hoa anh: anh mau few-shot VA anh nguoi dung PHAI qua cung
+    | App\Services\Quality\ImageNormalizer, neu khong lech phan phoi -> AI sai.
     */
     'image' => [
         'size' => 768,
         'quality' => 85,
-        'bg' => [128, 128, 128],   // nen xam trung tinh khi anh co alpha
+        'bg' => [128, 128, 128],
     ],
 
 ];

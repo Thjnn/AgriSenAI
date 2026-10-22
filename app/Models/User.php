@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -11,18 +10,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['role_id', 'name', 'phone', 'email', 'org_name', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -36,25 +30,14 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    /** Người dùng có phải nông dân không. Không có vai trò thì coi như người mua. */
-    public function isFarmer(): bool
+    public function isAdmin(): bool
     {
-        return $this->role?->name === Role::NONG_DAN;
+        return $this->role?->name === Role::ADMIN;
     }
 
-    /** Đường dẫn trang tài khoản tương ứng vai trò. */
-    public function accountHref(): string
+    /** Admin thay moi lo; nhan vien chi thay lo cua to chuc minh. */
+    public function canAccessLot(Lot $lot): bool
     {
-        return $this->isFarmer() ? '/tai-khoan/nong-dan' : '/tai-khoan/nguoi-mua';
-    }
-
-    public function farmerProfile(): \Illuminate\Database\Eloquent\Relations\HasOne
-    {
-        return $this->hasOne(FarmerProfile::class);
-    }
-
-    public function products(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Product::class, 'farmer_id');
+        return $this->isAdmin() || $lot->creator?->org_name === $this->org_name;
     }
 }

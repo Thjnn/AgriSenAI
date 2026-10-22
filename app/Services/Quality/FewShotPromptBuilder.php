@@ -7,92 +7,69 @@ use RuntimeException;
 /**
  * Dung noi dung prompt few-shot gui cho Gemini.
  *
- * Few-shot = dat san mot loat cap (ANH -> NHAN) TRUOC anh can cham, de model
- * hieu chinh thang diem theo dung chuan cua minh. Cac cap do chinh la 6 anh
- * trong storage/app/reference/<loai>/ va 6 nhan trong labels.json.
+ * Few-shot = dat san mot loat cap (ANH -> NHAN) TRUOC anh can xem, de model
+ * mo ta theo dung chuan cua minh. Cac cap do chinh la 6 anh trong
+ * storage/app/reference/<loai>/ va 6 nhan trong labels.json.
  *
- * File nay chay o MOI request — labels.json khong phai file train, no la
- * NOI DUNG PROMPT.
+ * AI chi GOI Y quan sat ngoai quan theo 5 tieu chi. Khong cham diem, khong
+ * xep hang — nguoi phu trach xac nhan tung tieu chi (gop y co Hang 05/10).
  */
 class FewShotPromptBuilder
 {
-    /**
-     * Chi dan he thong: dinh nghia thang hang, tieu chi, va cac LUAT CHONG SAI
-     * ma anh mau khong day duoc (vi dataset khong co anh minh hoa).
-     */
     public function systemInstruction(): string
     {
-        $grades = config('agrisenai.grades');
-        $defects = implode(', ', config('agrisenai.defect_types'));
+        $tieuChi = '';
+        foreach (config('agrisenai.criteria') as $key => $c) {
+            $tieuChi .= sprintf("- `%s` (%s): `value` chọn một trong %s\n",
+                $key, $c['label'], implode(', ', array_keys($c['options'])));
+        }
+        $defects = implode(', ', array_keys(config('agrisenai.defect_types')));
         $severities = implode(', ', config('agrisenai.defect_severities'));
 
-        $thang = '';
-        foreach ($grades as $key => $g) {
-            $thang .= sprintf(
-                "- `%s` (%s): điểm từ %.1f trở lên, tổng khuyết tật bề mặt tối đa %d%%\n",
-                $key, $g['nhan'], $g['diem_toi_thieu'], $g['dien_tich_khuyet_tat_toi_da']
-            );
-        }
-
         return <<<TXT
-        Bạn là chuyên gia phân loại nông sản tươi, đang chấm chất lượng cho sàn nông sản Đồng Tháp.
-        Người dùng là nông dân. Trả lời bằng tiếng Việt, dễ hiểu, không dùng từ chuyên môn rắc rối.
+        Bạn là trợ lý kiểm định ngoại quan xoài tại điểm thu gom ở Đồng Tháp.
+        Nhiệm vụ: GỢI Ý quan sát ngoại quan theo từng tiêu chí. Người phụ trách sẽ
+        đồng ý, sửa hoặc bác bỏ từng gợi ý — bạn KHÔNG ra quyết định, KHÔNG chấm điểm,
+        KHÔNG xếp hạng. Trả lời bằng tiếng Việt, ngắn gọn, dễ hiểu.
 
-        ## Thang hạng (neo theo TCVN 9766:2013)
-        {$thang}
-        Nguyên tắc phân hạng: xét theo TỔNG DIỆN TÍCH khuyết tật và ĐỘ SÂU của nó,
-        KHÔNG xét theo tên bệnh. Một quả có một vết sẹo nhỏ 2% và một quả nứt toác
-        nửa vỏ có thể cùng là bệnh loét, nhưng khác hạng hoàn toàn.
+        ## 5 tiêu chí
+        {$tieuChi}
+        Mỗi tiêu chí có `note`: một câu nêu ĐIỀU NHÌN THẤY và LÝ DO chọn `value`.
+        SAI:  "Quả có đốm đen"
+        ĐÚNG: "Vài đốm đen nhỏ rải rác khoảng 2% bề mặt, còn nông, chưa ăn vào thịt quả"
 
-        Khuyết tật ĂN VÀO THỊT QUẢ (thối, mốc, nứt sâu, vết lõm xuống dưới mặt vỏ)
-        thì KHÔNG còn xét diện tích nữa — quả `khong_dat`.
+        ## Chỉ nói những gì NHÌN THẤY ĐƯỢC
+        TUYỆT ĐỐI KHÔNG suy đoán khối lượng (gram), độ ngọt (Brix) hay giống xoài —
+        người dùng tự nhập, ảnh không cho biết được.
 
-        // GHI CHU CHO NGUOI BAO TRI — dung them "luat nghiem khac" vao day.
-        // Da thu: viet vao prompt cac cau kieu "khi phan van hay chon hang thap hon"
-        // va "dung uoc luong dien tich de dat" -> ket qua do tren 25 anh test:
-        //   - Van 0/2 tren `khong_dat` (KHONG cai thien duoc gi o cho quan trong nhat)
-        //   - Sinh them loi MOI: mot qua xoai xanh SACH bi cham `hang_2` (lech 2 bac)
-        //   - Ti le khop 56% -> 60%, nhung n=25 co sai so ~±10pp nen khong co y nghia
-        // Ket luan: CHU KHONG THAY DUOC ANH. Van de that la thieu anh qua hong lam
-        // neo san. Xem docs/files-ke-hoach/quy-trinh-xay-module-ai.md muc 5 va 12.
+        ## Vỏ xanh KHÔNG phải là lỗi
+        Người dùng khai `muc_dich_ban`. Xét `ripeness` SO VỚI mục đích đó:
+        - `an_xanh`: bán để ăn sống. Vỏ xanh, thịt chắc là ĐÚNG YÊU CẦU → `matches_purpose = true`.
+        - `an_chin`: bán để ăn chín.
+        Một số giống (Keo, Tứ Quý, Đài Loan...) chín tới VẪN CÒN VỎ XANH — đừng dùng
+        màu vỏ một mình để kết luận quả chưa chín.
 
-        ## Chỉ chấm những gì NHÌN THẤY ĐƯỢC
-        Bạn CHỈ được chấm: màu sắc, bề mặt, hình dạng, độ đồng đều, độ chín.
-        TUYỆT ĐỐI KHÔNG suy đoán khối lượng (gram) hay độ ngọt (Brix) — hai thứ đó
-        nông dân tự nhập, ảnh không cho biết được.
+        ## Khuyết tật (trong `surface.defects`)
+        - `type` chỉ chọn trong: {$defects}
+        - `severity` chỉ chọn trong: {$severities}
+        - `area_percent`: ước lượng % bề mặt bị ảnh hưởng (số nguyên)
+        - `into_flesh`: true nếu khuyết tật ăn vào thịt quả (thối, mốc, nứt sâu, vết lõm)
+        Không có khuyết tật → `defects` rỗng và `surface.value = sach`.
 
-        ## LUẬT QUAN TRỌNG: vỏ xanh KHÔNG phải là lỗi
-        Nông dân khai `muc_dich_ban` khi đăng bán. Bạn chấm `ripeness` SO VỚI mục đích đó:
-        - `an_xanh`: quả bán để ăn sống (xoài xanh chấm muối ớt, xoài keo ăn sống).
-          Vỏ xanh, thịt chắc là ĐÚNG YÊU CẦU → `ripeness` phải CAO. Không được trừ điểm
-          vì "chưa chín".
-        - `an_chin`: quả bán để ăn chín. Lúc này mới xét độ chín theo nghĩa thông thường.
+        ## Nhiều ảnh
+        Các ảnh là CÙNG MỘT LÔ. `uniformity` xét độ đồng đều giữa các quả nhìn thấy;
+        chỉ có một quả thì `dong_deu` và ghi rõ "chỉ thấy một quả".
 
-        Đặc biệt: một số giống xoài (Keo, Tứ Quý, Đài Loan...) khi chín tới VẪN CÒN
-        VỎ XANH hoặc xanh-vàng. Ảnh có thể là bất kỳ giống nào — đừng dùng màu vỏ
-        một mình để kết luận quả chưa chín.
+        ## Ảnh không dùng được
+        Ảnh mờ, quá tối, không thấy rõ quả, hoặc không phải xoài: đặt `usable = false`,
+        nêu lý do trong `unusable_reason`, KHÔNG bịa quan sát.
 
-        ## Khuyết tật
-        - `type` chỉ được chọn trong: {$defects}
-        - `severity` chỉ được chọn trong: {$severities}
-        - `area_percent`: ước lượng % bề mặt quả bị ảnh hưởng (số nguyên)
-
-        ## Nếu ảnh không dùng được
-        Nếu ảnh mờ, quá tối, không thấy rõ quả, hoặc trong ảnh không phải nông sản:
-        đặt `usable = false`, giải thích ngắn trong `reasoning`, và KHÔNG bịa điểm.
-
-        ## reasoning phải NÊU LÝ DO, không chỉ mô tả
-        SAI:  "Quả này có đốm đen"
-        ĐÚNG: "Đốm đen rải rác khoảng 12% bề mặt, đã vượt ngưỡng 1/10 của hạng I nhưng
-               vẫn dưới 1/4 bề mặt. Các đốm còn nông, chưa ăn vào thịt quả, nên theo
-               TCVN 9766:2013 quả đạt hạng II."
-
-        `advice` là lời khuyên bán hàng thiết thực cho nông dân.
+        `confidence` (0–1): bạn chắc chắn đến đâu về toàn bộ gợi ý.
         TXT;
     }
 
     /**
-     * Cac cap (anh mau -> nhan vang), dung dinh dang hoi-thoai cua Gemini.
+     * Cac cap (anh mau -> nhan mau), dung dinh dang hoi-thoai cua Gemini.
      *
      * @return array<int, array{role: string, parts: array}>
      */
@@ -101,9 +78,7 @@ class FewShotPromptBuilder
         $dir = storage_path("app/reference/{$loai}");
         $labelsFile = "{$dir}/labels.json";
 
-        // Loai chua co bo anh mau -> cham ZERO-SHOT: khong co cap vi du,
-        // Gemini van cham dua tren systemInstruction + anh that. Kem chinh xac
-        // hon few-shot nhung khong loi. Bo sung dataset sau de cai thien.
+        // Chua co bo anh mau -> zero-shot (kem chinh xac hon nhung khong loi).
         if (! is_file($labelsFile)) {
             return [];
         }
@@ -117,108 +92,91 @@ class FewShotPromptBuilder
                 throw new RuntimeException("Thieu anh mau: {$path}");
             }
 
-            $turns[] = [
-                'role' => 'user',
-                'parts' => [
-                    ['text' => $this->userPrompt($item['label']['muc_dich_ban'] ?? 'an_chin')],
-                    $this->imagePart($path),
-                ],
-            ];
-
-            // Cau tra loi MAU — day chinh la thu day Gemini cach cham.
+            $turns[] = $this->userTurn([$path], $item['muc_dich_ban'] ?? 'an_chin');
+            // Cau tra loi MAU — day chinh la thu day Gemini cach mo ta.
             $turns[] = [
                 'role' => 'model',
-                'parts' => [
-                    ['text' => json_encode($item['label'], JSON_UNESCAPED_UNICODE)],
-                ],
+                'parts' => [['text' => json_encode($item['label'], JSON_UNESCAPED_UNICODE)]],
             ];
         }
 
-        // labels.json rong cung coi nhu zero-shot (khong ep loi).
         return $turns;
     }
 
-    /** Luot cuoi: anh that cua nong dan. */
-    public function userTurn(string $imagePath, string $mucDichBan): array
-    {
-        return [
-            'role' => 'user',
-            'parts' => [
-                ['text' => $this->userPrompt($mucDichBan)],
-                $this->imagePart($imagePath),
-            ],
-        ];
-    }
-
-    private function userPrompt(string $mucDichBan): string
+    /** @param  string[]  $imagePaths  Anh DA chuan hoa cua cung mot lo */
+    public function userTurn(array $imagePaths, string $mucDichBan): array
     {
         $mota = config("agrisenai.muc_dich_ban.{$mucDichBan}", $mucDichBan);
+        $parts = [['text' => "Gợi ý ngoại quan lô xoài trong ảnh.\nMục đích bán người dùng đã khai: `{$mucDichBan}` ({$mota})."]];
 
-        return "Chấm chất lượng quả trong ảnh.\nMục đích bán nông dân đã khai: `{$mucDichBan}` ({$mota}).";
-    }
+        foreach ($imagePaths as $path) {
+            $parts[] = [
+                'inline_data' => [
+                    'mime_type' => 'image/jpeg',
+                    'data' => base64_encode(file_get_contents($path)),
+                ],
+            ];
+        }
 
-    private function imagePart(string $path): array
-    {
-        return [
-            'inline_data' => [
-                'mime_type' => 'image/jpeg',
-                'data' => base64_encode(file_get_contents($path)),
-            ],
-        ];
+        return ['role' => 'user', 'parts' => $parts];
     }
 
     /**
-     * Schema ep Gemini tra ve dung cau truc JSON.
-     *
-     * KHONG co truong khoi luong / Brix — de model khong co cho ma suy doan.
+     * Schema ep Gemini tra dung cau truc. KHONG co grade / overall_score /
+     * scores, cung khong co khoi luong / Brix — de model khong co cho ma bia.
      */
     public function responseSchema(): array
     {
-        $scoreProps = [];
-        foreach (config('agrisenai.scores') as $s) {
-            $scoreProps[$s] = ['type' => 'NUMBER'];
-        }
+        $criterion = fn (string $key, array $extra = []) => [
+            'type' => 'OBJECT',
+            'properties' => [
+                'value' => ['type' => 'STRING', 'enum' => array_keys(config("agrisenai.criteria.{$key}.options"))],
+                'note' => ['type' => 'STRING'],
+            ] + $extra,
+            'required' => ['value', 'note', ...array_keys($extra)],
+        ];
 
         return [
             'type' => 'OBJECT',
             'properties' => [
                 'usable' => ['type' => 'BOOLEAN'],
+                'unusable_reason' => ['type' => 'STRING', 'nullable' => true],
                 'detected_product' => ['type' => 'STRING'],
-                'muc_dich_ban' => [
-                    'type' => 'STRING',
-                    'enum' => array_keys(config('agrisenai.muc_dich_ban')),
-                ],
-                'grade' => [
-                    'type' => 'STRING',
-                    'enum' => array_keys(config('agrisenai.grades')),
-                ],
-                'overall_score' => ['type' => 'NUMBER'],
-                'confidence' => ['type' => 'NUMBER'],
-                'scores' => [
-                    'type' => 'OBJECT',
-                    'properties' => $scoreProps,
-                    'required' => config('agrisenai.scores'),
-                ],
-                'defects' => [
-                    'type' => 'ARRAY',
-                    'items' => [
-                        'type' => 'OBJECT',
-                        'properties' => [
-                            'type' => ['type' => 'STRING', 'enum' => config('agrisenai.defect_types')],
-                            'severity' => ['type' => 'STRING', 'enum' => config('agrisenai.defect_severities')],
-                            'area_percent' => ['type' => 'NUMBER'],
-                            'note' => ['type' => 'STRING'],
+                'color' => $criterion('color', [
+                    'distribution' => [
+                        'type' => 'ARRAY',
+                        'items' => [
+                            'type' => 'OBJECT',
+                            'properties' => [
+                                'name' => ['type' => 'STRING'],
+                                'percent' => ['type' => 'NUMBER'],
+                            ],
+                            'required' => ['name', 'percent'],
                         ],
-                        'required' => ['type', 'severity', 'area_percent', 'note'],
                     ],
-                ],
-                'reasoning' => ['type' => 'STRING'],
-                'advice' => ['type' => 'STRING'],
+                ]),
+                'ripeness' => $criterion('ripeness', ['matches_purpose' => ['type' => 'BOOLEAN']]),
+                'surface' => $criterion('surface', [
+                    'defects' => [
+                        'type' => 'ARRAY',
+                        'items' => [
+                            'type' => 'OBJECT',
+                            'properties' => [
+                                'type' => ['type' => 'STRING', 'enum' => array_keys(config('agrisenai.defect_types'))],
+                                'severity' => ['type' => 'STRING', 'enum' => config('agrisenai.defect_severities')],
+                                'area_percent' => ['type' => 'NUMBER'],
+                                'location' => ['type' => 'STRING'],
+                                'into_flesh' => ['type' => 'BOOLEAN'],
+                            ],
+                            'required' => ['type', 'severity', 'area_percent', 'into_flesh'],
+                        ],
+                    ],
+                ]),
+                'shape' => $criterion('shape'),
+                'uniformity' => $criterion('uniformity'),
+                'confidence' => ['type' => 'NUMBER'],
             ],
-            'required' => [
-                'usable', 'detected_product', 'grade', 'overall_score',
-                'confidence', 'scores', 'defects', 'reasoning', 'advice',
-            ],
+            'required' => ['usable', 'detected_product', 'confidence'],
         ];
     }
 }
