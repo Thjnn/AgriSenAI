@@ -91,6 +91,15 @@ class LotController extends Controller
             : back()->with('warn', 'Ảnh đã lưu nhưng KHÔNG đạt chất lượng nên AI sẽ bỏ qua: '.implode(' ', $photo->quality['issues']));
     }
 
+    public function destroyPhoto(Request $request, Lot $lot, LotPhoto $photo)
+    {
+        $this->authorizeLot($request, $lot);
+
+        $this->workflow->removePhoto($lot, $photo, $request->user());
+
+        return back()->with('ok', 'Đã xoá ảnh. Bộ ảnh đã đổi nên cần cho AI gợi ý và xác nhận lại.');
+    }
+
     public function analyze(Request $request, Lot $lot)
     {
         $this->authorizeLot($request, $lot);

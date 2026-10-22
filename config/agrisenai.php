@@ -19,7 +19,7 @@
 return [
 
     // Doi prompt / schema -> doi version (luu vao ai_suggestions.prompt_version).
-    'prompt_version' => 'v2-2026-10-22',
+    'prompt_version' => 'v2.1-2026-10-22',   // v2.1: bad_photos theo tung anh
 
     /*
     | 5 tieu chi ngoai quan. `options` = cac gia tri hop le cua `value`.

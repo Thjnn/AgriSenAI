@@ -90,6 +90,29 @@ class LotWorkflow
     }
 
     /**
+     * Xoa anh chup nham (anh man hinh, anh khong phai lo hang...). Goi y AI va
+     * xac nhan cu da dua tren bo anh cu nen lo quay ve `draft`, phai lam lai.
+     * Dong audit `photo_added` cu van con — nhat ky chi them, khong xoa.
+     */
+    public function removePhoto(Lot $lot, LotPhoto $photo, User $by): void
+    {
+        $this->assertEditable($lot);
+        abort_unless($photo->lot_id === $lot->id, 404);
+
+        DB::transaction(function () use ($lot, $photo, $by) {
+            $this->audit->append($lot, 'photo_removed', [
+                'photo_id' => $photo->id,
+                'sha256' => $photo->sha256,
+            ], $by);
+
+            $photo->delete();
+            $lot->update(['status' => 'draft']);
+        });
+
+        Storage::disk('public')->delete($photo->path);
+    }
+
+    /**
      * Goi Gemini tren cac anh dat chat luong. Luon ghi ai_suggestions (ca khi
      * loi) de con dau vet; loi thi nguoi dung van xac nhan thu cong duoc.
      */

@@ -19,6 +19,7 @@ class AuditLog extends Model
     public const ACTIONS = [
         'created' => 'Tạo lô',
         'photo_added' => 'Thêm ảnh',
+        'photo_removed' => 'Xoá ảnh',
         'ai_suggested' => 'AI gợi ý ngoại quan',
         'confirmed' => 'Người phụ trách xác nhận',
         'published' => 'Công bố hồ sơ',

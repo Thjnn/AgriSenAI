@@ -28,6 +28,7 @@ class AnalyzeLotTest extends TestCase
             'usable' => true,
             'unusable_reason' => null,
             'detected_product' => 'Xoài',
+            'bad_photos' => [],
             'color' => ['value' => 'vang', 'distribution' => [['name' => 'vàng', 'percent' => 90]], 'note' => 'Vàng đều'],
             'ripeness' => ['value' => 'chin_toi', 'matches_purpose' => true, 'note' => 'Chín tới'],
             'surface' => ['value' => 'khuyet_tat_nhe', 'defects' => [
@@ -89,7 +90,8 @@ class AnalyzeLotTest extends TestCase
             return $req->hasHeader('x-goog-api-key', 'test-key')
                 && count($contents) === 13                          // 6 cap few-shot + anh lo
                 && str_contains($last['parts'][0]['text'], 'an_xanh')
-                && isset($last['parts'][1]['inline_data'])
+                && $last['parts'][1]['text'] === 'Ảnh 1:'
+                && isset($last['parts'][2]['inline_data'])
                 && ! str_contains(json_encode($req['generationConfig']['responseSchema']), 'overall_score');
         });
     }
@@ -151,6 +153,28 @@ class AnalyzeLotTest extends TestCase
         $items = LotFlowTest::manualItems();
         $items['color'] = ['decision' => 'accept'];
         $this->post("/lo/{$this->lot->code}/xac-nhan", ['items' => $items])->assertSessionHasErrors('items.color.decision');
+    }
+
+    public function test_ai_danh_dau_tung_anh_hong_ma_van_goi_y_tu_anh_con_lai(): void
+    {
+        $wf = app(LotWorkflow::class);
+        $man = $wf->addPhoto($this->lot, storage_path('app/reference/xoai/03_hang_1.jpg'), 'be_mat', $this->staff);
+        $this->fakeGemini(self::aiResult(['bad_photos' => [['index' => 2, 'reason' => 'Ảnh chụp màn hình máy tính']]]));
+        $sugg = $wf->analyze($this->lot);
+
+        $this->assertSame([$man->id => 'Ảnh chụp màn hình máy tính'], $sugg->badPhotos());
+        $this->get("/lo/{$this->lot->code}")
+            ->assertSee('AI: Ảnh chụp màn hình máy tính')
+            ->assertSee('AI đã bỏ qua 1 ảnh')
+            ->assertSee('id="acceptAll"', false);
+    }
+
+    public function test_ca_lo_khong_dung_duoc_thi_danh_dau_moi_anh_da_gui(): void
+    {
+        $this->fakeGemini(['usable' => false, 'unusable_reason' => 'Ảnh chụp màn hình', 'detected_product' => '?', 'bad_photos' => [], 'confidence' => 1]);
+        $sugg = app(LotWorkflow::class)->analyze($this->lot);
+
+        $this->assertSame($sugg->photo_ids, array_keys($sugg->badPhotos()));
     }
 
     public function test_do_tu_tin_thap_thi_an_nut_dong_y_tat_ca(): void

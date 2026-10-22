@@ -22,6 +22,30 @@ class AiSuggestion extends Model
         static::updating(fn () => throw new LogicException('ai_suggestions chi duoc them, khong duoc sua.'));
     }
 
+    /**
+     * Anh AI danh dau khong dung duoc (anh man hinh, khong phai xoai...).
+     * Gemini tra so thu tu 1-based theo thu tu anh gui di = thu tu photo_ids.
+     *
+     * @return array<int, string> photo_id => ly do
+     */
+    public function badPhotos(): array
+    {
+        $out = [];
+        foreach ($this->result['bad_photos'] ?? [] as $b) {
+            $id = $this->photo_ids[(int) ($b['index'] ?? 0) - 1] ?? null;
+            if ($id !== null) {
+                $out[$id] = $b['reason'] ?? 'AI đánh dấu ảnh không dùng được.';
+            }
+        }
+
+        // Ca lo khong dung duoc ma AI khong chi ro anh nao -> danh dau het.
+        if ($out === [] && $this->result !== null && ! ($this->result['usable'] ?? true)) {
+            $out = array_fill_keys($this->photo_ids, $this->result['unusable_reason'] ?? 'AI không dùng được ảnh này.');
+        }
+
+        return $out;
+    }
+
     /** AI tra loi duoc va anh dung duoc -> moi co goi y de xac nhan. */
     public function hasResult(): bool
     {

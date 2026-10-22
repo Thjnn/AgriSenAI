@@ -60,9 +60,13 @@ class FewShotPromptBuilder
         Các ảnh là CÙNG MỘT LÔ. `uniformity` xét độ đồng đều giữa các quả nhìn thấy;
         chỉ có một quả thì `dong_deu` và ghi rõ "chỉ thấy một quả".
 
-        ## Ảnh không dùng được
-        Ảnh mờ, quá tối, không thấy rõ quả, hoặc không phải xoài: đặt `usable = false`,
-        nêu lý do trong `unusable_reason`, KHÔNG bịa quan sát.
+        ## Ảnh không dùng được — xét TỪNG ẢNH
+        Ảnh được đánh số "Ảnh 1", "Ảnh 2"... Ảnh nào không dùng được để kiểm định lô
+        (ảnh chụp màn hình, ảnh minh họa/quảng cáo, không thấy rõ quả, không phải xoài,
+        mờ, quá tối) → ghi vào `bad_photos` với `index` là số thứ tự và `reason` ngắn gọn.
+        CHỈ dựa vào các ảnh còn lại để gợi ý 5 tiêu chí.
+        Không còn ảnh nào dùng được → `usable = false`, nêu lý do trong `unusable_reason`,
+        KHÔNG bịa quan sát. Ảnh đều tốt → `bad_photos` rỗng.
 
         `confidence` (0–1): bạn chắc chắn đến đâu về toàn bộ gợi ý.
         TXT;
@@ -109,7 +113,8 @@ class FewShotPromptBuilder
         $mota = config("agrisenai.muc_dich_ban.{$mucDichBan}", $mucDichBan);
         $parts = [['text' => "Gợi ý ngoại quan lô xoài trong ảnh.\nMục đích bán người dùng đã khai: `{$mucDichBan}` ({$mota})."]];
 
-        foreach ($imagePaths as $path) {
+        foreach (array_values($imagePaths) as $i => $path) {
+            $parts[] = ['text' => 'Ảnh '.($i + 1).':'];
             $parts[] = [
                 'inline_data' => [
                     'mime_type' => 'image/jpeg',
@@ -142,6 +147,17 @@ class FewShotPromptBuilder
                 'usable' => ['type' => 'BOOLEAN'],
                 'unusable_reason' => ['type' => 'STRING', 'nullable' => true],
                 'detected_product' => ['type' => 'STRING'],
+                'bad_photos' => [
+                    'type' => 'ARRAY',
+                    'items' => [
+                        'type' => 'OBJECT',
+                        'properties' => [
+                            'index' => ['type' => 'INTEGER'],
+                            'reason' => ['type' => 'STRING'],
+                        ],
+                        'required' => ['index', 'reason'],
+                    ],
+                ],
                 'color' => $criterion('color', [
                     'distribution' => [
                         'type' => 'ARRAY',
@@ -176,7 +192,7 @@ class FewShotPromptBuilder
                 'uniformity' => $criterion('uniformity'),
                 'confidence' => ['type' => 'NUMBER'],
             ],
-            'required' => ['usable', 'detected_product', 'confidence'],
+            'required' => ['usable', 'detected_product', 'bad_photos', 'confidence'],
         ];
     }
 }

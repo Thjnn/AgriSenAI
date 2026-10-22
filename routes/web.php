@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/lo', [LotController::class, 'store'])->name('lots.store');
     Route::get('/lo/{lot}', [LotController::class, 'show'])->name('lots.show');
     Route::post('/lo/{lot}/anh', [LotController::class, 'storePhoto'])->name('lots.photos.store');
+    Route::delete('/lo/{lot}/anh/{photo}', [LotController::class, 'destroyPhoto'])->name('lots.photos.destroy');
     Route::post('/lo/{lot}/phan-tich', [LotController::class, 'analyze'])->name('lots.analyze');
     Route::get('/lo/{lot}/phan-tich', [LotController::class, 'analysisStatus'])->name('lots.analysis');
     Route::post('/lo/{lot}/xac-nhan', [LotController::class, 'confirm'])->name('lots.confirm');

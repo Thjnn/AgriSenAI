@@ -8,6 +8,7 @@
     $lowConfidence = $ai && ($ai['confidence'] ?? 0) < config('agrisenai.min_confidence');
     $editable = ! $lot->isPublished();
     $usablePhotos = $lot->photos->filter->isUsable()->count();
+    $badPhotos = $sugg?->badPhotos() ?? [];
     $lastConfirm = $lot->auditLogs->where('action', 'confirmed')->last();
     $card = 'mb-4 rounded-card bg-white p-4 shadow-sm sm:p-5';
     $h2 = 'mb-3 flex items-center gap-2 text-lg font-extrabold';
@@ -50,16 +51,27 @@
                 @if ($lot->photos->isNotEmpty())
                     <div class="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
                         @foreach ($lot->photos as $p)
-                            <figure class="overflow-hidden rounded-card-sm border {{ $p->isUsable() ? 'border-gray-100' : 'border-red-300' }}">
+                            @php $aiBad = $badPhotos[$p->id] ?? null; @endphp
+                            <figure class="flex flex-col overflow-hidden rounded-card-sm border {{ $p->isUsable() && ! $aiBad ? 'border-gray-100' : 'border-red-300' }}">
                                 <img src="{{ $p->url() }}" alt="{{ \App\Models\LotPhoto::VIEWS[$p->view] }}" class="aspect-square w-full object-cover" loading="lazy">
-                                <figcaption class="p-2 text-[11px]">
+                                <figcaption class="flex-1 p-2 text-[11px]">
                                     <b>{{ \App\Models\LotPhoto::VIEWS[$p->view] }}</b>
-                                    @if ($p->isUsable())
-                                        <span class="text-brand">· đạt</span>
-                                    @else
+                                    @if (! $p->isUsable())
                                         <span class="block text-red-700">{{ implode(' ', $p->quality['issues'] ?? []) }}</span>
+                                    @elseif ($aiBad)
+                                        <span class="block font-bold text-red-700">AI: {{ $aiBad }}</span>
+                                    @else
+                                        {{-- Chi kiem tra ky thuat (net, du sang, du lon); noi dung anh do AI xet --}}
+                                        <span class="text-brand" title="Nét, đủ sáng, đủ lớn">· đạt kỹ thuật</span>
                                     @endif
                                 </figcaption>
+                                @if ($editable)
+                                    <form method="post" action="{{ route('lots.photos.destroy', [$lot, $p]) }}"
+                                          onsubmit="return confirm('Xoá ảnh này? Lô sẽ phải cho AI gợi ý và xác nhận lại.')">
+                                        @csrf @method('DELETE')
+                                        <button class="w-full border-t border-gray-100 py-1.5 text-[12px] font-bold {{ $aiBad || ! $p->isUsable() ? 'bg-red-50 text-red-700' : 'text-ink-sec' }} hover:bg-red-50 hover:text-red-700">Xoá ảnh</button>
+                                    </form>
+                                @endif
                             </figure>
                         @endforeach
                     </div>
@@ -113,13 +125,16 @@
                 @elseif ($sugg?->error)
                     <p class="rounded-card-sm bg-red-50 p-3 text-sm text-red-800"><b>AI không trả lời được:</b> {{ $sugg->error }} — hãy nhập thủ công.</p>
                 @elseif ($sugg && ! $ai)
-                    <p class="rounded-card-sm bg-amber-50 p-3 text-sm text-amber-900"><b>AI không dùng được ảnh:</b> {{ $sugg->result['unusable_reason'] ?? 'không rõ lý do' }}. Chụp lại hoặc nhập thủ công.</p>
+                    <p class="rounded-card-sm bg-amber-50 p-3 text-sm text-amber-900"><b>AI không dùng được ảnh:</b> {{ $sugg->result['unusable_reason'] ?? 'không rõ lý do' }}. Xoá các ảnh viền đỏ ở bước 2, chụp lại rồi phân tích lại — hoặc nhập thủ công.</p>
                 @elseif ($ai)
                     <p class="text-sm text-ink-sec">
                         {{ $sugg->model }} · {{ number_format($sugg->latency_ms / 1000, 1, ',', '') }} s ·
                         độ tự tin <b class="{{ $lowConfidence ? 'text-red-700' : 'text-ink' }}">{{ number_format(($ai['confidence'] ?? 0) * 100) }}%</b>
                         @if ($lowConfidence) — thấp, hãy xem kỹ từng tiêu chí. @endif
                     </p>
+                    @if ($badPhotos)
+                        <p class="mt-2 rounded-card-sm bg-amber-50 p-2.5 text-[13px] text-amber-900">AI đã bỏ qua {{ count($badPhotos) }} ảnh không dùng được (viền đỏ ở bước 2) — nên xoá đi trước khi công bố.</p>
+                    @endif
                 @else
                     <p class="text-sm text-ink-sec">Chưa phân tích. AI chỉ xem các ảnh <b>đạt</b> chất lượng ({{ $usablePhotos }} ảnh).</p>
                 @endif

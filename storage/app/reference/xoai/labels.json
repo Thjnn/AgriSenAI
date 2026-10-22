@@ -14,13 +14,11 @@
     "CANH BAO: nhan duoi day do AI de xuat, CHUA duoc chuyen gia nong nghiep",
     "duyet. Truoc khi thi, nho thay / can bo khuyen nong / chu vua soat lai."
   ],
-
   "_can_xac_nhan": [
     "GIONG XOAI: anh goc chup LAN NHIEU GIONG, khong xac dinh duoc tung qua.",
     "AI khong duoc doan giong — nguoi dung tu nhap khi tao lo.",
     "Anh mau chi co MOT qua -> uniformity luon 'dong_deu' kem ghi chu 'chi thay mot qua'."
   ],
-
   "labels": [
     {
       "file": "01_dac_biet_chin.jpg",
@@ -29,11 +27,47 @@
         "usable": true,
         "unusable_reason": null,
         "detected_product": "Xoài",
-        "color": { "value": "vang", "distribution": [{ "name": "vàng", "percent": 95 }, { "name": "xanh", "percent": 5 }], "note": "Vỏ vàng đều, căng bóng, chỉ còn chút xanh ở cuống" },
-        "ripeness": { "value": "chin_toi", "matches_purpose": true, "note": "Vỏ vàng đều và căng, chưa có vết nhăn — chín tới, đúng mục đích ăn chín" },
-        "surface": { "value": "khuyet_tat_nhe", "defects": [{ "type": "vet_nhua", "severity": "nhe", "area_percent": 2, "location": "cuống", "into_flesh": false }], "note": "Vết nhựa nâu khoảng 2% ngay ở cuống, sinh ra lúc cắt quả, chỉ ở lớp vỏ" },
-        "shape": { "value": "binh_thuong", "note": "Quả cân đối, không méo" },
-        "uniformity": { "value": "dong_deu", "note": "Chỉ thấy một quả" },
+        "bad_photos": [],
+        "color": {
+          "value": "vang",
+          "distribution": [
+            {
+              "name": "vàng",
+              "percent": 95
+            },
+            {
+              "name": "xanh",
+              "percent": 5
+            }
+          ],
+          "note": "Vỏ vàng đều, căng bóng, chỉ còn chút xanh ở cuống"
+        },
+        "ripeness": {
+          "value": "chin_toi",
+          "matches_purpose": true,
+          "note": "Vỏ vàng đều và căng, chưa có vết nhăn — chín tới, đúng mục đích ăn chín"
+        },
+        "surface": {
+          "value": "khuyet_tat_nhe",
+          "defects": [
+            {
+              "type": "vet_nhua",
+              "severity": "nhe",
+              "area_percent": 2,
+              "location": "cuống",
+              "into_flesh": false
+            }
+          ],
+          "note": "Vết nhựa nâu khoảng 2% ngay ở cuống, sinh ra lúc cắt quả, chỉ ở lớp vỏ"
+        },
+        "shape": {
+          "value": "binh_thuong",
+          "note": "Quả cân đối, không méo"
+        },
+        "uniformity": {
+          "value": "dong_deu",
+          "note": "Chỉ thấy một quả"
+        },
         "confidence": 0.9
       }
     },
@@ -44,11 +78,43 @@
         "usable": true,
         "unusable_reason": null,
         "detected_product": "Xoài",
-        "color": { "value": "xanh", "distribution": [{ "name": "xanh đậm", "percent": 100 }], "note": "Xanh đậm, căng, bóng" },
-        "ripeness": { "value": "xanh_gia", "matches_purpose": true, "note": "Vỏ xanh đậm, thịt chắc — ĐÚNG yêu cầu ăn xanh, không phải quả chưa chín" },
-        "surface": { "value": "khuyet_tat_nhe", "defects": [{ "type": "xuoc_vo", "severity": "nhe", "area_percent": 1, "location": "thân quả", "into_flesh": false }], "note": "Vài vết xước rất nhỏ dưới 1% bề mặt, không ăn vào thịt quả" },
-        "shape": { "value": "binh_thuong", "note": "Dáng quả cân đối" },
-        "uniformity": { "value": "dong_deu", "note": "Chỉ thấy một quả" },
+        "bad_photos": [],
+        "color": {
+          "value": "xanh",
+          "distribution": [
+            {
+              "name": "xanh đậm",
+              "percent": 100
+            }
+          ],
+          "note": "Xanh đậm, căng, bóng"
+        },
+        "ripeness": {
+          "value": "xanh_gia",
+          "matches_purpose": true,
+          "note": "Vỏ xanh đậm, thịt chắc — ĐÚNG yêu cầu ăn xanh, không phải quả chưa chín"
+        },
+        "surface": {
+          "value": "khuyet_tat_nhe",
+          "defects": [
+            {
+              "type": "xuoc_vo",
+              "severity": "nhe",
+              "area_percent": 1,
+              "location": "thân quả",
+              "into_flesh": false
+            }
+          ],
+          "note": "Vài vết xước rất nhỏ dưới 1% bề mặt, không ăn vào thịt quả"
+        },
+        "shape": {
+          "value": "binh_thuong",
+          "note": "Dáng quả cân đối"
+        },
+        "uniformity": {
+          "value": "dong_deu",
+          "note": "Chỉ thấy một quả"
+        },
         "confidence": 0.88
       }
     },
@@ -59,11 +125,47 @@
         "usable": true,
         "unusable_reason": null,
         "detected_product": "Xoài",
-        "color": { "value": "vang", "distribution": [{ "name": "vàng", "percent": 90 }, { "name": "nâu", "percent": 10 }], "note": "Vỏ vàng đẹp, có một mảng nâu nhạt giữa thân" },
-        "ripeness": { "value": "chin_toi", "matches_purpose": true, "note": "Vàng đều, vỏ còn căng — chín tới" },
-        "surface": { "value": "khuyet_tat_nhe", "defects": [{ "type": "nam_nang", "severity": "nhe", "area_percent": 5, "location": "giữa thân quả", "into_flesh": false }], "note": "Mảng nâu nhạt và vài đốm sẫm khoảng 5% bề mặt giữa thân, bề mặt vẫn phẳng nên chưa ăn vào thịt" },
-        "shape": { "value": "binh_thuong", "note": "Quả cân đối" },
-        "uniformity": { "value": "dong_deu", "note": "Chỉ thấy một quả" },
+        "bad_photos": [],
+        "color": {
+          "value": "vang",
+          "distribution": [
+            {
+              "name": "vàng",
+              "percent": 90
+            },
+            {
+              "name": "nâu",
+              "percent": 10
+            }
+          ],
+          "note": "Vỏ vàng đẹp, có một mảng nâu nhạt giữa thân"
+        },
+        "ripeness": {
+          "value": "chin_toi",
+          "matches_purpose": true,
+          "note": "Vàng đều, vỏ còn căng — chín tới"
+        },
+        "surface": {
+          "value": "khuyet_tat_nhe",
+          "defects": [
+            {
+              "type": "nam_nang",
+              "severity": "nhe",
+              "area_percent": 5,
+              "location": "giữa thân quả",
+              "into_flesh": false
+            }
+          ],
+          "note": "Mảng nâu nhạt và vài đốm sẫm khoảng 5% bề mặt giữa thân, bề mặt vẫn phẳng nên chưa ăn vào thịt"
+        },
+        "shape": {
+          "value": "binh_thuong",
+          "note": "Quả cân đối"
+        },
+        "uniformity": {
+          "value": "dong_deu",
+          "note": "Chỉ thấy một quả"
+        },
         "confidence": 0.85
       }
     },
@@ -74,11 +176,47 @@
         "usable": true,
         "unusable_reason": null,
         "detected_product": "Xoài",
-        "color": { "value": "xanh_vang", "distribution": [{ "name": "vàng", "percent": 55 }, { "name": "xanh", "percent": 45 }], "note": "Màu vỏ chưa đều, còn loang xanh–vàng" },
-        "ripeness": { "value": "xanh_gia", "matches_purpose": false, "note": "Quả ương, còn loang xanh — chưa tới độ ăn chín" },
-        "surface": { "value": "khuyet_tat_vua", "defects": [{ "type": "dom_den", "severity": "trung_binh", "area_percent": 12, "location": "rải rác khắp quả", "into_flesh": false }], "note": "Đốm đen nhỏ rải rác khoảng 12% bề mặt, kèm vài mảng nâu; các đốm còn nông, bề mặt chưa lõm" },
-        "shape": { "value": "binh_thuong", "note": "Dáng quả bình thường" },
-        "uniformity": { "value": "dong_deu", "note": "Chỉ thấy một quả" },
+        "bad_photos": [],
+        "color": {
+          "value": "xanh_vang",
+          "distribution": [
+            {
+              "name": "vàng",
+              "percent": 55
+            },
+            {
+              "name": "xanh",
+              "percent": 45
+            }
+          ],
+          "note": "Màu vỏ chưa đều, còn loang xanh–vàng"
+        },
+        "ripeness": {
+          "value": "xanh_gia",
+          "matches_purpose": false,
+          "note": "Quả ương, còn loang xanh — chưa tới độ ăn chín"
+        },
+        "surface": {
+          "value": "khuyet_tat_vua",
+          "defects": [
+            {
+              "type": "dom_den",
+              "severity": "trung_binh",
+              "area_percent": 12,
+              "location": "rải rác khắp quả",
+              "into_flesh": false
+            }
+          ],
+          "note": "Đốm đen nhỏ rải rác khoảng 12% bề mặt, kèm vài mảng nâu; các đốm còn nông, bề mặt chưa lõm"
+        },
+        "shape": {
+          "value": "binh_thuong",
+          "note": "Dáng quả bình thường"
+        },
+        "uniformity": {
+          "value": "dong_deu",
+          "note": "Chỉ thấy một quả"
+        },
         "confidence": 0.85
       }
     },
@@ -89,11 +227,54 @@
         "usable": true,
         "unusable_reason": null,
         "detected_product": "Xoài",
-        "color": { "value": "vang", "distribution": [{ "name": "vàng", "percent": 75 }, { "name": "nâu sẫm", "percent": 25 }], "note": "Nền vàng, loang các mảng nâu sẫm" },
-        "ripeness": { "value": "chin_toi", "matches_purpose": true, "note": "Vỏ vàng, chín tới" },
-        "surface": { "value": "khuyet_tat_nang", "defects": [{ "type": "than_thu", "severity": "nang", "area_percent": 18, "location": "vai và thân quả", "into_flesh": false }, { "type": "dom_den", "severity": "trung_binh", "area_percent": 5, "location": "quanh các mảng thán thư", "into_flesh": false }], "note": "Mảng thán thư nâu sẫm ở vai cộng đốm đen rải rác, tổng khoảng 23% bề mặt; vết còn tương đối phẳng, chưa thấy lõm vào thịt" },
-        "shape": { "value": "binh_thuong", "note": "Dáng quả bình thường" },
-        "uniformity": { "value": "dong_deu", "note": "Chỉ thấy một quả" },
+        "bad_photos": [],
+        "color": {
+          "value": "vang",
+          "distribution": [
+            {
+              "name": "vàng",
+              "percent": 75
+            },
+            {
+              "name": "nâu sẫm",
+              "percent": 25
+            }
+          ],
+          "note": "Nền vàng, loang các mảng nâu sẫm"
+        },
+        "ripeness": {
+          "value": "chin_toi",
+          "matches_purpose": true,
+          "note": "Vỏ vàng, chín tới"
+        },
+        "surface": {
+          "value": "khuyet_tat_nang",
+          "defects": [
+            {
+              "type": "than_thu",
+              "severity": "nang",
+              "area_percent": 18,
+              "location": "vai và thân quả",
+              "into_flesh": false
+            },
+            {
+              "type": "dom_den",
+              "severity": "trung_binh",
+              "area_percent": 5,
+              "location": "quanh các mảng thán thư",
+              "into_flesh": false
+            }
+          ],
+          "note": "Mảng thán thư nâu sẫm ở vai cộng đốm đen rải rác, tổng khoảng 23% bề mặt; vết còn tương đối phẳng, chưa thấy lõm vào thịt"
+        },
+        "shape": {
+          "value": "binh_thuong",
+          "note": "Dáng quả bình thường"
+        },
+        "uniformity": {
+          "value": "dong_deu",
+          "note": "Chỉ thấy một quả"
+        },
         "confidence": 0.8
       }
     },
@@ -104,11 +285,47 @@
         "usable": true,
         "unusable_reason": null,
         "detected_product": "Xoài",
-        "color": { "value": "vang", "distribution": [{ "name": "vàng", "percent": 65 }, { "name": "nâu đen", "percent": 35 }], "note": "Nền vàng, vệt nâu đen lớn chạy dọc thân" },
-        "ripeness": { "value": "chin_ky", "matches_purpose": true, "note": "Vỏ vàng đậm, chín kỹ" },
-        "surface": { "value": "khuyet_tat_nang", "defects": [{ "type": "than_thu", "severity": "nang", "area_percent": 30, "location": "dọc thân quả", "into_flesh": true }], "note": "Thán thư nâu đen liên kết thành vệt lớn khoảng 30% bề mặt, bề mặt vết đã LÕM xuống — nấm đã ăn vào thịt quả" },
-        "shape": { "value": "binh_thuong", "note": "Dáng quả bình thường" },
-        "uniformity": { "value": "dong_deu", "note": "Chỉ thấy một quả" },
+        "bad_photos": [],
+        "color": {
+          "value": "vang",
+          "distribution": [
+            {
+              "name": "vàng",
+              "percent": 65
+            },
+            {
+              "name": "nâu đen",
+              "percent": 35
+            }
+          ],
+          "note": "Nền vàng, vệt nâu đen lớn chạy dọc thân"
+        },
+        "ripeness": {
+          "value": "chin_ky",
+          "matches_purpose": true,
+          "note": "Vỏ vàng đậm, chín kỹ"
+        },
+        "surface": {
+          "value": "khuyet_tat_nang",
+          "defects": [
+            {
+              "type": "than_thu",
+              "severity": "nang",
+              "area_percent": 30,
+              "location": "dọc thân quả",
+              "into_flesh": true
+            }
+          ],
+          "note": "Thán thư nâu đen liên kết thành vệt lớn khoảng 30% bề mặt, bề mặt vết đã LÕM xuống — nấm đã ăn vào thịt quả"
+        },
+        "shape": {
+          "value": "binh_thuong",
+          "note": "Dáng quả bình thường"
+        },
+        "uniformity": {
+          "value": "dong_deu",
+          "note": "Chỉ thấy một quả"
+        },
         "confidence": 0.85
       }
     }

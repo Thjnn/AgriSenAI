@@ -194,6 +194,36 @@ class LotFlowTest extends TestCase
         $this->get("/ho-so/{$lot->code}")->assertSee('Ảnh không khớp mã băm');
     }
 
+    public function test_xoa_anh_ghi_audit_xoa_file_va_dua_lo_ve_nhap(): void
+    {
+        $lot = $this->createLot();
+        $this->post("/lo/{$lot->code}/anh", ['anh' => self::realPhoto(), 'view' => 'toan_qua']);
+        $this->post("/lo/{$lot->code}/xac-nhan", ['items' => self::manualItems()]);
+        $photo = $lot->photos()->sole();
+
+        $this->delete("/lo/{$lot->code}/anh/{$photo->id}")->assertSessionHas('ok');
+
+        $this->assertSame(0, $lot->photos()->count());
+        Storage::disk('public')->assertMissing($photo->path);
+        $this->assertSame('draft', $lot->fresh()->status);
+        $this->assertSame('photo_removed', $lot->auditLogs()->get()->last()->action);
+        $this->assertSame($photo->sha256, $lot->auditLogs()->get()->last()->data()['sha256']);
+    }
+
+    public function test_khong_xoa_duoc_anh_cua_lo_da_cong_bo_hay_lo_khac(): void
+    {
+        $lot = $this->publishedLot();
+        $photo = $lot->photos()->sole();
+        $this->delete("/lo/{$lot->code}/anh/{$photo->id}")->assertSessionHasErrors('lot');
+        Storage::disk('public')->assertExists($photo->path);
+
+        $other = $this->createLot();
+        $this->delete("/lo/{$other->code}/anh/{$photo->id}")->assertNotFound();
+
+        $this->actingAs(User::factory()->create(['org_name' => 'HTX khác']))
+            ->delete("/lo/{$other->code}/anh/{$photo->id}")->assertForbidden();
+    }
+
     public function test_audit_log_khong_sua_xoa_qua_model(): void
     {
         $log = $this->createLot()->auditLogs()->first();
