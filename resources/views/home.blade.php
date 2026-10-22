@@ -69,7 +69,7 @@
                         @endif
                         <div class="p-3">
                             <b class="block font-mono text-sm">{{ $lot->code }}</b>
-                            <span class="text-[13px] text-ink-sec">{{ $lot->supplier }} · {{ $lot->harvest_date->format('d/m/Y') }}</span>
+                            <span class="text-[13px] text-ink-sec">{{ $lot->creator?->org_name }} · {{ $lot->harvest_date->format('d/m/Y') }}</span>
                         </div>
                     </a>
                 @endforeach

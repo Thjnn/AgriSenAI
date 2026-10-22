@@ -152,6 +152,7 @@ class LotFlowTest extends TestCase
             ->assertSee('Hồ sơ nguyên vẹn')
             ->assertSee('Nguyễn Văn Tâm')
             ->assertSee('Vựa xoài Mỹ Xương')
+            ->assertDontSee('Vườn ông Sáu Tâm')
             ->assertSee('Khuyết tật nhẹ')
             ->assertSee('Nám nắng')
             ->assertDontSee('Hạng I')

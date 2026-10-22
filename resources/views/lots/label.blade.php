@@ -28,7 +28,7 @@
             <b class="text-[7pt]">AgriSenAi · Hồ sơ lô</b>
             <b class="break-all font-mono text-[8.5pt]">{{ $lot->code }}</b>
             <span class="text-[6.5pt]">Thu hoạch {{ $lot->harvest_date->format('d/m/Y') }}</span>
-            <span class="truncate text-[6.5pt]">{{ $lot->supplier }}</span>
+            <span class="truncate text-[6.5pt]">{{ $lot->creator?->org_name }}</span>
             <span class="mt-0.5 text-[6pt] text-ink-sec">Quét QR để kiểm chứng</span>
         </div>
     </div>

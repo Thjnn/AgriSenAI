@@ -27,7 +27,7 @@ class PublicLotController extends Controller
     {
         abort_unless($lot->isPublished(), 404);
 
-        $lot->load(['photos', 'auditLogs.actor']);
+        $lot->load(['photos', 'auditLogs.actor', 'creator']);
         $published = $lot->auditLogs->where('action', 'published')->last();
 
         return view('public.show', [

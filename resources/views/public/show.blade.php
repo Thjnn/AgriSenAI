@@ -1,7 +1,7 @@
 @extends('layouts.app', ['page' => 'lookup'])
 
 @section('title', 'Hồ sơ lô '.$lot->code)
-@section('description', 'Hồ sơ ngoại quan lô xoài '.$lot->code.' — '.$lot->supplier.', đã được người phụ trách xác nhận.')
+@section('description', 'Hồ sơ ngoại quan lô xoài '.$lot->code.', đã được người phụ trách xác nhận.')
 
 @php($pub = $published->data())
 
@@ -28,7 +28,8 @@
             <p class="text-[11px] font-extrabold uppercase tracking-wider text-ink-light">Hồ sơ lô xoài</p>
             <h1 class="font-mono text-2xl font-extrabold">{{ $lot->code }}</h1>
             <dl class="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-sm sm:grid-cols-3">
-                <div><dt class="text-ink-sec">Nguồn cung</dt><dd class="font-bold">{{ $lot->supplier }}</dd></div>
+                {{-- Khong hien ten nha vuon / nong ho tren trang cong khai (bao ve du lieu ca nhan) --}}
+                <div><dt class="text-ink-sec">Điểm thu gom</dt><dd class="font-bold">{{ $lot->creator?->org_name }}</dd></div>
                 <div><dt class="text-ink-sec">Giống (người nhập)</dt><dd class="font-bold">{{ $lot->variety ?: '—' }}</dd></div>
                 <div><dt class="text-ink-sec">Mục đích bán</dt><dd class="font-bold">{{ config('agrisenai.muc_dich_ban.'.$lot->purpose) }}</dd></div>
                 <div><dt class="text-ink-sec">Khối lượng</dt><dd class="font-bold">{{ rtrim(rtrim(number_format($lot->weight_kg, 2, ',', '.'), '0'), ',') }} kg</dd></div>
