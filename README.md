@@ -11,7 +11,7 @@ Nền tảng B2B SaaS giúp điểm thu gom / HTX xoài ở Đồng Tháp chuẩ
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38B2AC?logo=tailwindcss&logoColor=white)
 ![Gemini](https://img.shields.io/badge/AI-Gemini%20Vision-4285F4?logo=google&logoColor=white)
 ![PWA](https://img.shields.io/badge/PWA-installable-5A0FC8?logo=pwa&logoColor=white)
-![Tests](https://img.shields.io/badge/tests-64%20passing-3DDC84)
+![Tests](https://img.shields.io/badge/tests-70%20passing-3DDC84)
 
 </div>
 
@@ -42,9 +42,9 @@ Ba nguyên tắc: **AI gợi ý, con người quyết định**. **Không có đ
 | Đăng nhập nhân viên (SĐT + mật khẩu), mỗi tổ chức chỉ thấy lô của mình | `/dang-nhap` |
 | Danh sách lô, lọc theo trạng thái | `/lo` |
 | Tạo lô | `/lo/tao` |
-| Chi tiết lô: chụp ảnh, AI gợi ý (chạy nền, trang tự cập nhật), 5 thẻ xác nhận, công bố | `/lo/{mã}` |
+| Chi tiết lô: chụp ảnh, xoá ảnh chụp nhầm, AI gợi ý (chạy nền, trang tự cập nhật), 5 thẻ xác nhận, công bố | `/lo/{mã}` |
 | Tem QR 50×30 mm để in dán thùng | `/lo/{mã}/tem` |
-| Hồ sơ công khai (không cần đăng nhập), dải xanh/đỏ xác minh toàn vẹn | `/ho-so/{mã}` |
+| Hồ sơ công khai (không cần đăng nhập, không hiện tên nhà vườn), dải xanh/đỏ xác minh toàn vẹn | `/ho-so/{mã}` |
 | Tra cứu theo mã lô | `/tra-cuu` |
 | Thống kê vận hành (thời gian lập hồ sơ, tỉ lệ AI được chấp nhận) + **xuất dataset** ảnh + nhãn | `/thong-ke` (admin) |
 | PWA: cài như app, trang offline | |
@@ -64,13 +64,15 @@ Ba nguyên tắc: **AI gợi ý, con người quyết định**. **Không có đ
 
 - AI **chỉ nói những gì nhìn thấy**. Khối lượng, độ Brix, giống do người dùng nhập.
 - **Vỏ xanh không phải lỗi**: AI xét độ chín theo mục đích bán đã khai.
+- **Xét từng ảnh**: ảnh được đánh số khi gửi; AI trả `bad_photos` (ảnh chụp màn hình, ảnh minh họa, không phải xoài...) và chỉ gợi ý từ ảnh còn lại. Ảnh bị đánh dấu hiện viền đỏ kèm lý do, xoá được ngay. "Đạt kỹ thuật" chỉ nghĩa là ảnh nét, đủ sáng, đủ lớn.
+- **Độ tự tin** là con số Gemini *tự khai* (0–1), không phải xác suất đúng đã kiểm chứng. App chỉ dùng nó để ẩn nút "Đồng ý tất cả" khi dưới 0,6. Số đo thật là tỉ lệ người dùng đồng ý nguyên văn ở trang Thống kê.
 - Gemini chậm hoặc lỗi thì vẫn **nhập thủ công** được, không bị chặn quy trình.
 
 ---
 
 ## 🔐 Nhật ký nối chuỗi băm
 
-Mỗi bước (tạo lô, thêm ảnh, AI gợi ý, xác nhận, công bố) ghi một dòng `lot_audit_logs` với
+Mỗi bước (tạo lô, thêm/xoá ảnh, AI gợi ý, xác nhận, công bố) ghi một dòng `lot_audit_logs` với
 `hash = sha256(hash_trước + payload)`. Bản công bố chứa SHA-256 của từng ảnh và kết luận cuối cùng. Trang QR kiểm tra lại cả ba:
 
 - chuỗi băm còn liền mạch,
@@ -119,14 +121,20 @@ Tài khoản demo (mật khẩu `agrisen123`):
 | `0911111111` | Nhân viên | Vựa xoài Mỹ Xương |
 | `0922222222` | Nhân viên | HTX Xoài Cao Lãnh |
 
-> Camera trên điện thoại cần **HTTPS**. Chia sẻ tạm bằng Cloudflare Tunnel: xem `docs/files-ke-hoach/huong-dan-tao-link-tam-thoi.md`.
+### Chia sẻ link tạm thời (HTTPS)
+
+Bấm đúp **`chia-se-link.bat`**: file tự build giao diện, cache config và mở Cloudflare Tunnel, in ra link `https://....trycloudflare.com`. Đóng cửa sổ là tắt link. Camera trên điện thoại cần HTTPS nên muốn thử chụp ảnh trên máy thật thì dùng link này. Chi tiết: `docs/files-ke-hoach/huong-dan-tao-link-tam-thoi.md`.
+
+### Lưu ý trên Laragon
+
+Nếu máy chạy nhiều dự án Laravel cùng Apache, đôi khi trang báo lỗi kiểu `Table 'tên_dự_án_khác.lots' doesn't exist` — Apache đọc nhầm `.env` của dự án khác. Chạy `php artisan config:cache` để chặn; sau đó mỗi lần sửa `.env` phải chạy lại lệnh này (hoặc `php artisan config:clear`).
 
 ---
 
 ## 🧪 Kiểm thử
 
 ```bash
-php artisan test                 # 64 test, không gọi mạng
+php artisan test                 # 70 test, không gọi mạng
 php artisan quality:eval xoai    # đo độ khớp gợi ý AI trên 25 ảnh test (gọi Gemini thật)
 ```
 
@@ -153,8 +161,8 @@ storage/app/testset/xoai/       25 ảnh test + ground_truth.json
 
 ## 🗺️ Lộ trình
 
-- **Đã có (MVP):** trọn 5 bước, HITL theo tiêu chí, audit nối chuỗi băm, tem QR, thống kê, xuất dataset, PWA
-- **Tiếp theo:** thí điểm tại một vựa ở Cao Lãnh để lấy số liệu ROI; chuyên gia soát nhãn 6 ảnh mẫu; deploy HTTPS
+- **Đã có (MVP):** trọn 5 bước, HITL theo tiêu chí, AI đánh dấu từng ảnh hỏng + xoá ảnh, audit nối chuỗi băm, tem QR, thống kê, xuất dataset, PWA
+- **Tiếp theo (pilot):** xuất hồ sơ PDF, phản hồi nhận hàng của doanh nghiệp; thí điểm tại một vựa ở Cao Lãnh để lấy số liệu ROI; chuyên gia soát nhãn 6 ảnh mẫu; deploy HTTPS
 - **Giai đoạn 2:** RAG tra cứu TCVN 9766:2013 + yêu cầu siêu thị; huấn luyện mô hình riêng từ dataset đã xác nhận
 
 ---
