@@ -59,34 +59,35 @@
                     <div class="absolute inset-0 bg-gradient-to-t from-brand-night/70 via-transparent to-transparent"></div>
                     {{-- khung ngắm như màn chụp ảnh chuẩn --}}
                     <div aria-hidden="true" class="absolute inset-[14%] rounded-2xl border-2 border-dashed border-white/50"></div>
-                    <span class="absolute right-4 top-4 rounded-full bg-black/40 px-3 py-1 font-mono text-[11px] font-bold text-white backdrop-blur">XL-261024-A7K2</span>
+                    <span class="absolute right-4 top-4 hidden rounded-full bg-black/40 sm:block px-3 py-1 font-mono text-[11px] font-bold text-white backdrop-blur">XL-261024-A7K2</span>
                 </div>
 
-                <div class="hero-float absolute -left-3 top-8 w-[210px] rounded-card bg-white p-3.5 text-ink shadow-xl sm:-left-8">
-                    <p class="mb-2 flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wide text-brand">
+                {{-- Mobile: thẻ thu gọn, nép vào góc để không che ảnh; từ sm mới hiện đủ --}}
+                <div class="absolute left-2 top-2 w-[148px] rounded-card-sm bg-white p-2.5 text-ink shadow-xl sm:-left-8 sm:top-8 sm:w-[210px] sm:rounded-card sm:p-3.5">
+                    <p class="mb-1.5 flex items-center gap-1.5 text-[10px] sm:mb-2 sm:text-[11px] font-extrabold uppercase tracking-wide text-brand">
                         <x-icon name="ai" class="h-4 w-4" /> AI gợi ý
                     </p>
                     @foreach ([['Màu vỏ', 'Vàng đều', 92], ['Độ chín', 'Chín tới', 87], ['Bề mặt', 'Ít vết', 78]] as [$k, $v, $p])
-                        <div class="mb-1.5 last:mb-0">
-                            <div class="flex justify-between text-[12px]"><span class="text-ink-sec">{{ $k }}</span><b>{{ $v }}</b></div>
-                            <div class="mt-1 h-1.5 rounded-full bg-gray-100"><div class="h-full rounded-full bg-brand-medium" style="width: {{ $p }}%"></div></div>
+                        <div class="mb-1.5 last:mb-0 max-sm:[&:nth-child(n+3)]:hidden">
+                            <div class="flex justify-between text-[11px] sm:text-[12px]"><span class="text-ink-sec">{{ $k }}</span><b>{{ $v }}</b></div>
+                            <div class="mt-1 h-1 rounded-full sm:h-1.5 bg-gray-100"><div class="h-full rounded-full bg-brand-medium" style="width: {{ $p }}%"></div></div>
                         </div>
                     @endforeach
                 </div>
 
-                <div class="hero-float absolute -right-3 bottom-16 flex items-center gap-2.5 rounded-card bg-white py-2.5 pl-2.5 pr-4 text-ink shadow-xl [animation-delay:-2s] sm:-right-6">
-                    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-brand text-white">
-                        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                <div class="absolute bottom-2 right-2 flex items-center gap-2 rounded-full bg-white py-1.5 pl-1.5 pr-3 text-ink shadow-xl sm:-right-6 sm:bottom-16 sm:gap-2.5 sm:rounded-card sm:py-2.5 sm:pl-2.5 sm:pr-4">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-full bg-brand text-white sm:h-9 sm:w-9">
+                        <svg viewBox="0 0 24 24" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
                     </span>
                     <span class="leading-tight">
-                        <b class="block text-[13px]">Đã xác nhận</b>
-                        <span class="text-[11px] text-ink-sec">Người phụ trách · 07:42</span>
+                        <b class="block text-[12px] sm:text-[13px]">Đã xác nhận</b>
+                        <span class="text-[11px] text-ink-sec max-sm:hidden">Người phụ trách · 07:42</span>
                     </span>
                 </div>
 
-                <div class="hero-float absolute -bottom-5 left-6 flex items-center gap-2 rounded-card bg-mango px-3.5 py-2.5 font-extrabold text-brand-night shadow-xl [animation-delay:-4s]">
-                    <x-icon name="qr" class="h-6 w-6" />
-                    <span class="text-[12px] leading-tight">Quét để<br>kiểm chứng</span>
+                <div class="absolute bottom-2 left-2 flex items-center gap-1.5 rounded-full bg-mango px-3 py-1.5 font-extrabold text-brand-night shadow-xl sm:-bottom-5 sm:left-6 sm:gap-2 sm:rounded-card sm:px-3.5 sm:py-2.5">
+                    <x-icon name="qr" class="h-4 w-4 sm:h-6 sm:w-6" />
+                    <span class="text-[12px] leading-tight"><span class="sm:hidden">Quét QR</span><span class="max-sm:hidden">Quét để<br>kiểm chứng</span></span>
                 </div>
             </div>
         </div>

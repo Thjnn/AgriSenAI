@@ -72,11 +72,9 @@
   }
 }
 
-/* Hero trang chủ: hiện dần khi vào trang, thẻ nổi lơ lửng nhẹ */
+/* Hero trang chủ: hiện dần một lần khi vào trang */
 @keyframes hero-in { from { opacity: 0; transform: translateY(16px); } }
-@keyframes hero-float { 50% { transform: translateY(-8px); } }
 .hero-in { animation: hero-in .7s cubic-bezier(.2, .7, .2, 1) both; }
-.hero-float { animation: hero-float 6s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
