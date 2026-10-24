@@ -7,9 +7,9 @@
         @section('content') ... @endsection
 
     $page: home | lots | new | lookup | stats — quyết định mục nào active.
-    $bare: true = bỏ nav/footer (trang in tem).
+    $bare: true = bỏ nav (trang in tem).
 
-    Tái hiện Test-Giao-Dien/agrisenai-home.html. Mobile (< lg) không có footer — đúng demo.
+    Tái hiện Test-Giao-Dien/agrisenai-home.html.
 --}}
 @php($page = $page ?? '')
 @php($bare = $bare ?? false)
@@ -44,7 +44,6 @@
     </main>
 
     @unless ($bare)
-        <x-chrome.footer />
         <x-chrome.bottom-nav :page="$page" />
     @endunless
 

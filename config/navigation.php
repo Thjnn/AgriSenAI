@@ -37,29 +37,4 @@ return [
         ['key' => 'stats',  'label' => 'Thống kê',  'href' => '/thong-ke', 'icon' => 'chart', 'admin' => true],
     ],
 
-    'footer_columns' => [
-        [
-            'title' => 'Khám phá',
-            'links' => [
-                ['label' => 'Trang chủ',          'href' => '/'],
-                ['label' => 'Quy trình 5 bước',   'href' => '/#quy-trinh'],
-                ['label' => 'Tra cứu hồ sơ QR',   'href' => '/tra-cuu'],
-                ['label' => 'Đăng nhập',          'href' => '/dang-nhap'],
-            ],
-        ],
-        [
-            'title' => 'Hỗ trợ',
-            'links' => [
-                ['label' => 'Hướng dẫn chụp ảnh chuẩn', 'href' => '/#chup-anh'],
-                ['label' => 'Về chúng tôi',             'href' => '/#ve-chung-toi'],
-            ],
-        ],
-    ],
-
-    'contact' => [
-        ['icon' => 'pin',   'text' => 'TP. Cao Lãnh, Tỉnh Đồng Tháp'],
-        ['icon' => 'mail',  'text' => 'hotro@agrisenai.vn'],
-        ['icon' => 'phone', 'text' => '1900 1234'],
-    ],
-
 ];

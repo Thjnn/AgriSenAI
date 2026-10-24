@@ -19,8 +19,6 @@
   /* Ba màu dưới đây demo hardcode trong agrisen-ui.css chứ không đặt tên biến;
      đưa vào đây để không phải viết hex rải rác trong Blade. */
   --color-brand-deep: #256427;    /* gradient đầu panel chat, :active nút gửi */
-  --color-brand-footer: #1f5c22;  /* nền footer */
-  --color-brand-mint: #9fe0a6;    /* chữ nhấn + icon liên hệ trong footer */
 
   /* --text       */ --color-ink: #212121;
   /* --text-sec   */ --color-ink-sec: #757575;

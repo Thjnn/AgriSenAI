@@ -74,7 +74,6 @@ class IconComponentTest extends TestCase
     {
         $groups = [
             config('navigation.bottom_nav'),
-            config('navigation.contact'),
             ...config('navigation.drawer_groups'),
         ];
 
