@@ -62,4 +62,14 @@ class StatsAndDatasetTest extends TestCase
         $this->assertNotFalse($zip->locateName($first['photos'][0]['file']));
         $zip->close();
     }
+
+    public function test_kpi_hien_tu_so_mau_so(): void
+    {
+        $pub = Lot::where('status', 'published')->count();
+        $total = Lot::count();
+
+        $this->actingAs(User::factory()->admin()->create())->get('/thong-ke')
+            ->assertSee('Tỷ lệ hồ sơ hoàn tất')
+            ->assertSee("{$pub}/{$total}");
+    }
 }

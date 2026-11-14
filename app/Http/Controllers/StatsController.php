@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\AiSuggestion;
+use App\Models\AuditLog;
 use App\Models\Lot;
+use App\Models\LotPhoto;
 use App\Models\VerifiedLabel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -33,6 +35,16 @@ class StatsController extends Controller
 
         $latencies = AiSuggestion::whereNull('error')->pluck('latency_ms')->sort()->values();
 
+        // KPI co tu so / mau so (gop y thay Nguyen 43). Dem anh loi bang PHP tren cot JSON cho chay ca MySQL lan SQLite.
+        $photos = LotPhoto::get(['quality']);
+        $published = $byStatus['published'] ?? 0;
+        $kpis = [
+            ['label' => 'Tỷ lệ hồ sơ hoàn tất', 'num' => $published, 'den' => $byStatus->sum(), 'note' => 'Lô đã công bố / tổng lô đã tạo'],
+            ['label' => 'Tỷ lệ ảnh phải chụp lại', 'num' => $photos->reject->isUsable()->count(), 'den' => $photos->count(), 'note' => 'Ảnh không đạt kiểm tra mờ/tối/sáng phía server / tổng ảnh'],
+            ['label' => 'Tỷ lệ tiêu chí nhập tay', 'num' => VerifiedLabel::where('decision', 'manual')->count(), 'den' => VerifiedLabel::count(), 'note' => 'Không có hoặc không dùng gợi ý AI / tổng lần xác nhận tiêu chí'],
+            ['label' => 'Hồ sơ phải đính chính', 'num' => AuditLog::where('action', 'corrected')->distinct()->count('lot_id'), 'den' => $published, 'note' => 'Lô có đính chính / lô đã công bố'],
+        ];
+
         return view('stats.index', [
             'byStatus' => $byStatus,
             'total' => $byStatus->sum(),
@@ -40,6 +52,7 @@ class StatsController extends Controller
             'decisions' => $decisions,
             'aiCalls' => AiSuggestion::count(),
             'aiErrors' => AiSuggestion::whereNotNull('error')->count(),
+            'kpis' => $kpis,
             'medianLatency' => $latencies->isEmpty() ? null : $latencies[intdiv($latencies->count(), 2)],
         ]);
     }

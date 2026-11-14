@@ -25,6 +25,26 @@
     </div>
 
     <section class="mb-6 rounded-card bg-white p-5 shadow-sm">
+        <h2 class="mb-1 text-lg font-extrabold">Chỉ số vận hành</h2>
+        <p class="mb-4 text-sm text-ink-sec">Đo trên dữ liệu thật trong hệ thống, luôn kèm tử số/mẫu số. Chưa đo lượt quét QR.</p>
+        <dl class="grid gap-3 sm:grid-cols-2">
+            @foreach ($kpis as $k)
+                <div class="rounded-card-sm border border-gray-100 p-3">
+                    <dt class="text-sm font-bold">{{ $k['label'] }}</dt>
+                    <dd>
+                        @if ($k['den'] === 0)
+                            <b class="block text-xl text-ink-light">Chưa có dữ liệu</b>
+                        @else
+                            <b class="block text-xl">{{ $k['num'] }}/{{ $k['den'] }} ({{ number_format($k['num'] / $k['den'] * 100, 0) }}%)</b>
+                        @endif
+                        <span class="text-[11px] text-ink-light">{{ $k['note'] }}</span>
+                    </dd>
+                </div>
+            @endforeach
+        </dl>
+    </section>
+
+    <section class="mb-6 rounded-card bg-white p-5 shadow-sm">
         <h2 class="mb-1 text-lg font-extrabold">Gợi ý AI được người dùng chấp nhận</h2>
         <p class="mb-4 text-sm text-ink-sec">“AI đúng bao nhiêu % theo đánh giá của chính người dùng” — chỉ tính các lần có gợi ý AI (bỏ nhập thủ công).</p>
         <div class="overflow-x-auto">
