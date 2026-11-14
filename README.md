@@ -46,7 +46,8 @@ Ba nguyên tắc: **AI gợi ý, con người quyết định**. **Không có đ
 | Tem QR 50×30 mm để in dán thùng | `/lo/{mã}/tem` |
 | Hồ sơ công khai (không cần đăng nhập, không hiện tên nhà vườn), dải xanh/đỏ xác minh toàn vẹn | `/ho-so/{mã}` |
 | Tra cứu theo mã lô | `/tra-cuu` |
-| Thống kê vận hành (thời gian lập hồ sơ, tỉ lệ AI được chấp nhận) + **xuất dataset** ảnh + nhãn | `/thong-ke` (admin) |
+| **Đính chính** lô đã công bố: lô cũ giữ nguyên, trang QR cũ hiện băng vàng + lý do + link lô mới | `/lo/{mã}` (bước 5) |
+| Thống kê vận hành (thời gian lập hồ sơ, tỉ lệ AI được chấp nhận, KPI luôn kèm tử số/mẫu số) + **xuất dataset** ảnh + nhãn | `/thong-ke` (admin) |
 | PWA: cài như app, trang offline | |
 
 ---
@@ -72,12 +73,15 @@ Ba nguyên tắc: **AI gợi ý, con người quyết định**. **Không có đ
 
 ## 🔐 Nhật ký nối chuỗi băm
 
-Mỗi bước (tạo lô, thêm/xoá ảnh, AI gợi ý, xác nhận, công bố) ghi một dòng `lot_audit_logs` với
+Mỗi bước (tạo lô, thêm/xoá ảnh kèm thiết bị chụp, AI gợi ý, xác nhận, công bố, đính chính) ghi một dòng `lot_audit_logs` với
 `hash = sha256(hash_trước + payload)`. Bản công bố chứa SHA-256 của từng ảnh và kết luận cuối cùng. Trang QR kiểm tra lại cả ba:
 
 - chuỗi băm còn liền mạch,
 - ảnh trên đĩa khớp mã băm,
 - kết luận trong DB khớp bản đã công bố.
+
+Lô đã công bố không sửa được. Sai thì **Đính chính**: lô cũ thêm dòng `corrected` (lý do, người, mã lô mới), lô mới có
+dòng `corrects` trỏ về lô cũ. Không xoá lịch sử, chuỗi băm lô cũ vẫn xanh.
 
 > Thử: `UPDATE verified_labels SET final_value='{"value":"sach"}' WHERE criterion='surface';` → tải lại trang hồ sơ → dải chuyển đỏ.
 
@@ -134,9 +138,13 @@ Nếu máy chạy nhiều dự án Laravel cùng Apache, đôi khi trang báo l�
 ## 🧪 Kiểm thử
 
 ```bash
-php artisan test                 # 70 test, không gọi mạng
+php artisan test                 # 78 test, không gọi mạng
 php artisan quality:eval xoai    # đo độ khớp gợi ý AI trên 25 ảnh test (gọi Gemini thật)
+php artisan quality:eval xoai --csv=reports/eval.csv   # thêm danh sách từng ảnh để mở bằng Excel
 ```
+
+`quality:eval` in TP/FP/FN/TN và Precision/Recall/F1 cho "có khuyết tật". Nhãn trong `ground_truth.json` chưa có người
+chuyên môn duyệt (`reviewed_by: null`) thì lệnh cảnh báo **không đưa con số vào hồ sơ/PPT**.
 
 ---
 
