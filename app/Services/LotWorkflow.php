@@ -281,29 +281,45 @@ class LotWorkflow
      * Dinh chinh lo DA cong bo (gop y thay Nguyen 33/49): khong sua lo cu, khong
      * xoa lich su. Lo cu them dong audit `corrected` tro sang lo moi; lo moi
      * (nhap) mang dong `corrects` tro ve lo cu. Moi lo chi dinh chinh mot lan.
+     *
+     * $changes = thong tin lo da sua (supplier/variety/purpose/weight_kg/harvest_date),
+     * truong nao khong gui thi giu cua lo cu. Ghi truoc/sau vao audit ca hai lo.
+     * Lo moi thuoc nguoi tao lo cu de to chuc goc van mo duoc (ke ca khi admin dinh chinh).
      */
-    public function correct(Lot $old, string $reason, User $by): Lot
+    public function correct(Lot $old, string $reason, User $by, array $changes = []): Lot
     {
         if (! $old->isPublished()) {
             throw ValidationException::withMessages(['lot' => 'Chỉ đính chính lô đã công bố.']);
         }
 
-        return DB::transaction(function () use ($old, $reason, $by) {
+        return DB::transaction(function () use ($old, $reason, $by, $changes) {
             // Khoa hang lo cu de 2 request dong thoi khong tao 2 lo dinh chinh.
             Lot::whereKey($old->id)->lockForUpdate()->first();
             if ($c = $old->correction()) {
                 throw ValidationException::withMessages(['lot' => "Lô này đã được đính chính, xem lô {$c['new_code']}."]);
             }
 
-            $new = $this->create($old->only(['supplier', 'variety', 'purpose', 'weight_kg'])
-                + ['harvest_date' => $old->harvest_date->toDateString()], $by);
+            $fields = ['supplier', 'variety', 'purpose', 'weight_kg', 'harvest_date'];
+            $base = $old->only(['supplier', 'variety', 'purpose', 'weight_kg'])
+                + ['harvest_date' => $old->harvest_date->toDateString()];
+            $new = $this->create(array_intersect_key($changes, array_flip($fields)) + $base, $by);
+            $new->update(['created_by' => $old->created_by]);
 
-            $this->audit->append($new, 'corrects', ['old_code' => $old->code, 'reason' => $reason], $by);
+            $show = fn (Lot $l, string $f) => $f === 'harvest_date' ? $l->harvest_date->toDateString() : (string) $l->{$f};
+            $diff = [];
+            foreach ($fields as $f) {
+                if ($show($old, $f) !== $show($new, $f)) {
+                    $diff[$f] = ['old' => $show($old, $f), 'new' => $show($new, $f)];
+                }
+            }
+
+            $this->audit->append($new, 'corrects', ['old_code' => $old->code, 'reason' => $reason, 'changes' => $diff], $by);
             $this->audit->append($old, 'corrected', [
                 'reason' => $reason,
                 'by' => $by->name,
                 'org' => $by->org_name,
                 'new_code' => $new->code,
+                'changes' => $diff,
             ], $by);
 
             return $new;

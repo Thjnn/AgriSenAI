@@ -37,20 +37,28 @@ class LotController extends Controller
         return view('lots.create');
     }
 
-    public function store(Request $request)
+    /** Luat thong tin lo — dung chung cho tao lo va dinh chinh. */
+    private const LOT_MESSAGES = [
+        'supplier.required' => 'Nhập nhà vườn / nguồn cung.',
+        'purpose.required' => 'Chọn mục đích bán — AI cần biết để không coi vỏ xanh là lỗi.',
+        'weight_kg.gt' => 'Khối lượng phải lớn hơn 0.',
+        'harvest_date.before_or_equal' => 'Ngày thu hoạch không được ở tương lai.',
+    ];
+
+    private function lotRules(): array
     {
-        $data = $request->validate([
+        return [
             'supplier' => ['required', 'string', 'max:150'],
             'variety' => ['nullable', 'string', 'max:100'],
             'purpose' => ['required', Rule::in(array_keys(config('agrisenai.muc_dich_ban')))],
             'weight_kg' => ['required', 'numeric', 'gt:0', 'max:1000000'],
             'harvest_date' => ['required', 'date', 'before_or_equal:today'],
-        ], [
-            'supplier.required' => 'Nhập nhà vườn / nguồn cung.',
-            'purpose.required' => 'Chọn mục đích bán — AI cần biết để không coi vỏ xanh là lỗi.',
-            'weight_kg.gt' => 'Khối lượng phải lớn hơn 0.',
-            'harvest_date.before_or_equal' => 'Ngày thu hoạch không được ở tương lai.',
-        ]);
+        ];
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate($this->lotRules(), self::LOT_MESSAGES);
 
         $lot = $this->workflow->create($data, $request->user());
 
@@ -144,11 +152,15 @@ class LotController extends Controller
     public function correct(Request $request, Lot $lot)
     {
         $this->authorizeLot($request, $lot);
-        $data = $request->validate(['ly_do' => ['required', 'string', 'max:500']], [
+        // Thong tin lo la tuy chon: truong nao gui len thi phai hop le, khong gui thi giu cua lo cu.
+        $rules = array_map(fn ($r) => ['sometimes', ...$r], $this->lotRules());
+        $data = $request->validate($rules + ['ly_do' => ['required', 'string', 'max:500']], self::LOT_MESSAGES + [
             'ly_do.required' => 'Ghi lý do đính chính.',
         ]);
+        $reason = $data['ly_do'];
+        unset($data['ly_do']);
 
-        $new = $this->workflow->correct($lot, $data['ly_do'], $request->user());
+        $new = $this->workflow->correct($lot, $reason, $request->user(), $data);
 
         return redirect()->route('lots.show', $new)->with('ok', 'Đã tạo lô đính chính. Chụp ảnh và xác nhận lại.');
     }

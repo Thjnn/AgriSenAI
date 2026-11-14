@@ -48,6 +48,21 @@ class EvalTestset extends Command
             $items = array_slice($items, 0, (int) $limit);
         }
 
+        // Mo file CSV TRUOC khi goi Gemini: loi duong dan thi dung som, khong ton quota.
+        $csv = $this->option('csv');
+        $f = null;
+        if ($csv) {
+            if (! is_dir(dirname($csv))) {
+                @mkdir(dirname($csv), 0777, true);
+            }
+            $f = @fopen($csv, 'w');
+            if ($f === false) {
+                $this->error("Khong ghi duoc {$csv}");
+
+                return self::FAILURE;
+            }
+        }
+
         $order = array_keys(config('agrisenai.criteria.surface.options'));   // sach -> nang
         $n = $exact = $near = $loi = $reviewed = 0;
         $pairs = [];
@@ -85,8 +100,7 @@ class EvalTestset extends Command
         $header = ['Anh', 'Be mat that', 'AI goi y', 'Ket qua', 'Nguoi duyet nhan'];
         $this->table($header, $rows);
 
-        if ($csv = $this->option('csv')) {
-            $f = fopen($csv, 'w');
+        if ($f) {
             fwrite($f, "\xEF\xBB\xBF");
             fputcsv($f, $header);
             foreach ($rows as $r) {

@@ -138,7 +138,7 @@ Nếu máy chạy nhiều dự án Laravel cùng Apache, đôi khi trang báo l�
 ## 🧪 Kiểm thử
 
 ```bash
-php artisan test                 # 78 test, không gọi mạng
+php artisan test                 # 82 test, không gọi mạng
 php artisan quality:eval xoai    # đo độ khớp gợi ý AI trên 25 ảnh test (gọi Gemini thật)
 php artisan quality:eval xoai --csv=reports/eval.csv   # thêm danh sách từng ảnh để mở bằng Excel
 ```

@@ -357,4 +357,40 @@ class LotFlowTest extends TestCase
 
         $this->get("/ho-so/{$old->code}")->assertSee(route('public.show', $new));
     }
+
+    public function test_dinh_chinh_sua_duoc_thong_tin_lo_va_ghi_truoc_sau(): void
+    {
+        $old = $this->publishedLot();
+        $this->post("/lo/{$old->code}/dinh-chinh", [
+            'ly_do' => 'Ghi nhầm khối lượng',
+            'supplier' => $old->supplier,
+            'variety' => $old->variety,
+            'purpose' => $old->purpose,
+            'weight_kg' => 400,
+            'harvest_date' => $old->harvest_date->toDateString(),
+        ])->assertSessionHasNoErrors();
+
+        $new = Lot::latest('id')->first();
+        $this->assertSame('400.00', (string) $new->weight_kg);
+        $changes = $new->auditLogs()->where('action', 'corrects')->first()->data()['changes'];
+        $this->assertEquals(['weight_kg' => ['old' => '420.00', 'new' => '400.00']], $changes);
+    }
+
+    public function test_dinh_chinh_voi_khoi_luong_khong_hop_le_bi_tu_choi(): void
+    {
+        $old = $this->publishedLot();
+        $this->post("/lo/{$old->code}/dinh-chinh", ['ly_do' => 'x', 'weight_kg' => 0])->assertSessionHasErrors('weight_kg');
+        $this->assertNull($old->fresh()->correction());
+    }
+
+    public function test_admin_dinh_chinh_thi_lo_moi_van_thuoc_to_chuc_cu(): void
+    {
+        $old = $this->publishedLot();
+        $this->actingAs(User::factory()->admin()->create(['org_name' => 'Ban quản trị']))
+            ->post("/lo/{$old->code}/dinh-chinh", ['ly_do' => 'Sai giống']);
+
+        $new = Lot::latest('id')->first();
+        $this->assertSame($old->created_by, $new->created_by);
+        $this->actingAs($this->staff)->get("/lo/{$new->code}")->assertOk();
+    }
 }

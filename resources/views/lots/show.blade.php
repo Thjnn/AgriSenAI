@@ -268,7 +268,19 @@
                             <form method="post" action="{{ route('lots.correct', $lot) }}" class="mt-2 space-y-2">
                                 @csrf
                                 <p class="text-[12px] text-ink-sec">Hồ sơ cũ giữ nguyên và hiện thông báo đính chính trên trang QR. Hệ thống tạo lô mới để chụp ảnh, xác nhận lại.</p>
-                                <textarea name="ly_do" required maxlength="500" rows="2" placeholder="Lý do đính chính, vd ghi nhầm khối lượng" class="w-full rounded-card-sm border border-gray-200 p-2"></textarea>
+                                <textarea name="ly_do" required maxlength="500" rows="2" placeholder="Lý do đính chính, vd ghi nhầm khối lượng" class="w-full rounded-card-sm border border-gray-200 p-2">{{ old('ly_do') }}</textarea>
+                                <p class="text-[12px] font-bold text-ink-sec">Thông tin lô mới (sửa ô bị sai):</p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input name="supplier" required maxlength="150" value="{{ old('supplier', $lot->supplier) }}" aria-label="Nhà vườn / nguồn cung" class="col-span-2 rounded-card-sm border border-gray-200 p-2">
+                                    <input name="variety" maxlength="100" value="{{ old('variety', $lot->variety) }}" aria-label="Giống" placeholder="Giống" class="rounded-card-sm border border-gray-200 p-2">
+                                    <select name="purpose" aria-label="Mục đích bán" class="rounded-card-sm border border-gray-200 p-2">
+                                        @foreach (config('agrisenai.muc_dich_ban') as $key => $label)
+                                            <option value="{{ $key }}" @selected(old('purpose', $lot->purpose) === $key)>{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                    <input name="weight_kg" type="number" inputmode="decimal" step="0.1" min="0.1" required value="{{ old('weight_kg', $lot->weight_kg) }}" aria-label="Khối lượng (kg)" class="rounded-card-sm border border-gray-200 p-2">
+                                    <input name="harvest_date" type="date" required max="{{ now()->toDateString() }}" value="{{ old('harvest_date', $lot->harvest_date->toDateString()) }}" aria-label="Ngày thu hoạch" class="rounded-card-sm border border-gray-200 p-2">
+                                </div>
                                 <button class="w-full rounded-card border border-amber-300 bg-amber-50 py-2.5 font-extrabold text-amber-900">Đính chính hồ sơ</button>
                             </form>
                         </details>
