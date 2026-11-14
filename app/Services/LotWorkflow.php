@@ -277,10 +277,43 @@ class LotWorkflow
         });
     }
 
+    /**
+     * Dinh chinh lo DA cong bo (gop y thay Nguyen 33/49): khong sua lo cu, khong
+     * xoa lich su. Lo cu them dong audit `corrected` tro sang lo moi; lo moi
+     * (nhap) mang dong `corrects` tro ve lo cu. Moi lo chi dinh chinh mot lan.
+     */
+    public function correct(Lot $old, string $reason, User $by): Lot
+    {
+        if (! $old->isPublished()) {
+            throw ValidationException::withMessages(['lot' => 'Chỉ đính chính lô đã công bố.']);
+        }
+
+        return DB::transaction(function () use ($old, $reason, $by) {
+            // Khoa hang lo cu de 2 request dong thoi khong tao 2 lo dinh chinh.
+            Lot::whereKey($old->id)->lockForUpdate()->first();
+            if ($c = $old->correction()) {
+                throw ValidationException::withMessages(['lot' => "Lô này đã được đính chính, xem lô {$c['new_code']}."]);
+            }
+
+            $new = $this->create($old->only(['supplier', 'variety', 'purpose', 'weight_kg'])
+                + ['harvest_date' => $old->harvest_date->toDateString()], $by);
+
+            $this->audit->append($new, 'corrects', ['old_code' => $old->code, 'reason' => $reason], $by);
+            $this->audit->append($old, 'corrected', [
+                'reason' => $reason,
+                'by' => $by->name,
+                'org' => $by->org_name,
+                'new_code' => $new->code,
+            ], $by);
+
+            return $new;
+        });
+    }
+
     private function assertEditable(Lot $lot): void
     {
         if ($lot->isPublished()) {
-            throw ValidationException::withMessages(['lot' => 'Lô đã công bố, không sửa được nữa. Muốn đổi thì tạo lô mới.']);
+            throw ValidationException::withMessages(['lot' => 'Lô đã công bố, không sửa được nữa. Muốn đổi thì dùng Đính chính hồ sơ.']);
         }
     }
 }

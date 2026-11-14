@@ -23,6 +23,8 @@ class AuditLog extends Model
         'ai_suggested' => 'AI gợi ý ngoại quan',
         'confirmed' => 'Người phụ trách xác nhận',
         'published' => 'Công bố hồ sơ',
+        'corrected' => 'Đính chính hồ sơ',
+        'corrects' => 'Lập để đính chính lô cũ',
     ];
 
     protected $table = 'lot_audit_logs';

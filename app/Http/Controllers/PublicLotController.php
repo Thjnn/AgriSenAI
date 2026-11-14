@@ -36,6 +36,9 @@ class PublicLotController extends Controller
             // Hien thi theo ban DA CONG BO (nam trong chuoi bam), khong theo DB hien tai.
             'labels' => $published->data()['labels'] ?? [],
             'published' => $published,
+            'correction' => ($c = $lot->correction())
+                ? $c + ['new_published' => Lot::where('code', $c['new_code'])->where('status', 'published')->exists()]
+                : null,
         ]);
     }
 

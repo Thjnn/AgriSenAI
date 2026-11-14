@@ -141,6 +141,18 @@ class LotController extends Controller
         return redirect()->route('lots.show', $lot)->with('ok', 'Đã công bố. In tem QR dán lên thùng hàng.');
     }
 
+    public function correct(Request $request, Lot $lot)
+    {
+        $this->authorizeLot($request, $lot);
+        $data = $request->validate(['ly_do' => ['required', 'string', 'max:500']], [
+            'ly_do.required' => 'Ghi lý do đính chính.',
+        ]);
+
+        $new = $this->workflow->correct($lot, $data['ly_do'], $request->user());
+
+        return redirect()->route('lots.show', $new)->with('ok', 'Đã tạo lô đính chính. Chụp ảnh và xác nhận lại.');
+    }
+
     /** Tem QR 50x30 mm de in dan thung. */
     public function label(Request $request, Lot $lot)
     {

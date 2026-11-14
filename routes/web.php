@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/lo/{lot}/phan-tich', [LotController::class, 'analysisStatus'])->name('lots.analysis');
     Route::post('/lo/{lot}/xac-nhan', [LotController::class, 'confirm'])->name('lots.confirm');
     Route::post('/lo/{lot}/cong-bo', [LotController::class, 'publish'])->name('lots.publish');
+    Route::post('/lo/{lot}/dinh-chinh', [LotController::class, 'correct'])->name('lots.correct');
     Route::get('/lo/{lot}/tem', [LotController::class, 'label'])->name('lots.label');
 
     Route::get('/thong-ke', [StatsController::class, 'index'])->name('stats.index');

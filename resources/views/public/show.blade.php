@@ -24,6 +24,18 @@
             </div>
         @endif
 
+        @if ($correction)
+            <div role="alert" class="mb-4 rounded-card bg-amber-50 px-4 py-3 text-sm font-extrabold text-amber-900">
+                Hồ sơ này đã được đính chính ngày {{ $correction['at']->format('d/m/Y') }}
+                <span class="block text-[13px] font-semibold">Lý do: {{ $correction['reason'] }}</span>
+                @if ($correction['new_published'])
+                    <a href="{{ route('public.show', $correction['new_code']) }}" class="mt-1 inline-block underline">Xem hồ sơ đính chính {{ $correction['new_code'] }}</a>
+                @else
+                    <span class="block text-[13px] font-semibold">Hồ sơ đính chính {{ $correction['new_code'] }} đang được lập.</span>
+                @endif
+            </div>
+        @endif
+
         <section class="mb-4 rounded-card bg-white p-5 shadow-md">
             <p class="text-[11px] font-extrabold uppercase tracking-wider text-ink-light">Hồ sơ lô xoài</p>
             <h1 class="font-mono text-2xl font-extrabold">{{ $lot->code }}</h1>

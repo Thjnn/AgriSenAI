@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 #[Fillable(['code', 'supplier', 'variety', 'purpose', 'weight_kg', 'harvest_date', 'status', 'created_by', 'published_at'])]
@@ -44,6 +45,23 @@ class Lot extends Model
     public function isPublished(): bool
     {
         return $this->status === 'published';
+    }
+
+    /**
+     * Thong tin dinh chinh (dong audit `corrected` cuoi), null neu chua dinh chinh.
+     *
+     * @return array{reason: string, by: string, new_code: string, at: Carbon}|null
+     */
+    public function correction(): ?array
+    {
+        $log = $this->auditLogs()->where('action', 'corrected')->get()->last();
+
+        return $log ? [
+            'reason' => $log->data()['reason'],
+            'by' => $log->data()['by'],
+            'new_code' => $log->data()['new_code'],
+            'at' => $log->created_at,
+        ] : null;
     }
 
     public function creator(): BelongsTo

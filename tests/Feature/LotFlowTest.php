@@ -301,4 +301,60 @@ class LotFlowTest extends TestCase
         $log = $lot->auditLogs()->where('action', 'photo_added')->first();
         $this->assertStringContainsString('SM-A155F', $log->data()['device']);
     }
+
+    public function test_dinh_chinh_tao_lo_moi_va_giu_lo_cu_nguyen_ven(): void
+    {
+        $old = $this->publishedLot();
+        $this->post("/lo/{$old->code}/dinh-chinh", ['ly_do' => 'Ghi nhầm khối lượng'])->assertRedirect();
+
+        $new = Lot::latest('id')->first();
+        $this->assertNotSame($old->code, $new->code);
+        $this->assertSame('draft', $new->status);
+        $this->assertSame('published', $old->fresh()->status);
+        $this->assertSame($new->code, $old->fresh()->correction()['new_code']);
+        $this->assertTrue($new->auditLogs()->where('action', 'corrects')->exists());
+
+        $this->get("/ho-so/{$old->code}")
+            ->assertSee('Hồ sơ nguyên vẹn')
+            ->assertSee('Ghi nhầm khối lượng')
+            ->assertSee('đang được lập')
+            ->assertDontSee(route('public.show', $new));
+    }
+
+    public function test_dinh_chinh_hai_lan_bi_tu_choi(): void
+    {
+        $old = $this->publishedLot();
+        $this->post("/lo/{$old->code}/dinh-chinh", ['ly_do' => 'Lần 1']);
+        $this->post("/lo/{$old->code}/dinh-chinh", ['ly_do' => 'Lần 2'])->assertSessionHasErrors('lot');
+
+        $this->assertSame(1, $old->auditLogs()->where('action', 'corrected')->count());
+    }
+
+    public function test_dinh_chinh_lo_chua_cong_bo_hoac_thieu_ly_do_bi_tu_choi(): void
+    {
+        $lot = $this->createLot();
+        $this->post("/lo/{$lot->code}/dinh-chinh", ['ly_do' => 'x'])->assertSessionHasErrors('lot');
+
+        $pub = $this->publishedLot();
+        $this->post("/lo/{$pub->code}/dinh-chinh", ['ly_do' => ''])->assertSessionHasErrors('ly_do');
+    }
+
+    public function test_to_chuc_khac_khong_dinh_chinh_duoc(): void
+    {
+        $lot = $this->publishedLot();
+        $this->actingAs(User::factory()->create(['org_name' => 'HTX khác']))
+            ->post("/lo/{$lot->code}/dinh-chinh", ['ly_do' => 'x'])->assertForbidden();
+    }
+
+    public function test_lo_dinh_chinh_da_cong_bo_thi_trang_cu_co_link(): void
+    {
+        $old = $this->publishedLot();
+        $this->post("/lo/{$old->code}/dinh-chinh", ['ly_do' => 'Sai giống']);
+        $new = Lot::latest('id')->first();
+        $this->post("/lo/{$new->code}/anh", ['anh' => self::realPhoto(), 'view' => 'toan_qua']);
+        $this->post("/lo/{$new->code}/xac-nhan", ['items' => self::manualItems()]);
+        $this->post("/lo/{$new->code}/cong-bo")->assertSessionHasNoErrors();
+
+        $this->get("/ho-so/{$old->code}")->assertSee(route('public.show', $new));
+    }
 }

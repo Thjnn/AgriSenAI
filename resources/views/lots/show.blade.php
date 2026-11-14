@@ -257,6 +257,22 @@
                         <a href="{{ route('public.show', $lot) }}" target="_blank" class="rounded-card bg-brand py-2.5 text-center font-extrabold text-white">Xem trang công khai</a>
                         <a href="{{ route('lots.label', $lot) }}" target="_blank" class="rounded-card border border-gray-200 py-2.5 text-center font-bold">In tem QR</a>
                     </div>
+                    @if ($correction = $lot->correction())
+                        <p class="mt-3 rounded-card-sm bg-amber-50 p-3 text-sm text-amber-900">
+                            Đã đính chính: {{ $correction['reason'] }} —
+                            <a href="{{ route('lots.show', $correction['new_code']) }}" class="font-bold underline">lô {{ $correction['new_code'] }}</a>
+                        </p>
+                    @else
+                        <details class="mt-3 text-sm">
+                            <summary class="cursor-pointer font-bold text-ink-sec">Phát hiện sai sót? Đính chính hồ sơ</summary>
+                            <form method="post" action="{{ route('lots.correct', $lot) }}" class="mt-2 space-y-2">
+                                @csrf
+                                <p class="text-[12px] text-ink-sec">Hồ sơ cũ giữ nguyên và hiện thông báo đính chính trên trang QR. Hệ thống tạo lô mới để chụp ảnh, xác nhận lại.</p>
+                                <textarea name="ly_do" required maxlength="500" rows="2" placeholder="Lý do đính chính, vd ghi nhầm khối lượng" class="w-full rounded-card-sm border border-gray-200 p-2"></textarea>
+                                <button class="w-full rounded-card border border-amber-300 bg-amber-50 py-2.5 font-extrabold text-amber-900">Đính chính hồ sơ</button>
+                            </form>
+                        </details>
+                    @endif
                 @elseif ($lot->status === 'confirmed')
                     <p class="mb-3 text-sm text-ink-sec">Sau khi công bố, hồ sơ bị khoá — không sửa được nữa.</p>
                     <form method="post" action="{{ route('lots.publish', $lot) }}">
