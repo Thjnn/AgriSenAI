@@ -128,7 +128,7 @@
                     <p class="rounded-card-sm bg-amber-50 p-3 text-sm text-amber-900"><b>AI không dùng được ảnh:</b> {{ $sugg->result['unusable_reason'] ?? 'không rõ lý do' }}. Xoá các ảnh viền đỏ ở bước 2, chụp lại rồi phân tích lại — hoặc nhập thủ công.</p>
                 @elseif ($ai)
                     <p class="text-sm text-ink-sec">
-                        {{ $sugg->model }} · {{ number_format($sugg->latency_ms / 1000, 1, ',', '') }} s ·
+                        {{ number_format($sugg->latency_ms / 1000, 1, ',', '') }} s ·
                         độ tự tin <b class="{{ $lowConfidence ? 'text-red-700' : 'text-ink' }}">{{ number_format(($ai['confidence'] ?? 0) * 100) }}%</b>
                         @if ($lowConfidence) — thấp, hãy xem kỹ từng tiêu chí. @endif
                     </p>
