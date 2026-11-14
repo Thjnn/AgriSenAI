@@ -276,4 +276,18 @@ class LotFlowTest extends TestCase
             ->assertSee('Người phụ trách xác nhận')->assertSee('Công bố & tem QR', false)
             ->assertSee('data-photo-capture', false);
     }
+
+    public function test_cau_gioi_han_ai_lay_tu_config_tren_trang_cong_khai(): void
+    {
+        config(['agrisenai.ai_disclaimer' => 'CAU GIOI HAN THU']);
+        $lot = $this->publishedLot();
+
+        $this->get("/ho-so/{$lot->code}")->assertSee('CAU GIOI HAN THU');
+        $this->actingAs($this->staff)->get("/lo/{$lot->code}")->assertSee('CAU GIOI HAN THU');
+    }
+
+    public function test_nhan_khuyet_tat_tham_gom_ca_dap(): void
+    {
+        $this->assertSame('Thâm / dập', config('agrisenai.defect_types.tham'));
+    }
 }

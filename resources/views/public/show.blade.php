@@ -74,7 +74,7 @@
             <div class="mt-4 rounded-card-sm bg-brand-bg p-3 text-sm">
                 Người xác nhận: <b>{{ $pub['by'] ?? '—' }}</b> — {{ $pub['org'] ?? '' }} — {{ $published->created_at->format('H:i d/m/Y') }}
             </div>
-            <p class="mt-2 text-[12px] text-ink-sec">Gợi ý ngoại quan do AI hỗ trợ, đã được người phụ trách xác nhận. Đây là quan sát qua ảnh, không thay thế kiểm tra trực tiếp.</p>
+            <p class="mt-2 text-[12px] text-ink-sec">{{ config('agrisenai.ai_disclaimer') }}</p>
         </section>
 
         <section class="mb-4 rounded-card bg-white p-5 shadow-md">

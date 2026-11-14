@@ -152,6 +152,7 @@
             {{-- ── Buoc 4: xac nhan (HITL) ─────────────────── --}}
             <section class="{{ $card }}">
                 <h2 class="{{ $h2 }}"><span class="{{ $step }}">4</span> Người phụ trách xác nhận</h2>
+                <p class="mb-3 text-[12px] text-ink-sec">{{ config('agrisenai.ai_disclaimer') }}</p>
 
                 @if ($lastConfirm)
                     <p class="mb-3 rounded-card-sm bg-brand-light p-3 text-sm">

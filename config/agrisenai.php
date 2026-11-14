@@ -74,7 +74,7 @@ return [
         'xuoc_vo' => 'Xước vỏ',
         'nam_nang' => 'Nám nắng',
         'vet_nhua' => 'Vết nhựa',
-        'tham' => 'Thâm',
+        'tham' => 'Thâm / dập',
         'than_thu' => 'Thán thư',
         'dom_den' => 'Đốm đen',
         'sau_benh' => 'Sâu bệnh',
@@ -83,6 +83,12 @@ return [
         'moc' => 'Mốc',
         'khac' => 'Khác',
     ],
+
+    /*
+    | Mot cau gioi han AI duy nhat cho trang QR, man hinh lo, PPT, video
+    | (gop y thay Nguyen muc 32). Sua o day, khong viet lai trong view.
+    */
+    'ai_disclaimer' => 'AI chỉ gợi ý dấu hiệu ngoại quan nhìn thấy qua ảnh; người phụ trách xác nhận từng tiêu chí. Hồ sơ không phải chứng nhận chất lượng, không đo độ Brix hay an toàn thực phẩm.',
 
     'defect_severities' => ['nhe', 'trung_binh', 'nang'],
 
