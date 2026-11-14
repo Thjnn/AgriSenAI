@@ -84,7 +84,7 @@ class LotController extends Controller
             'anh.max' => 'Ảnh không được lớn hơn 10 MB.',
         ]);
 
-        $photo = $this->workflow->addPhoto($lot, $request->file('anh')->getRealPath(), $request->input('view'), $request->user());
+        $photo = $this->workflow->addPhoto($lot, $request->file('anh')->getRealPath(), $request->input('view'), $request->user(), $request->userAgent());
 
         return $photo->isUsable()
             ? back()->with('ok', 'Đã thêm ảnh.')

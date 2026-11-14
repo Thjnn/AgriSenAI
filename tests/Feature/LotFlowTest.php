@@ -290,4 +290,15 @@ class LotFlowTest extends TestCase
     {
         $this->assertSame('Thâm / dập', config('agrisenai.defect_types.tham'));
     }
+
+    public function test_audit_anh_ghi_thiet_bi_chup(): void
+    {
+        $lot = $this->createLot();
+        $this->withHeader('User-Agent', 'Mozilla/5.0 (Linux; Android 14; SM-A155F)')
+            ->post("/lo/{$lot->code}/anh", ['anh' => self::realPhoto(), 'view' => 'toan_qua'])
+            ->assertSessionHasNoErrors();
+
+        $log = $lot->auditLogs()->where('action', 'photo_added')->first();
+        $this->assertStringContainsString('SM-A155F', $log->data()['device']);
+    }
 }

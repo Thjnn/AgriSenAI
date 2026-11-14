@@ -51,8 +51,11 @@ class LotWorkflow
         });
     }
 
-    /** Chuan hoa (xoay EXIF, cat vuong, 768) -> kiem tra mo/toi -> luu + bam SHA-256. */
-    public function addPhoto(Lot $lot, string $srcPath, string $view, User $by): LotPhoto
+    /**
+     * Chuan hoa (xoay EXIF, cat vuong, 768) -> kiem tra mo/toi -> luu + bam SHA-256.
+     * $device = User-Agent may chup, ghi vao audit de so sai khac giua thiet bi (gop y 30).
+     */
+    public function addPhoto(Lot $lot, string $srcPath, string $view, User $by, ?string $device = null): LotPhoto
     {
         $this->assertEditable($lot);
 
@@ -70,7 +73,7 @@ class LotWorkflow
         $path = "lots/{$lot->code}/".Str::uuid().'.jpg';
         Storage::disk('public')->put($path, $bytes);
 
-        return DB::transaction(function () use ($lot, $path, $bytes, $view, $quality, $by) {
+        return DB::transaction(function () use ($lot, $path, $bytes, $view, $quality, $by, $device) {
             $photo = $lot->photos()->create([
                 'path' => $path,
                 'sha256' => hash('sha256', $bytes),
@@ -83,6 +86,7 @@ class LotWorkflow
                 'sha256' => $photo->sha256,
                 'view' => $view,
                 'quality_ok' => $quality['ok'],
+                'device' => $device === null ? null : Str::limit($device, 200, ''),
             ], $by);
 
             return $photo;
