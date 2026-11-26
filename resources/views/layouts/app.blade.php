@@ -35,7 +35,7 @@
 
     @unless ($bare)
         <x-chrome.top-nav :page="$page" />
-        <x-chrome.mob-header />
+        <x-chrome.mob-header :page="$page" />
         <x-chrome.drawer :page="$page" />
     @endunless
 

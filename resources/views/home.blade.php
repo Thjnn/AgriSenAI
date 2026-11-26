@@ -96,7 +96,8 @@
     {{-- 5 buoc --}}
     <section id="quy-trinh" class="mt-10">
         <h2 class="mb-4 text-xl font-extrabold">Quy trình 5 bước</h2>
-        <ol class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        {{-- Mobile: mot the, cac buoc noi bang duong doc; tu sm: luoi the nhu cu --}}
+        <ol class="rounded-card bg-white p-4 shadow-sm sm:grid sm:gap-3 sm:bg-transparent sm:p-0 sm:shadow-none sm:grid-cols-2 lg:grid-cols-5">
             @foreach ([
                 ['Tạo lô', 'Nguồn cung, giống, mục đích bán, khối lượng, ngày thu hoạch → mã lô duy nhất.'],
                 ['Chụp ảnh chuẩn', 'Khung ngắm + kiểm tra mờ/tối ngay trên máy. Không đạt thì chụp lại.'],
@@ -104,10 +105,15 @@
                 ['Người xác nhận', 'Đồng ý / Sửa / Bác bỏ từng gợi ý. Mỗi xác nhận là một nhãn dữ liệu.'],
                 ['Công bố + QR', 'Hồ sơ khoá lại, nhật ký nối chuỗi băm. In tem QR dán thùng.'],
             ] as $i => [$t, $d])
-                <li class="rounded-card bg-white p-4 shadow-sm">
-                    <span class="mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-brand text-sm font-extrabold text-white">{{ $i + 1 }}</span>
-                    <b class="block">{{ $t }}</b>
-                    <span class="text-[13px] text-ink-sec">{{ $d }}</span>
+                <li class="relative flex gap-3 pb-5 last:pb-0 sm:block sm:rounded-card sm:bg-white sm:p-4 sm:shadow-sm">
+                    @unless ($loop->last)
+                        <span aria-hidden="true" class="absolute bottom-0 left-[15px] top-9 w-0.5 bg-brand-light sm:hidden"></span>
+                    @endunless
+                    <span class="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-extrabold text-white sm:mb-2">{{ $i + 1 }}</span>
+                    <span class="pt-1 sm:pt-0">
+                        <b class="block">{{ $t }}</b>
+                        <span class="text-[13px] leading-snug text-ink-sec">{{ $d }}</span>
+                    </span>
                 </li>
             @endforeach
         </ol>
@@ -134,11 +140,14 @@
     @if ($recent->isNotEmpty())
         <section class="mt-10">
             <h2 class="mb-4 text-xl font-extrabold">Hồ sơ mới công bố</h2>
-            <div class="grid gap-4 sm:grid-cols-3">
+            {{-- Mobile: cuon ngang co snap, the sau lo mot phan de biet con nua --}}
+            <div class="-mx-5 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 max-[360px]:-mx-4 max-[360px]:px-4 max-[360px]:scroll-px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden">
                 @foreach ($recent as $lot)
-                    <a href="{{ route('public.show', $lot) }}" class="overflow-hidden rounded-card bg-white shadow-sm transition-shadow hover:shadow-md">
+                    <a href="{{ route('public.show', $lot) }}" class="group w-[72%] shrink-0 snap-start overflow-hidden rounded-card bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:w-auto">
                         @if ($lot->photos->first())
-                            <img src="{{ $lot->photos->first()->url() }}" alt="Ảnh lô {{ $lot->code }}" class="aspect-square w-full object-cover" loading="lazy">
+                            <span class="block overflow-hidden">
+                                <img src="{{ $lot->photos->first()->url() }}" alt="Ảnh lô {{ $lot->code }}" class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy">
+                            </span>
                         @endif
                         <div class="p-3">
                             <b class="block font-mono text-sm">{{ $lot->code }}</b>

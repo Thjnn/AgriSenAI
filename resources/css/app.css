@@ -65,6 +65,10 @@
 @source '../../storage/framework/views/*.php';
 
 @layer base {
+  /* Phan hoi khi bam nut tren dien thoai (khong co hover) */
+  button:not(:disabled) { transition: transform .12s, background-color .15s, box-shadow .15s; }
+  button:not(:disabled):active { transform: scale(.98); }
+
   html { scroll-behavior: smooth; }
   body {
     @apply font-sans text-ink bg-white antialiased;
@@ -75,6 +79,10 @@
 /* Hero trang chủ: hiện dần một lần khi vào trang */
 @keyframes hero-in { from { opacity: 0; transform: translateY(16px); } }
 .hero-in { animation: hero-in .7s cubic-bezier(.2, .7, .2, 1) both; }
+
+/* Danh sach hien lan luot mot lan khi tai trang (--i = thu tu, toi da ~8 muc dau co tre) */
+@keyframes list-in { from { opacity: 0; transform: translateY(8px); } }
+.list-in { animation: list-in .4s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(min(var(--i, 0), 8) * 45ms); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

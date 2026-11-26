@@ -21,7 +21,7 @@ class LotController extends Controller
         $user = $request->user();
         $status = $request->query('status');
 
-        $lots = Lot::with('creator')
+        $lots = Lot::with(['creator', 'photos'])
             ->withCount('photos')
             ->unless($user->isAdmin(), fn ($q) => $q->whereHas('creator', fn ($c) => $c->where('org_name', $user->org_name)))
             ->when(array_key_exists((string) $status, Lot::STATUSES), fn ($q) => $q->where('status', $status))

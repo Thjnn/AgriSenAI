@@ -12,24 +12,50 @@
     $lastConfirm = $lot->auditLogs->where('action', 'confirmed')->last();
     $card = 'mb-4 rounded-card bg-white p-4 shadow-sm sm:p-5';
     $h2 = 'mb-3 flex items-center gap-2 text-lg font-extrabold';
-    $step = 'flex h-7 w-7 items-center justify-center rounded-full bg-brand text-sm text-white';
+    $step = 'flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-sm text-white';
+    // Buoc dang lam (1-5); 6 = da cong bo xong.
+    $current = match ($lot->status) {
+        'draft' => $usablePhotos > 0 ? 3 : 2,
+        'analyzing' => 3,
+        'analyzed' => 4,
+        'confirmed' => 5,
+        default => 6,
+    };
 @endphp
 
 @section('content')
     {{-- Dau trang --}}
-    <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
-        <div>
-            <a href="{{ route('lots.index') }}" class="text-sm font-bold text-ink-sec">← Lô hàng</a>
+    <div class="mb-4">
+        <a href="{{ route('lots.index') }}" class="inline-flex min-h-11 items-center text-sm font-bold text-ink-sec">← Lô hàng</a>
+        <div class="flex items-start justify-between gap-3">
             <h1 class="font-mono text-2xl font-extrabold">{{ $lot->code }}</h1>
-            <p class="text-sm text-ink-sec">
-                {{ $lot->supplier }}{{ $lot->variety ? ' · '.$lot->variety : '' }} ·
-                {{ config('agrisenai.muc_dich_ban.'.$lot->purpose) }} ·
-                {{ rtrim(rtrim(number_format($lot->weight_kg, 2, ',', '.'), '0'), ',') }} kg ·
-                thu hoạch {{ $lot->harvest_date->format('d/m/Y') }}
-            </p>
+            <span class="mt-1">@include('lots._status', ['status' => $lot->status])</span>
         </div>
-        @include('lots._status', ['status' => $lot->status])
+        <p class="mt-0.5 font-bold">{{ $lot->supplier }}{{ $lot->variety ? ' · '.$lot->variety : '' }}</p>
+        <p class="text-sm text-ink-sec">
+            {{ config('agrisenai.muc_dich_ban.'.$lot->purpose) }} ·
+            {{ rtrim(rtrim(number_format($lot->weight_kg, 2, ',', '.'), '0'), ',') }} kg ·
+            thu hoạch {{ $lot->harvest_date->format('d/m/Y') }}
+        </p>
     </div>
+
+    {{-- Thanh tien do 5 buoc: biet ngay dang o dau, cham de nhay toi buoc do --}}
+    <ol aria-label="Tiến độ hồ sơ" class="mb-4 grid grid-cols-5 rounded-card bg-white px-2 py-3 shadow-sm">
+        @foreach (['Tạo lô', 'Ảnh', 'AI gợi ý', 'Xác nhận', 'Công bố'] as $i => $name)
+            @php $n = $i + 1; @endphp
+            <li class="relative flex flex-col items-center gap-1 text-center">
+                @if ($n > 1)
+                    <span aria-hidden="true" class="absolute -left-1/2 top-[15px] h-0.5 w-full {{ $n <= $current ? 'bg-brand' : 'bg-gray-100' }}"></span>
+                @endif
+                <a href="{{ $n === 1 ? '#' : '#buoc-'.$n }}" @if ($n === $current) aria-current="step" @endif
+                   class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-sm font-extrabold
+                          {{ $n < $current ? 'bg-brand text-white' : ($n === $current ? 'bg-white text-brand ring-2 ring-brand' : 'bg-gray-100 text-ink-light') }}">
+                    {{ $n < $current ? '✓' : $n }}
+                </a>
+                <span class="text-[11px] font-bold leading-tight {{ $n === $current ? 'text-brand' : ($n < $current ? 'text-ink' : 'text-ink-light') }}">{{ $name }}</span>
+            </li>
+        @endforeach
+    </ol>
 
     @foreach (['ok' => 'bg-brand-light text-brand', 'warn' => 'bg-amber-100 text-amber-900'] as $k => $cls)
         @if (session($k))
@@ -45,7 +71,7 @@
     <div class="grid gap-4 lg:grid-cols-[1fr_340px]">
         <div>
             {{-- ── Buoc 2: anh ─────────────────────────────── --}}
-            <section class="{{ $card }}">
+            <section id="buoc-2" class="{{ $card }} scroll-mt-20">
                 <h2 class="{{ $h2 }}"><span class="{{ $step }}">2</span> Ảnh chuẩn hoá</h2>
 
                 @if ($lot->photos->isNotEmpty())
@@ -116,7 +142,7 @@
             </section>
 
             {{-- ── Buoc 3: AI goi y ─────────────────────────── --}}
-            <section class="{{ $card }}">
+            <section id="buoc-3" class="{{ $card }} scroll-mt-20">
                 <h2 class="{{ $h2 }}"><span class="{{ $step }}">3</span> AI gợi ý ngoại quan</h2>
 
                 @if ($lot->status === 'analyzing')
@@ -151,7 +177,7 @@
             </section>
 
             {{-- ── Buoc 4: xac nhan (HITL) ─────────────────── --}}
-            <section class="{{ $card }}">
+            <section id="buoc-4" class="{{ $card }} scroll-mt-20">
                 <h2 class="{{ $h2 }}"><span class="{{ $step }}">4</span> Người phụ trách xác nhận</h2>
                 <p class="mb-3 text-[12px] text-ink-sec">{{ config('agrisenai.ai_disclaimer') }}</p>
 
@@ -164,8 +190,9 @@
                 @if (! $editable)
                     <dl class="divide-y divide-gray-100">
                         @foreach ($criteria as $key => $c)
-                            <div class="grid grid-cols-[120px_1fr] gap-2 py-2 text-sm">
-                                <dt class="font-bold">{{ $c['label'] }}</dt>
+                            <div class="grid gap-0.5 py-2.5 text-sm sm:grid-cols-[120px_1fr] sm:gap-2">
+                                {{-- mobile: nhan tren, gia tri duoi; tu sm: 2 cot --}}
+                                <dt class="text-[12px] font-bold text-ink-sec sm:text-sm sm:text-ink">{{ $c['label'] }}</dt>
                                 <dd>@if (isset($labels[$key])) @include('lots._value', ['key' => $key, 'final' => $labels[$key]->final_value]) @endif</dd>
                             </div>
                         @endforeach
@@ -247,7 +274,7 @@
 
         <aside>
             {{-- ── Buoc 5: cong bo ──────────────────────────── --}}
-            <section class="{{ $card }}">
+            <section id="buoc-5" class="{{ $card }} scroll-mt-20">
                 <h2 class="{{ $h2 }}"><span class="{{ $step }}">5</span> Công bố & tem QR</h2>
                 @if ($lot->isPublished())
                     <div class="mb-3 rounded-card-sm p-3 text-sm font-extrabold {{ $verify['ok'] ? 'bg-brand-light text-brand' : 'bg-red-50 text-red-800' }}">
@@ -297,7 +324,7 @@
                 @endif
             </section>
 
-            <section class="{{ $card }}">
+            <section id="nhat-ky" class="{{ $card }}">
                 <h2 class="{{ $h2 }}">Nhật ký</h2>
                 @include('lots._timeline', ['logs' => $lot->auditLogs])
             </section>

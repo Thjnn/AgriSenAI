@@ -7,22 +7,37 @@
 
 @section('content')
     <div class="mx-auto max-w-3xl">
-        {{-- Dai xac minh: chuoi bam + anh + nhan phai khop ban da cong bo --}}
+        {{-- Ket qua xac minh = dieu nguoi mua can biet dau tien: khoi lon, nen xanh dam nhu hero trang chu.
+             Chuoi bam + anh + nhan + thong tin lo phai khop ban da cong bo. --}}
         @if ($verify['ok'])
-            <div role="status" class="mb-4 flex items-center gap-2 rounded-card bg-brand-light px-4 py-3 text-sm font-extrabold text-brand">
-                ✓ Hồ sơ nguyên vẹn — ảnh, kết luận và nhật ký khớp với bản đã công bố
-            </div>
+            <section role="status" class="hero-in relative isolate mb-4 overflow-hidden rounded-card-lg bg-brand-night p-5 text-white shadow-md">
+                <div aria-hidden="true" class="pointer-events-none absolute -right-16 -top-16 -z-10 h-56 w-56 rounded-full bg-mango/25 blur-3xl"></div>
+                <div class="flex items-start gap-4">
+                    <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-brand-medium shadow-[0_0_0_6px_rgba(67,160,71,.25)]">
+                        <svg viewBox="0 0 24 24" class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                    </span>
+                    <div class="min-w-0">
+                        <p class="text-xl font-black leading-tight">Hồ sơ nguyên vẹn</p>
+                        <p class="mt-1 text-sm leading-snug text-white/75">Ảnh, kết luận, thông tin lô và nhật ký khớp với bản đã công bố.</p>
+                    </div>
+                </div>
+            </section>
         @else
-            <div role="alert" class="mb-4 rounded-card bg-red-50 px-4 py-3 text-sm font-extrabold text-red-800">
-                ✗ Cảnh báo: hồ sơ đã bị thay đổi sau khi công bố
-                <span class="block text-[12px] font-semibold">
-                    @unless ($verify['chain_ok']) Nhật ký bị sửa. @endunless
-                    @unless ($verify['photos_ok']) Ảnh không khớp mã băm. @endunless
-                    @unless ($verify['labels_ok']) Kết luận trong hệ thống khác bản đã công bố. @endunless
-                    @unless ($verify['lot_ok']) Thông tin lô (khối lượng, ngày thu hoạch…) khác bản đã công bố. @endunless
-                    Liên hệ điểm thu gom trước khi nhận hàng.
-                </span>
-            </div>
+            <section role="alert" class="mb-4 rounded-card-lg bg-red-700 p-5 text-white shadow-md">
+                <div class="flex items-start gap-4">
+                    <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white/15 text-3xl font-black" aria-hidden="true">!</span>
+                    <div class="min-w-0">
+                        <p class="text-xl font-black leading-tight">Cảnh báo: hồ sơ đã bị thay đổi sau khi công bố</p>
+                        <ul class="mt-2 space-y-0.5 text-sm text-white/90">
+                            @unless ($verify['chain_ok'])<li>• Nhật ký bị sửa.</li>@endunless
+                            @unless ($verify['photos_ok'])<li>• Ảnh không khớp mã băm.</li>@endunless
+                            @unless ($verify['labels_ok'])<li>• Kết luận trong hệ thống khác bản đã công bố.</li>@endunless
+                            @unless ($verify['lot_ok'])<li>• Thông tin lô (khối lượng, ngày thu hoạch…) khác bản đã công bố.</li>@endunless
+                        </ul>
+                        <p class="mt-2 text-sm font-extrabold">Liên hệ điểm thu gom trước khi nhận hàng.</p>
+                    </div>
+                </div>
+            </section>
         @endif
 
         @if ($correction)
@@ -37,17 +52,17 @@
             </div>
         @endif
 
-        <section class="mb-4 rounded-card bg-white p-5 shadow-md">
+        <section class="mb-4 rounded-card bg-white p-5 shadow-sm">
             <div class="flex items-start justify-between gap-4">
-                <div>
+                <div class="min-w-0">
                     <p class="text-[11px] font-extrabold uppercase tracking-wider text-ink-light">Hồ sơ lô xoài</p>
-                    <h1 class="font-mono text-2xl font-extrabold">{{ $lot->code }}</h1>
+                    <h1 class="font-mono text-[22px] font-extrabold sm:text-2xl">{{ $lot->code }}</h1>
                     {{-- Trinh duyet "In -> Luu thanh PDF": khong can thu vien PDF phia server --}}
-                    <button type="button" onclick="window.print()" class="mt-2 rounded-card-sm border border-brand px-3 py-1.5 text-sm font-extrabold text-brand print:hidden">⬇ Tải PDF / In hồ sơ</button>
+                    <button type="button" onclick="window.print()" class="mt-2 inline-flex min-h-11 items-center rounded-card-sm border border-brand px-3 text-sm font-extrabold text-brand transition hover:bg-brand-bg active:scale-[0.97] print:hidden">⬇ Tải PDF / In hồ sơ</button>
                 </div>
-                <img src="{{ route('public.qr', $lot) }}" alt="Mã QR hồ sơ {{ $lot->code }}" class="size-24 shrink-0" width="96" height="96">
+                <img src="{{ route('public.qr', $lot) }}" alt="Mã QR hồ sơ {{ $lot->code }}" class="size-24 shrink-0 rounded-card-sm ring-1 ring-gray-100" width="96" height="96">
             </div>
-            <dl class="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-sm sm:grid-cols-3">
+            <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-gray-100 pt-4 text-sm sm:grid-cols-3">
                 {{-- Khong hien ten nha vuon / nong ho tren trang cong khai (bao ve du lieu ca nhan) --}}
                 <div><dt class="text-ink-sec">Điểm thu gom</dt><dd class="font-bold">{{ $lot->creator?->org_name }}</dd></div>
                 <div><dt class="text-ink-sec">Giống (người nhập)</dt><dd class="font-bold">{{ $lot->variety ?: '—' }}</dd></div>
@@ -58,9 +73,9 @@
             </dl>
         </section>
 
-        <section class="mb-4 rounded-card bg-white p-5 shadow-md">
+        <section class="mb-4 rounded-card bg-white p-5 shadow-sm">
             <h2 class="mb-3 text-lg font-extrabold">Ảnh đã duyệt</h2>
-            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div class="grid grid-cols-3 gap-2 sm:gap-3">
                 @foreach ($lot->photos as $p)
                     <figure>
                         <img src="{{ $p->url() }}" alt="{{ \App\Models\LotPhoto::VIEWS[$p->view] }}" class="aspect-square w-full rounded-card-sm object-cover" loading="lazy">
@@ -73,12 +88,12 @@
             </div>
         </section>
 
-        <section class="mb-4 rounded-card bg-white p-5 shadow-md">
+        <section class="mb-4 rounded-card bg-white p-5 shadow-sm">
             <h2 class="mb-3 text-lg font-extrabold">Ngoại quan đã xác nhận</h2>
             <dl class="divide-y divide-gray-100">
                 @foreach (config('agrisenai.criteria') as $key => $c)
-                    <div class="grid grid-cols-[120px_1fr] gap-3 py-2.5 text-sm sm:grid-cols-[170px_1fr]">
-                        <dt class="font-bold">{{ $c['label'] }}</dt>
+                    <div class="grid gap-0.5 py-2.5 text-sm sm:grid-cols-[170px_1fr] sm:gap-3">
+                        <dt class="text-[12px] font-bold text-ink-sec sm:text-sm sm:text-ink">{{ $c['label'] }}</dt>
                         <dd>
                             @if (isset($labels[$key]))
                                 @include('lots._value', ['key' => $key, 'final' => $labels[$key]['final_value']])
@@ -97,7 +112,7 @@
             <p class="mt-2 text-[12px] text-ink-sec">{{ config('agrisenai.ai_disclaimer') }}</p>
         </section>
 
-        <section id="phan-hoi" class="mb-4 rounded-card bg-white p-5 shadow-md">
+        <section id="phan-hoi" class="mb-4 rounded-card bg-white p-5 shadow-sm">
             <h2 class="mb-1 text-lg font-extrabold">Phản hồi của bên nhận hàng</h2>
             <p class="mb-3 text-[12px] text-ink-sec">Ghi vào nhật ký hồ sơ, không sửa hay xoá được. Người gửi không cần đăng nhập nên danh tính chưa được xác thực.</p>
 
@@ -150,7 +165,7 @@
             </details>
         </section>
 
-        <section class="mb-4 rounded-card bg-white p-5 shadow-md">
+        <section class="mb-4 rounded-card bg-white p-5 shadow-sm">
             <h2 class="mb-3 text-lg font-extrabold">Lịch sử hồ sơ</h2>
             @include('lots._timeline', ['logs' => $lot->auditLogs])
             <p class="mt-3 text-[12px] text-ink-sec">Mỗi bước được ký HMAC-SHA256 và nối chuỗi với bước trước. Sửa bất kỳ bước nào, dải xác minh phía trên sẽ chuyển đỏ.</p>
