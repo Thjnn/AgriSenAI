@@ -350,6 +350,14 @@ class LotFlowTest extends TestCase
         $this->actingAs(User::factory()->admin()->create())->get("/lo/{$lot->code}")->assertOk();
     }
 
+    public function test_goi_y_nha_vuon_chi_lay_trong_to_chuc(): void
+    {
+        $this->createLot(); // Vuon ong Sau Tam — to chuc Vua xoai My Xuong
+
+        $this->actingAs($this->staff)->get('/lo/tao')->assertSee('<option value="Vườn ông Sáu Tâm"></option>', false);
+        $this->actingAs(User::factory()->create(['org_name' => 'HTX Xoài Cao Lãnh']))->get('/lo/tao')->assertDontSee('<option value="Vườn ông Sáu Tâm">', false);
+    }
+
     public function test_tem_qr_chi_in_khi_da_cong_bo(): void
     {
         $lot = $this->createLot();

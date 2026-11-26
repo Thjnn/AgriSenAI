@@ -32,16 +32,31 @@ class LotController extends Controller
         return view('lots.index', compact('lots', 'status'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('lots.create');
+        // Goi y nha vuon / giong da nhap (cung to chuc) — nha vuon quay lai nhieu lan, do phai go lai.
+        $user = $request->user();
+        $recent = Lot::unless($user->isAdmin(), fn ($q) => $q->whereHas('creator', fn ($c) => $c->where('org_name', $user->org_name)))
+            ->latest()->limit(200)->get(['supplier', 'variety']);
+
+        return view('lots.create', [
+            'suppliers' => $recent->pluck('supplier')->unique()->take(30)->values(),
+            'varieties' => $recent->pluck('variety')->filter()->unique()->take(30)->values(),
+        ]);
     }
 
     /** Luat thong tin lo — dung chung cho tao lo va dinh chinh. */
     private const LOT_MESSAGES = [
         'supplier.required' => 'Nhập nhà vườn / nguồn cung.',
         'purpose.required' => 'Chọn mục đích bán — AI cần biết để không coi vỏ xanh là lỗi.',
+        'weight_kg.required' => 'Nhập khối lượng lô (kg).',
+        'weight_kg.numeric' => 'Khối lượng phải là số, vd 420 hoặc 420,5.',
         'weight_kg.gt' => 'Khối lượng phải lớn hơn 0.',
+        'weight_kg.max' => 'Khối lượng quá lớn — kiểm tra lại đơn vị kg.',
+        'harvest_date.required' => 'Chọn ngày thu hoạch.',
+        'harvest_date.date' => 'Ngày thu hoạch không hợp lệ.',
+        'supplier.max' => 'Tên nhà vườn tối đa 150 ký tự.',
+        'variety.max' => 'Tên giống tối đa 100 ký tự.',
         'harvest_date.before_or_equal' => 'Ngày thu hoạch không được ở tương lai.',
     ];
 

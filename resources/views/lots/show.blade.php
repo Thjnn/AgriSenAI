@@ -39,23 +39,7 @@
         </p>
     </div>
 
-    {{-- Thanh tien do 5 buoc: biet ngay dang o dau, cham de nhay toi buoc do --}}
-    <ol aria-label="Tiến độ hồ sơ" class="mb-4 grid grid-cols-5 rounded-card bg-white px-2 py-3 shadow-sm">
-        @foreach (['Tạo lô', 'Ảnh', 'AI gợi ý', 'Xác nhận', 'Công bố'] as $i => $name)
-            @php $n = $i + 1; @endphp
-            <li class="relative flex flex-col items-center gap-1 text-center">
-                @if ($n > 1)
-                    <span aria-hidden="true" class="absolute -left-1/2 top-[15px] h-0.5 w-full {{ $n <= $current ? 'bg-brand' : 'bg-gray-100' }}"></span>
-                @endif
-                <a href="{{ $n === 1 ? '#' : '#buoc-'.$n }}" @if ($n === $current) aria-current="step" @endif
-                   class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full text-sm font-extrabold
-                          {{ $n < $current ? 'bg-brand text-white' : ($n === $current ? 'bg-white text-brand ring-2 ring-brand' : 'bg-gray-100 text-ink-light') }}">
-                    {{ $n < $current ? '✓' : $n }}
-                </a>
-                <span class="text-[11px] font-bold leading-tight {{ $n === $current ? 'text-brand' : ($n < $current ? 'text-ink' : 'text-ink-light') }}">{{ $name }}</span>
-            </li>
-        @endforeach
-    </ol>
+    @include('lots._steps', ['current' => $current, 'linked' => true])
 
     @foreach (['ok' => 'bg-brand-light text-brand', 'warn' => 'bg-amber-100 text-amber-900'] as $k => $cls)
         @if (session($k))
