@@ -1,4 +1,4 @@
-/* AgriSenAi Service Worker */
+/* AgriSen Service Worker */
 
 const VERSION = "v2.0.0";
 const SHELL_CACHE = `agrisenai-shell-${VERSION}`;

@@ -152,7 +152,7 @@
 
     <section id="ve-chung-toi" class="mt-10 rounded-card bg-white p-5 text-sm leading-relaxed text-ink-sec shadow-sm">
         <h2 class="mb-2 text-lg font-extrabold text-ink">Về chúng tôi</h2>
-        AgriSenAi là dự án khởi nghiệp sinh viên tại Đồng Tháp. Giai đoạn MVP giải quyết việc lưu trữ thông tin lô rời rạc
+        AgriSen là dự án khởi nghiệp sinh viên tại Đồng Tháp. Giai đoạn MVP giải quyết việc lưu trữ thông tin lô rời rạc
         ở điểm thu gom; dữ liệu ảnh + nhãn đã được con người xác nhận là nền tảng để huấn luyện mô hình riêng ở giai đoạn sau.
     </section>
 @endsection

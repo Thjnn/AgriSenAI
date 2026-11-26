@@ -47,7 +47,7 @@ class ChromeNavTest extends TestCase
         $html = view('layouts.app', ['page' => 'lots'])->render();
         $this->assertStringNotContainsString('/thong-ke', $html);
 
-        $admin = new User(['name' => 'Quản trị', 'org_name' => 'AgriSenAi']);
+        $admin = new User(['name' => 'Quản trị', 'org_name' => 'AgriSen']);
         $admin->setRelation('role', new Role(['name' => Role::ADMIN]));
         $this->actingAs($admin);
         $this->assertStringContainsString('data-bnav="stats"', view('layouts.app', ['page' => 'stats'])->render());

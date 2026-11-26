@@ -25,6 +25,6 @@ class LayoutSkeletonTest extends TestCase
     {
         $html = view('layouts.app')->render();
 
-        $this->assertStringContainsString('AgriSenAi', $html);
+        $this->assertStringContainsString('AgriSen', $html);
     }
 }

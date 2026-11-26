@@ -11,7 +11,7 @@
 
     <div class="flex items-center gap-3 border-b border-gray-100 px-5 pb-5 pt-6">
         <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl">
-            <img src="{{ asset('images/logo-agrisenai-mark.png') }}" alt="AgriSenAi" class="block h-full w-full object-contain">
+            <img src="{{ asset('images/logo-agrisenai-mark.png') }}" alt="AgriSen" class="block h-full w-full object-contain">
         </span>
         <div class="flex-1">
             <div class="text-[19px] font-extrabold">Agri<span class="text-brand">SenAi</span></div>

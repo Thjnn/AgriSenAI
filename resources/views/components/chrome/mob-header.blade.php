@@ -10,11 +10,11 @@
         </button>
 
         <a href="/" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px]">
-            <img src="{{ asset('images/logo-agrisenai-mark.png') }}" alt="AgriSenAi" class="block h-full w-full object-contain">
+            <img src="{{ asset('images/logo-agrisenai-mark.png') }}" alt="AgriSen" class="block h-full w-full object-contain">
         </a>
 
         <div>
-            <div class="text-lg font-extrabold leading-[1.15]">AgriSenAi</div>
+            <div class="text-lg font-extrabold leading-[1.15]">AgriSen</div>
             <div class="text-xs font-medium text-ink-sec">Hồ sơ lô xoài đáng tin</div>
         </div>
     </div>

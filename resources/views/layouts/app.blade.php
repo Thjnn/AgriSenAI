@@ -20,7 +20,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@hasSection('title')@yield('title') — AgriSenAi @else AgriSenAi — Hồ sơ lô xoài đáng tin @endif</title>
+    <title>@hasSection('title')@yield('title') — AgriSen @else AgriSen — Hồ sơ lô xoài đáng tin @endif</title>
     <meta name="description" content="@yield('description', 'Chuẩn hóa hồ sơ lô xoài: chụp ảnh chuẩn, AI gợi ý ngoại quan, người phụ trách xác nhận, người mua quét QR kiểm chứng.')">
     <link rel="icon" href="{{ asset('favicon.ico') }}">
 

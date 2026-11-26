@@ -26,7 +26,7 @@ class DemoLotSeeder extends Seeder
         $staff = Role::where('name', Role::NHAN_VIEN)->value('id');
         $admin = Role::where('name', Role::ADMIN)->value('id');
 
-        User::create(['role_id' => $admin, 'name' => 'Quản trị AgriSen', 'phone' => '0900000000', 'org_name' => 'AgriSenAi', 'password' => self::PASSWORD]);
+        User::create(['role_id' => $admin, 'name' => 'Quản trị AgriSen', 'phone' => '0900000000', 'org_name' => 'AgriSen', 'password' => self::PASSWORD]);
         $myXuong = User::create(['role_id' => $staff, 'name' => 'Nguyễn Văn Tâm', 'phone' => '0911111111', 'org_name' => 'Vựa xoài Mỹ Xương', 'password' => self::PASSWORD]);
         $caoLanh = User::create(['role_id' => $staff, 'name' => 'Trần Thị Hoa', 'phone' => '0922222222', 'org_name' => 'HTX Xoài Cao Lãnh', 'password' => self::PASSWORD]);
 

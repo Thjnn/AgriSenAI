@@ -25,7 +25,7 @@
     <div class="tem border border-dashed border-gray-300 print:border-0">
         {!! $qr !!}
         <div class="flex min-w-0 flex-col justify-center leading-tight">
-            <b class="text-[7pt]">AgriSenAi · Hồ sơ lô</b>
+            <b class="text-[7pt]">AgriSen · Hồ sơ lô</b>
             <b class="break-all font-mono text-[8.5pt]">{{ $lot->code }}</b>
             <span class="text-[6.5pt]">Thu hoạch {{ $lot->harvest_date->format('d/m/Y') }}</span>
             <span class="truncate text-[6.5pt]">{{ $lot->creator?->org_name }}</span>

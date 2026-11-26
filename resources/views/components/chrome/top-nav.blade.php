@@ -7,9 +7,9 @@
 
         <a href="/" class="flex items-center gap-2.5 text-xl font-extrabold text-ink">
             <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-card-sm">
-                <img src="{{ asset('images/logo-agrisenai-mark.png') }}" alt="AgriSenAi" class="block h-full w-full object-contain">
+                <img src="{{ asset('images/logo-agrisenai-mark.png') }}" alt="AgriSen" class="block h-full w-full object-contain">
             </span>
-            AgriSenAi
+            AgriSen
         </a>
 
         <ul class="flex items-center gap-8">
