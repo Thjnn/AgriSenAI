@@ -8,6 +8,7 @@ use App\Models\Lot;
 use App\Models\LotPhoto;
 use App\Models\VerifiedLabel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
@@ -58,10 +59,13 @@ class StatsController extends Controller
         // KPI co tu so / mau so (gop y thay Nguyen 43). Dem anh loi bang PHP tren cot JSON cho chay ca MySQL lan SQLite.
         $photos = LotPhoto::get(['quality']);
         $published = $byStatus['published'] ?? 0;
+        $feedback = AuditLog::where('action', 'buyer_feedback')->get(['payload'])->map->data();
         $kpis = [
             ['label' => 'Tỷ lệ hồ sơ hoàn tất', 'num' => $published, 'den' => $byStatus->sum(), 'note' => 'Lô đã công bố / tổng lô đã tạo'],
             ['label' => 'Tỷ lệ ảnh phải chụp lại', 'num' => $photos->reject->isUsable()->count(), 'den' => $photos->count(), 'note' => 'Ảnh không đạt kiểm tra mờ/tối/sáng phía server / tổng ảnh'],
             ['label' => 'Tỷ lệ tiêu chí nhập tay', 'num' => VerifiedLabel::where('decision', 'manual')->count(), 'den' => VerifiedLabel::count(), 'note' => 'Không có hoặc không dùng gợi ý AI / tổng lần xác nhận tiêu chí'],
+            ['label' => 'Lô được người mua quét QR', 'num' => DB::table('lot_scans')->where('from_qr', true)->distinct()->count('lot_id'), 'den' => $published, 'note' => 'Lô có ít nhất 1 lượt quét QR (khách chưa đăng nhập) / lô đã công bố'],
+            ['label' => 'Phản hồi "không đúng hồ sơ"', 'num' => $feedback->where('result', 'khong_dung')->count(), 'den' => $feedback->count(), 'note' => 'Bên nhận hàng báo không đúng / tổng phản hồi'],
             ['label' => 'Hồ sơ phải đính chính', 'num' => AuditLog::where('action', 'corrected')->distinct()->count('lot_id'), 'den' => $published, 'note' => 'Lô có đính chính / lô đã công bố'],
         ];
 
@@ -72,6 +76,7 @@ class StatsController extends Controller
             'decisions' => $decisions,
             'byVersion' => $byVersion,
             'topEdits' => $topEdits,
+            'scans' => DB::table('lot_scans')->selectRaw('sum(case when from_qr then 1 else 0 end) as qr, count(*) as total')->first(),
             'aiCalls' => AiSuggestion::count(),
             'aiErrors' => AiSuggestion::whereNotNull('error')->count(),
             'kpis' => $kpis,

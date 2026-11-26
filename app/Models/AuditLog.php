@@ -25,6 +25,12 @@ class AuditLog extends Model
         'published' => 'Công bố hồ sơ',
         'corrected' => 'Đính chính hồ sơ',
         'corrects' => 'Lập để đính chính lô cũ',
+        'buyer_feedback' => 'Bên nhận hàng phản hồi',
+    ];
+
+    public const FEEDBACK = [
+        'dung' => 'Hàng nhận đúng như hồ sơ',
+        'khong_dung' => 'Hàng nhận KHÔNG đúng hồ sơ',
     ];
 
     protected $table = 'lot_audit_logs';

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,7 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Bo dem rieng: throttle:5,60 tran dung chung khoa IP voi throttle:60,1
+        // cua nhom /ho-so nen luot XEM trang cung bi tinh vao 5 lan phan hoi.
+        RateLimiter::for('phan-hoi', fn ($request) => Limit::perHour(5)->by('phan-hoi|'.$request->ip()));
     }
 
     /** Loc link nav theo co 'auth' / 'admin' trong config/navigation.php. */

@@ -117,6 +117,36 @@ class LotWorkflow
     }
 
     /**
+     * Ben nhan hang (nguoi mua quet QR, khong dang nhap) phan hoi: hang nhan
+     * dung / khong dung ho so. Ghi vao chuoi audit nen khong sua/xoa duoc.
+     * Anh (neu co) chi chuan hoa, khong chan theo chat luong — la bang chung.
+     */
+    public function addBuyerFeedback(Lot $lot, string $result, ?string $note, ?string $receiver, ?string $photoSrc): void
+    {
+        abort_unless($lot->isPublished(), 404);
+
+        $photo = null;
+        if ($photoSrc !== null) {
+            $tmp = tempnam(sys_get_temp_dir(), 'agrisen_').'.jpg';
+            try {
+                $this->normalizer->normalize($photoSrc, $tmp);
+                $bytes = file_get_contents($tmp);
+            } finally {
+                @unlink($tmp);
+            }
+            $photo = ['path' => "lots/{$lot->code}/phan-hoi/".Str::uuid().'.jpg', 'sha256' => hash('sha256', $bytes)];
+            Storage::disk('public')->put($photo['path'], $bytes);
+        }
+
+        $this->audit->append($lot, 'buyer_feedback', [
+            'result' => $result,
+            'note' => $note,
+            'receiver' => $receiver,
+            'photo' => $photo,
+        ]);
+    }
+
+    /**
      * Goi Gemini tren cac anh dat chat luong. Luon ghi ai_suggestions (ca khi
      * loi) de con dau vet; loi thi nguoi dung van xac nhan thu cong duoc.
      */

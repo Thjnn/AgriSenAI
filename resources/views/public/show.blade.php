@@ -97,6 +97,59 @@
             <p class="mt-2 text-[12px] text-ink-sec">{{ config('agrisenai.ai_disclaimer') }}</p>
         </section>
 
+        <section id="phan-hoi" class="mb-4 rounded-card bg-white p-5 shadow-md">
+            <h2 class="mb-1 text-lg font-extrabold">Phản hồi của bên nhận hàng</h2>
+            <p class="mb-3 text-[12px] text-ink-sec">Ghi vào nhật ký hồ sơ, không sửa hay xoá được. Người gửi không cần đăng nhập nên danh tính chưa được xác thực.</p>
+
+            @if (session('ok'))
+                <p role="status" class="mb-3 rounded-card-sm bg-brand-light p-3 text-sm font-bold text-brand">{{ session('ok') }}</p>
+            @endif
+
+            @forelse ($feedback as $f)
+                @php($d = $f->data())
+                <div class="mb-2 rounded-card-sm p-3 text-sm {{ $d['result'] === 'dung' ? 'bg-brand-bg' : 'bg-red-50' }}">
+                    <b class="{{ $d['result'] === 'dung' ? 'text-brand' : 'text-red-800' }}">{{ $d['result'] === 'dung' ? '✓' : '✗' }} {{ \App\Models\AuditLog::FEEDBACK[$d['result']] ?? $d['result'] }}</b>
+                    <span class="text-[12px] text-ink-sec">· {{ $d['receiver'] ?: 'Không ghi tên' }} · {{ $f->created_at->format('H:i d/m/Y') }}</span>
+                    @if ($d['note'])<p class="mt-1">{{ $d['note'] }}</p>@endif
+                    @if ($d['photo'])
+                        <img src="{{ asset('storage/'.$d['photo']['path']) }}" alt="Ảnh bên nhận hàng chụp" class="mt-2 max-h-40 rounded-card-sm" loading="lazy">
+                    @endif
+                </div>
+            @empty
+                <p class="mb-3 text-sm text-ink-light">Chưa có phản hồi.</p>
+            @endforelse
+
+            <details class="mt-3 print:hidden" @if ($errors->any()) open @endif>
+                <summary class="cursor-pointer font-extrabold text-brand">Bạn đã nhận lô hàng này? Gửi phản hồi</summary>
+                <form method="post" action="{{ route('public.feedback', $lot) }}#phan-hoi" enctype="multipart/form-data" class="mt-3 space-y-3">
+                    @csrf
+                    @if ($errors->any())
+                        <ul role="alert" class="rounded-card-sm bg-red-50 p-3 text-sm font-bold text-red-800">
+                            @foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach
+                        </ul>
+                    @endif
+                    <fieldset class="flex flex-wrap gap-3">
+                        <legend class="sr-only">Kết quả nhận hàng</legend>
+                        @foreach (\App\Models\AuditLog::FEEDBACK as $k => $label)
+                            <label class="flex items-center gap-2 rounded-card-sm border border-gray-200 px-3 py-2 text-sm font-bold">
+                                <input type="radio" name="result" value="{{ $k }}" required @checked(old('result') === $k) class="accent-brand"> {{ $label }}
+                            </label>
+                        @endforeach
+                    </fieldset>
+                    <label class="block text-sm font-bold">Ghi chú <span class="font-normal text-ink-sec">(bắt buộc nếu không đúng)</span>
+                        <textarea name="note" rows="2" maxlength="500" class="mt-1 w-full rounded-card-sm border border-gray-200 p-2 font-normal">{{ old('note') }}</textarea>
+                    </label>
+                    <label class="block text-sm font-bold">Đơn vị / người nhận <span class="font-normal text-ink-sec">(không bắt buộc)</span>
+                        <input name="receiver" maxlength="100" value="{{ old('receiver') }}" class="mt-1 w-full rounded-card-sm border border-gray-200 p-2 font-normal">
+                    </label>
+                    <label class="block text-sm font-bold">Ảnh hàng nhận được <span class="font-normal text-ink-sec">(không bắt buộc)</span>
+                        <input type="file" name="anh" accept="image/*" class="mt-1 block text-sm font-normal">
+                    </label>
+                    <button class="rounded-card bg-ink px-4 py-2.5 font-extrabold text-white">Gửi phản hồi</button>
+                </form>
+            </details>
+        </section>
+
         <section class="mb-4 rounded-card bg-white p-5 shadow-md">
             <h2 class="mb-3 text-lg font-extrabold">Lịch sử hồ sơ</h2>
             @include('lots._timeline', ['logs' => $lot->auditLogs])

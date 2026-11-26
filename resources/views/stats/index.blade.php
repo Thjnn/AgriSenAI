@@ -9,13 +9,18 @@
     </div>
 
     @php $tile = 'rounded-card bg-white p-4 shadow-sm'; @endphp
-    <div class="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+    <div class="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-5">
         <div class="{{ $tile }}"><span class="text-sm text-ink-sec">Tổng số lô</span><b class="block text-3xl">{{ $total }}</b></div>
         <div class="{{ $tile }}"><span class="text-sm text-ink-sec">Đã công bố</span><b class="block text-3xl">{{ $byStatus['published'] ?? 0 }}</b></div>
         <div class="{{ $tile }}">
             <span class="text-sm text-ink-sec">Thời gian lập hồ sơ (TB)</span>
             <b class="block text-3xl">{{ $avgMinutes === null ? '—' : number_format($avgMinutes, 0).' phút' }}</b>
             <span class="text-[11px] text-ink-light">tạo lô → công bố</span>
+        </div>
+        <div class="{{ $tile }}">
+            <span class="text-sm text-ink-sec">Lượt quét QR</span>
+            <b class="block text-3xl">{{ (int) $scans->qr }}</b>
+            <span class="text-[11px] text-ink-light">{{ (int) $scans->total }} lượt xem hồ sơ công khai</span>
         </div>
         <div class="{{ $tile }}">
             <span class="text-sm text-ink-sec">Lượt gọi AI</span>
@@ -26,7 +31,7 @@
 
     <section class="mb-6 rounded-card bg-white p-5 shadow-sm">
         <h2 class="mb-1 text-lg font-extrabold">Chỉ số vận hành</h2>
-        <p class="mb-4 text-sm text-ink-sec">Đo trên dữ liệu thật trong hệ thống, luôn kèm tử số/mẫu số. Chưa đo lượt quét QR.</p>
+        <p class="mb-4 text-sm text-ink-sec">Đo trên dữ liệu thật trong hệ thống, luôn kèm tử số/mẫu số.</p>
         <dl class="grid gap-3 sm:grid-cols-2">
             @foreach ($kpis as $k)
                 <div class="rounded-card-sm border border-gray-100 p-3">

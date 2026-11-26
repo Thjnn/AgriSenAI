@@ -39,6 +39,7 @@ Route::middleware('throttle:60,1')->group(function () {
     Route::get('/tra-cuu', [PublicLotController::class, 'lookup'])->name('public.lookup');
     Route::get('/ho-so/{lot}', [PublicLotController::class, 'show'])->name('public.show');
     Route::get('/ho-so/{lot}/qr', [PublicLotController::class, 'qr'])->name('public.qr');
+    Route::post('/ho-so/{lot}/phan-hoi', [PublicLotController::class, 'feedback'])->name('public.feedback')->middleware('throttle:phan-hoi');
 });
 
 Route::view('/offline', 'offline')->name('offline');

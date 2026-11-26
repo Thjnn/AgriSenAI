@@ -228,6 +228,65 @@ class LotFlowTest extends TestCase
         $this->get("/ho-so/{$lot->code}")->assertSee('Hồ sơ nguyên vẹn')->assertDontSee('hồ sơ đã bị thay đổi');
     }
 
+    public function test_dem_luot_quet_qr_cua_khach_khong_dem_nhan_vien(): void
+    {
+        $lot = $this->publishedLot();
+
+        $this->get("/ho-so/{$lot->code}")->assertOk(); // nhan vien dang nhap: khong tinh
+        auth()->logout();
+        $this->get("/ho-so/{$lot->code}?qr=1")->assertOk();
+        $this->get("/ho-so/{$lot->code}")->assertOk();
+
+        $this->assertSame(2, DB::table('lot_scans')->count());
+        $this->assertSame(1, DB::table('lot_scans')->where('from_qr', true)->count());
+    }
+
+    public function test_ben_nhan_hang_phan_hoi_ghi_vao_chuoi_audit(): void
+    {
+        $lot = $this->publishedLot();
+        auth()->logout();
+
+        $this->post("/ho-so/{$lot->code}/phan-hoi", ['result' => 'khong_dung'])->assertSessionHasErrors('note');
+
+        $this->post("/ho-so/{$lot->code}/phan-hoi", [
+            'result' => 'khong_dung', 'note' => 'Có 5 quả bị dập', 'receiver' => 'Siêu thị A', 'anh' => self::realPhoto(),
+        ])->assertSessionHasNoErrors();
+
+        $log = $lot->auditLogs()->where('action', 'buyer_feedback')->sole();
+        $this->assertNull($log->actor_id);
+        Storage::disk('public')->assertExists($log->data()['photo']['path']);
+
+        // Phan hoi sau cong bo khong lam ho so do; hien tren trang cong khai.
+        $this->get("/ho-so/{$lot->code}")
+            ->assertSee('Hồ sơ nguyên vẹn')
+            ->assertSee('Hàng nhận KHÔNG đúng hồ sơ')
+            ->assertSee('Có 5 quả bị dập')
+            ->assertSee('Siêu thị A');
+    }
+
+    public function test_xem_trang_nhieu_lan_khong_an_vao_gioi_han_phan_hoi(): void
+    {
+        $lot = $this->publishedLot();
+        auth()->logout();
+
+        for ($i = 0; $i < 10; $i++) {
+            $this->get("/ho-so/{$lot->code}")->assertOk();
+        }
+        for ($i = 0; $i < 5; $i++) {
+            $this->post("/ho-so/{$lot->code}/phan-hoi", ['result' => 'dung'])->assertRedirect();
+        }
+        $this->post("/ho-so/{$lot->code}/phan-hoi", ['result' => 'dung'])->assertTooManyRequests();
+    }
+
+    public function test_khong_phan_hoi_duoc_lo_chua_cong_bo(): void
+    {
+        $lot = $this->createLot();
+        auth()->logout();
+
+        $this->post("/ho-so/{$lot->code}/phan-hoi", ['result' => 'dung'])->assertNotFound();
+        $this->assertSame(0, $lot->auditLogs()->where('action', 'buyer_feedback')->count());
+    }
+
     public function test_xoa_anh_ghi_audit_xoa_file_va_dua_lo_ve_nhap(): void
     {
         $lot = $this->createLot();
