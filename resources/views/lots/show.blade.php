@@ -109,6 +109,7 @@
 
                         <img data-preview hidden alt="Xem trước" class="mx-auto max-h-56 rounded-card-sm">
                         <p data-msg class="text-[13px] text-ink-sec">Nên chụp 3 góc: toàn quả, cận bề mặt, cuống.</p>
+                        <p data-queue hidden role="status" class="rounded-card-sm bg-amber-50 p-2 text-[13px] font-bold text-amber-900"></p>
                         <button type="submit" disabled class="rounded-card bg-ink px-4 py-2.5 font-extrabold text-white disabled:opacity-40">Lưu ảnh</button>
                     </form>
                 @endif
