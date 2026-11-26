@@ -19,6 +19,7 @@
                     @unless ($verify['chain_ok']) Nhật ký bị sửa. @endunless
                     @unless ($verify['photos_ok']) Ảnh không khớp mã băm. @endunless
                     @unless ($verify['labels_ok']) Kết luận trong hệ thống khác bản đã công bố. @endunless
+                    @unless ($verify['lot_ok']) Thông tin lô (khối lượng, ngày thu hoạch…) khác bản đã công bố. @endunless
                     Liên hệ điểm thu gom trước khi nhận hàng.
                 </span>
             </div>
@@ -37,8 +38,15 @@
         @endif
 
         <section class="mb-4 rounded-card bg-white p-5 shadow-md">
-            <p class="text-[11px] font-extrabold uppercase tracking-wider text-ink-light">Hồ sơ lô xoài</p>
-            <h1 class="font-mono text-2xl font-extrabold">{{ $lot->code }}</h1>
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <p class="text-[11px] font-extrabold uppercase tracking-wider text-ink-light">Hồ sơ lô xoài</p>
+                    <h1 class="font-mono text-2xl font-extrabold">{{ $lot->code }}</h1>
+                    {{-- Trinh duyet "In -> Luu thanh PDF": khong can thu vien PDF phia server --}}
+                    <button type="button" onclick="window.print()" class="mt-2 rounded-card-sm border border-brand px-3 py-1.5 text-sm font-extrabold text-brand print:hidden">⬇ Tải PDF / In hồ sơ</button>
+                </div>
+                <img src="{{ route('public.qr', $lot) }}" alt="Mã QR hồ sơ {{ $lot->code }}" class="size-24 shrink-0" width="96" height="96">
+            </div>
             <dl class="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-sm sm:grid-cols-3">
                 {{-- Khong hien ten nha vuon / nong ho tren trang cong khai (bao ve du lieu ca nhan) --}}
                 <div><dt class="text-ink-sec">Điểm thu gom</dt><dd class="font-bold">{{ $lot->creator?->org_name }}</dd></div>
@@ -92,7 +100,7 @@
         <section class="mb-4 rounded-card bg-white p-5 shadow-md">
             <h2 class="mb-3 text-lg font-extrabold">Lịch sử hồ sơ</h2>
             @include('lots._timeline', ['logs' => $lot->auditLogs])
-            <p class="mt-3 text-[12px] text-ink-sec">Mỗi bước được nối chuỗi băm SHA-256 với bước trước. Sửa bất kỳ bước nào, dải xác minh phía trên sẽ chuyển đỏ.</p>
+            <p class="mt-3 text-[12px] text-ink-sec">Mỗi bước được ký HMAC-SHA256 và nối chuỗi với bước trước. Sửa bất kỳ bước nào, dải xác minh phía trên sẽ chuyển đỏ.</p>
         </section>
     </div>
 @endsection

@@ -269,6 +269,7 @@ class LotWorkflow
             $this->audit->append($lot, 'published', [
                 'by' => $by->name,
                 'org' => $by->org_name,
+                'lot' => AuditChain::lotSnapshot($lot),
                 'photos' => $lot->photos()->get()->map(fn ($p) => ['path' => $p->path, 'sha256' => $p->sha256])->all(),
                 'labels' => AuditChain::labelSnapshot($lot),
             ], $by);

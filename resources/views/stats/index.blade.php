@@ -72,6 +72,41 @@
         </div>
     </section>
 
+    <section class="mb-6 grid gap-6 lg:grid-cols-2">
+        <div class="rounded-card bg-white p-5 shadow-sm">
+            <h2 class="mb-1 text-lg font-extrabold">Theo phiên bản prompt</h2>
+            <p class="mb-4 text-sm text-ink-sec">Mỗi lần đổi prompt, tỉ lệ người đồng ý với AI có tăng không.</p>
+            @forelse ($byVersion as $version => $d)
+                @php
+                    $n = ($d['accept'] ?? 0) + ($d['edit'] ?? 0) + ($d['reject'] ?? 0);
+                    $pct = $n ? round(($d['accept'] ?? 0) / $n * 100) : 0;
+                @endphp
+                <div class="mb-3">
+                    <div class="flex justify-between text-sm">
+                        <code class="font-bold">{{ $version }}</code>
+                        <span><b>{{ $pct }}%</b> <span class="text-ink-light">({{ $d['accept'] ?? 0 }}/{{ $n }})</span></span>
+                    </div>
+                    <div class="mt-1 h-2 rounded-full bg-gray-100"><div class="h-2 rounded-full bg-brand" style="width: {{ $pct }}%"></div></div>
+                </div>
+            @empty
+                <p class="text-sm text-ink-light">Chưa có dữ liệu — cần ít nhất một lô có gợi ý AI được xác nhận.</p>
+            @endforelse
+        </div>
+
+        <div class="rounded-card bg-white p-5 shadow-sm">
+            <h2 class="mb-1 text-lg font-extrabold">AI hay bị sửa nhất</h2>
+            <p class="mb-4 text-sm text-ink-sec">Gợi ý AI → người phụ trách sửa thành. Dùng để chỉnh prompt và ảnh mẫu.</p>
+            @forelse ($topEdits as $e)
+                <div class="flex items-center justify-between gap-3 border-b border-gray-100 py-2 text-sm last:border-0">
+                    <span><b>{{ $e['criterion'] }}</b>: {{ $e['from'] }} → <b>{{ $e['to'] }}</b></span>
+                    <span class="shrink-0 text-ink-sec">{{ $e['n'] }} lần</span>
+                </div>
+            @empty
+                <p class="text-sm text-ink-light">Chưa có lần sửa nào.</p>
+            @endforelse
+        </div>
+    </section>
+
     <section class="rounded-card bg-white p-5 shadow-sm">
         <h2 class="mb-3 text-lg font-extrabold">Lô theo trạng thái</h2>
         <div class="flex flex-wrap gap-3">

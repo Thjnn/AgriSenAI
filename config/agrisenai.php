@@ -19,6 +19,9 @@
 return [
 
     // Doi prompt / schema -> doi version (luu vao ai_suggestions.prompt_version).
+    // Khoa ky HMAC cho chuoi audit. Doi khoa = moi ho so cu chuyen do.
+    'audit_key' => env('AUDIT_KEY', env('APP_KEY')),
+
     'prompt_version' => 'v2.1-2026-10-22',   // v2.1: bad_photos theo tung anh
 
     /*

@@ -33,6 +33,26 @@ class StatsController extends Controller
             ->groupBy('criterion')
             ->map(fn ($rows) => $rows->pluck('n', 'decision'));
 
+        // Ti le dong y theo phien ban prompt — doi prompt co lam AI tot hon khong.
+        $byVersion = VerifiedLabel::join('ai_suggestions', 'ai_suggestions.id', '=', 'verified_labels.suggestion_id')
+            ->whereIn('verified_labels.decision', ['accept', 'edit', 'reject'])
+            ->selectRaw('ai_suggestions.prompt_version as version, verified_labels.decision, count(*) as n')
+            ->groupBy('version', 'verified_labels.decision')->get()
+            ->groupBy('version')
+            ->map(fn ($rows) => $rows->pluck('n', 'decision'))
+            ->sortKeysDesc();
+
+        // AI hay sai the nao: cap (goi y AI -> nguoi sua thanh) gap nhieu nhat.
+        $topEdits = VerifiedLabel::where('decision', 'edit')->get(['criterion', 'ai_value', 'final_value'])
+            ->countBy(fn ($l) => implode('|', [$l->criterion, $l->ai_value['value'] ?? '?', $l->final_value['value'] ?? '?']))
+            ->sortDesc()->take(5)
+            ->map(function ($n, $k) {
+                [$c, $from, $to] = explode('|', $k);
+                $opt = fn ($v) => config("agrisenai.criteria.{$c}.options.{$v}", $v);
+
+                return ['criterion' => config("agrisenai.criteria.{$c}.label", $c), 'from' => $opt($from), 'to' => $opt($to), 'n' => $n];
+            })->values();
+
         $latencies = AiSuggestion::whereNull('error')->pluck('latency_ms')->sort()->values();
 
         // KPI co tu so / mau so (gop y thay Nguyen 43). Dem anh loi bang PHP tren cot JSON cho chay ca MySQL lan SQLite.
@@ -50,6 +70,8 @@ class StatsController extends Controller
             'total' => $byStatus->sum(),
             'avgMinutes' => $minutes->avg(),
             'decisions' => $decisions,
+            'byVersion' => $byVersion,
+            'topEdits' => $topEdits,
             'aiCalls' => AiSuggestion::count(),
             'aiErrors' => AiSuggestion::whereNotNull('error')->count(),
             'kpis' => $kpis,

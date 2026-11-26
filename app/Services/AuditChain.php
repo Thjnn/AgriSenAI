@@ -11,9 +11,11 @@ use Illuminate\Support\Facades\Storage;
  * Nhat ky audit noi chuoi bam theo tung lo (y tuong tu audit() / lot_view()
  * trong MVP mau cua co Hang):
  *
- *   hash_n = sha256(hash_{n-1} . payload_n)      (hash_0 = '')
+ *   hash_n = HMAC-SHA256(key, hash_{n-1} . payload_n)      (hash_0 = '')
  *
  * Sua bat ky payload nao -> moi hash phia sau lech -> trang QR hien dai do.
+ * Co khoa bi mat (AUDIT_KEY, mac dinh APP_KEY) nen nguoi co quyen ghi DB cung
+ * khong tinh lai duoc chuoi cho khop.
  */
 class AuditChain
 {
@@ -27,7 +29,7 @@ class AuditChain
             'actor_id' => $actor?->id,
             'action' => $action,
             'payload' => $payload,
-            'hash' => hash('sha256', $prev.$payload),
+            'hash' => self::sign($prev.$payload),
             'created_at' => now(),
         ]);
     }
@@ -45,7 +47,7 @@ class AuditChain
         $chainOk = $logs->isNotEmpty();
         $prev = '';
         foreach ($logs as $log) {
-            if (! hash_equals(hash('sha256', $prev.$log->payload), $log->hash)) {
+            if (! hash_equals(self::sign($prev.$log->payload), $log->hash)) {
                 $chainOk = false;
                 break;
             }
@@ -66,12 +68,38 @@ class AuditChain
         $labelsOk = $published !== null
             && self::labelSnapshot($lot) == ($published['labels'] ?? null);
 
+        $lotOk = $published !== null
+            && self::lotSnapshot($lot) == ($published['lot'] ?? null);
+
         return [
-            'ok' => $chainOk && $photosOk && $labelsOk,
+            'ok' => $chainOk && $photosOk && $labelsOk && $lotOk,
             'chain_ok' => $chainOk,
             'photos_ok' => $photosOk,
             'labels_ok' => $labelsOk,
+            'lot_ok' => $lotOk,
         ];
+    }
+
+    /** Thong tin lo hien tren trang cong khai — dung chung cho payload `published` va verify(). */
+    public static function lotSnapshot(Lot $lot): array
+    {
+        return [
+            'supplier' => $lot->supplier,
+            'variety' => $lot->variety,
+            'purpose' => $lot->purpose,
+            'weight_kg' => (string) $lot->weight_kg,
+            'harvest_date' => $lot->harvest_date->toDateString(),
+        ];
+    }
+
+    private static function sign(string $data): string
+    {
+        $key = (string) config('agrisenai.audit_key');
+        if ($key === '') {
+            throw new \RuntimeException('Thieu AUDIT_KEY / APP_KEY de ky nhat ky audit.');
+        }
+
+        return hash_hmac('sha256', $data, $key);
     }
 
     /** Ket luan cuoi cung theo tieu chi — dung chung cho payload `published` va verify(). */

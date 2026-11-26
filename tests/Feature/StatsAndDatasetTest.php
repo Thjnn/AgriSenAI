@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\AiSuggestion;
 use App\Models\Lot;
 use App\Models\User;
+use App\Models\VerifiedLabel;
 use App\Services\AuditChain;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -71,5 +73,28 @@ class StatsAndDatasetTest extends TestCase
         $this->actingAs(User::factory()->admin()->create())->get('/thong-ke')
             ->assertSee('Tỷ lệ hồ sơ hoàn tất')
             ->assertSee("{$pub}/{$total}");
+    }
+
+    public function test_thong_ke_theo_phien_ban_prompt_va_lan_sua_nhieu_nhat(): void
+    {
+        $lot = Lot::where('status', 'draft')->sole();
+        $admin = User::where('phone', '0900000000')->sole();
+        $label = fn ($sug, $decision, $ai, $final) => VerifiedLabel::create([
+            'lot_id' => $lot->id, 'suggestion_id' => $sug->id, 'criterion' => 'ripeness', 'decision' => $decision,
+            'ai_value' => ['value' => $ai], 'final_value' => ['value' => $final], 'confirmed_by' => $admin->id, 'confirmed_at' => now(),
+        ]);
+        $sug = fn ($v) => AiSuggestion::create(['lot_id' => $lot->id, 'model' => 'm', 'prompt_version' => $v, 'photo_ids' => [], 'result' => []]);
+
+        $old = $sug('v1-test');
+        $label($old, 'edit', 'chin_toi', 'chin_ky');
+        $label($old, 'edit', 'chin_toi', 'chin_ky');
+        $new = $sug('v2-test');
+        $label($new, 'accept', 'chin_toi', 'chin_toi');
+        $label($new, 'accept', 'chin_toi', 'chin_toi');
+
+        $this->actingAs($admin)->get('/thong-ke')
+            ->assertSeeInOrder(['v2-test', '100%', 'v1-test', '0%'])
+            ->assertSee('Chín tới → <b>Chín kỹ</b>', false)
+            ->assertSee('2 lần');
     }
 }

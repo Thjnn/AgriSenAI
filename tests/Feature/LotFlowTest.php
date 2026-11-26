@@ -195,6 +195,39 @@ class LotFlowTest extends TestCase
         $this->get("/ho-so/{$lot->code}")->assertSee('Ảnh không khớp mã băm');
     }
 
+    public function test_sua_khoi_luong_trong_db_thi_trang_qr_do(): void
+    {
+        $lot = $this->publishedLot();
+        DB::table('lots')->where('id', $lot->id)->update(['weight_kg' => 999]);
+
+        $this->get("/ho-so/{$lot->code}")->assertSee('hồ sơ đã bị thay đổi')->assertSee('Thông tin lô');
+    }
+
+    public function test_tinh_lai_chuoi_bang_sha256_tran_van_bi_phat_hien(): void
+    {
+        // Ke co quyen ghi DB sua nhat ky roi tinh lai ca chuoi — khong co khoa HMAC thi khong khop.
+        $lot = $this->publishedLot();
+        $prev = '';
+        foreach ($lot->auditLogs()->get() as $log) {
+            $payload = str_replace('khuyet_tat_nhe', 'sach', $log->payload);
+            $prev = hash('sha256', $prev.$payload);
+            DB::table('lot_audit_logs')->where('id', $log->id)->update(['payload' => $payload, 'hash' => $prev]);
+        }
+
+        $this->get("/ho-so/{$lot->code}")->assertSee('Nhật ký bị sửa');
+    }
+
+    public function test_lenh_demo_gia_mao_va_hoan_tac(): void
+    {
+        $lot = $this->publishedLot();
+
+        $this->artisan('demo:gia-mao', ['ma' => $lot->code])->assertSuccessful();
+        $this->get("/ho-so/{$lot->code}")->assertSee('hồ sơ đã bị thay đổi');
+
+        $this->artisan('demo:gia-mao', ['ma' => $lot->code, '--hoan-tac' => true])->assertSuccessful();
+        $this->get("/ho-so/{$lot->code}")->assertSee('Hồ sơ nguyên vẹn')->assertDontSee('hồ sơ đã bị thay đổi');
+    }
+
     public function test_xoa_anh_ghi_audit_xoa_file_va_dua_lo_ve_nhap(): void
     {
         $lot = $this->createLot();
