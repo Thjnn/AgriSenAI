@@ -69,7 +69,19 @@ class StatsController extends Controller
             ['label' => 'Hồ sơ phải đính chính', 'num' => AuditLog::where('action', 'corrected')->distinct()->count('lot_id'), 'den' => $published, 'note' => 'Lô có đính chính / lô đã công bố'],
         ];
 
+        // 14 ngay qua: lo tao moi + luot quet QR moi ngay. Dem bang PHP cho chay ca MySQL lan SQLite.
+        $since = now()->subDays(13)->startOfDay();
+        $lotsDaily = Lot::where('created_at', '>=', $since)->pluck('created_at')->countBy(fn ($d) => $d->toDateString());
+        $scansDaily = DB::table('lot_scans')->where('from_qr', true)->where('created_at', '>=', $since)
+            ->pluck('created_at')->countBy(fn ($d) => substr((string) $d, 0, 10));
+        $trend = collect(range(13, 0))->map(function ($i) use ($lotsDaily, $scansDaily) {
+            $d = now()->subDays($i);
+
+            return ['label' => $d->format('d/m'), 'lots' => $lotsDaily[$d->toDateString()] ?? 0, 'scans' => $scansDaily[$d->toDateString()] ?? 0];
+        });
+
         return view('stats.index', [
+            'trend' => $trend,
             'byStatus' => $byStatus,
             'total' => $byStatus->sum(),
             'avgMinutes' => $minutes->avg(),
